@@ -1,0 +1,91 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/registration/index",
+			"style": {
+				"navigationBarTitleText": "挂号预约"
+			}
+		},
+		{
+			"path": "pages/examination/index",
+			"style": {
+				"navigationBarTitleText": "健康检测"
+			}
+		},
+		{
+			"path": "pages/pharmacy/index",
+			"style": {
+				"navigationBarTitleText": "在线药房"
+			}
+		},
+		{
+			"path": "pages/forum/index",
+			"style": {
+				"navigationBarTitleText": "健康论坛"
+			}
+		},
+		{
+			"path": "pages/center/index",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		}
+	],
+	"globalStyle": {
+		"pageOrientation": "portrait",
+		"navigationBarTitleText": "健康导航",
+		"navigationBarTextStyle": "white",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#F8F8F8",
+		"backgroundColorTop": "#F4F5F6",
+		"backgroundColorBottom": "#F4F5F6",
+		"mp-360": {
+			"navigationStyle": "custom"
+		},
+		"h5": {
+			"maxWidth": 1190,
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#F1F1F1"
+		}
+
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"blurEffect": "extralight",
+		"backgroundColor": "#F8F8F8",
+		"list": [
+			{
+				"pagePath": "pages/registration/index",
+				"iconPath": "static/挂号预约.svg",
+				"selectedIconPath": "static/挂号预约.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/examination/index",
+				"iconPath": "static/健康检测.svg",
+				"selectedIconPath": "static/健康检测.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/pharmacy/index",
+				"iconPath": "static/在线药房.svg",
+				"selectedIconPath": "static/在线药房.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/forum/index",
+				"iconPath": "static/健康论坛.svg",
+				"selectedIconPath": "static/健康论坛.svg",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/center/index",
+				"iconPath": "static/个人中心.svg",
+				"selectedIconPath": "static/个人中心.svg",
+				"text": ""
+			}
+		]	
+	}
+}
