@@ -19,7 +19,19 @@
 
 各小组组长对upstream进行fork操作，获取本小组所用于开发的origin仓库。例如从git@github.com:ZJU-SE-Frontend/ZJU-SE-Frontend.git中fork出git@github.com:Yu-Jiawei/ZJU-SE-Frontend.git仓库
 
+![image-20210417181630156](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181630.png)
+
 fork出来的仓库完全属于小组，管理员只对upstream仓库负责，fork出的origin仓库需要小组长自行维护
+
+在fork之后,如果要更新自己的origin到最新（即与upstream同步），可以在自己的仓库里发起upstream/develop→origin/develop的pull request，并且自行通过以更新到最新
+
+![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181647.jpg)
+
+![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181651.jpg)
+
+![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181657.jpg)
+
+![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181702.jpg)
 
 ### feature
 
