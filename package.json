@@ -1,0 +1,23 @@
+{
+  "name": "zju-se-frontend",
+  "version": "1.0.0",
+  "description": "本项目是前端仓库的upstream，只有管理员可以直接修改",
+  "main": "main.js",
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EnterpriseBCMe/ZJU-SE-Frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EnterpriseBCMe/ZJU-SE-Frontend/issues"
+  },
+  "homepage": "https://github.com/EnterpriseBCMe/ZJU-SE-Frontend#readme"
+}
