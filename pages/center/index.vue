@@ -23,7 +23,7 @@
 		methods: {
 			onButtonClicked(){
 				ping().then((res)=>{
-					this.text=res.msg
+					this.text=res.data.message
 				});
 			}
 		}
