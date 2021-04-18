@@ -1,49 +1,83 @@
 # ZJU-SE-Frontend
+
 本项目是前端仓库的upstream，只有管理员可以直接修改
 
-## 项目workflow
+**在开发前一定要看regulation中的约定，避免出太多问题**
 
-为了避免一人一个branch对主仓库造成的混乱，项目采用有upstream的main-develop-feature模式，本节介绍项目的workflow
+## 项目约定
 
-规定以下名称：
+为了简化开发流程，避免使用微信小程序开发平台的局限性，本项目采用HBuilderX作为开发工具，使用vue.js为主要框架，采用uni-app模式开发
 
-* upstream： git@github.com:ZJU-SE-Frontend/ZJU-SE-Frontend.git，即本仓库
-* origin： 各小组组长对upstream进行的fork复制，例如git@github.com:Yu-Jiawei/ZJU-SE-Frontend.git
-* upstream/main：upstream仓库的主分支，此分支上的代码是可运行，可部署的
-* upstream/develop：upstream仓库的开发分支，各小组组长进行完一个阶段的开发后，向此分支提出pull request以提交功能
-* origin/develop：各小组origin中的开发分支，小组成员的feature开发将会整合在此分支中
-* origin/[feature name]：各小组成员对origin中develop分支进行的功能开发分支
+开发人员需要掌握html，js，vue.js以及一定量的uni-app知识以进行项目开发
 
-### fork
+html，js，vue.js不做过多介绍
 
-各小组组长对upstream进行fork操作，获取本小组所用于开发的origin仓库。例如从git@github.com:ZJU-SE-Frontend/ZJU-SE-Frontend.git中fork出git@github.com:Yu-Jiawei/ZJU-SE-Frontend.git仓库
+### HbuilderX
 
-![image-20210417181630156](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181630.png)
+https://www.dcloud.io/hbuilderx.html
 
-fork出来的仓库完全属于小组，管理员只对upstream仓库负责，fork出的origin仓库需要小组长自行维护
+### uni-app开发文档
 
-在fork之后,如果要更新自己的origin到最新（即与upstream同步），可以在自己的仓库里发起upstream/develop→origin/develop的pull request，并且自行通过以更新到最新
+https://uniapp.dcloud.io/
 
-![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181647.jpg)
+请务必活用文档页面上方的搜索栏
 
-![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181651.jpg)
+### 将项目clone到本地后，使用HBuilderX导入文件夹即可
 
-![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181657.jpg)
+![image-20210417182929527](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417182929.png)
 
-![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417181702.jpg)
+### 项目文件介绍
 
-### feature
+| 名称              | 作用                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| common文件夹      | 存放项目可能会用到的第三方库，如腾讯地图                     |
+| css文件夹         | 存放项目公有的样式表                                         |
+| fetch文件夹       | 存放项目与后端的接口，新加入的接口需要在此声明，之后在各自模块中调用 |
+| pages文件夹       | 存放各小组的页面，已经有预设好的几个页面，各小组可以在自己的文件夹下添加新页面 |
+| static文件夹      | 静态资源                                                     |
+| app.vue           | vue入口                                                      |
+| main.js           | js入口                                                       |
+| manifest.json     | 项目整体配置                                                 |
+| package-lock.json | node包配置                                                   |
+| pages.json        | 对页面的描述，小组在添加/删除页面后需要及时维护本文件。增删page都需要更改ages数组，如果是对四个基本页面做出的更改还需要在下方的tabbar数组中做相应更改 |
+| uni.scss          | 基本样式                                                     |
+| vue.config.js     | vue配置文件                                                  |
 
-本小节为推荐各小组采用的开发模式，小组可自行决定其他开发模式
+小组的任务主要集中在common，fetch，pages，static，pages.json中
 
-小组成员从小组origin/develop中新建功能开发分支，例如C4小组成员A要在本小组负责的在线药房中加入添加用户功能，则可以从develop分支中新建feature/add-user分支，在完成工作后由小组长审核并且并入develop分支
+基本工作核心为pages，同时需要维护剩余几项
 
-![image-20210417164329297](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417164329.png)
+**需要注意的是，API请求要放在fetch中的api.js中**，参考原有的示例添加
 
-### pull request
+### 对API的介绍
 
-为了将各小组工作并入upstream（即最终提交），小组长需要发起origin/develop→upstream/develop的pull request，具体方法为在origin库中发起pull request，目标为upstream/develop
+本项目采用前后端分离，现在介绍在开发阶段应该注意的API相关事项
 
-![img](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210417180759.jpg)
+项目采用axios作为网络请求库，axios的配置位于fetch/api.js中，baseURL为/api，开发人员可以在文件最下方添加新请求函数
 
-在发起pull request以后，务必联系管理员，以防管理员没有及时看到申请
+**为解决跨域问题，本项目采用vue代理方式**
+
+例如，当我们想要访问https://localhost:5001/ping接口，由于跨域限制，我们无法直接访问。需要使用路由，访问https://localhost:8080/api/ping接口，此时已配置好的vue路由会将请求重定向至https://localhost:5001/ping。在此过程中，vue会检索https://localhost:8080/api字样，并将其替换为https://localhost:5001/ping。
+
+**关于baseURL的解释**
+
+baseURL代表所有请求的前缀，在api.js的axios中进行的访问都会被加上该前缀。例如当我们使用axios访问/ping，实际访问到的是https://localhost:8080/api/ping，即源+/api+/ping
+
+## 项目demo运行教程
+
+### 配置devserver
+
+参考backend的教程，这里不做赘述
+
+配置好后，devserver应该位于https://localhost:5001与http://localhost:5000
+
+### 运行本项目
+
+推荐采用运行到浏览器，这样可以保证H5端的运行稳定
+
+![image-20210418135934570](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418135934.png)
+
+### API查找
+
+devserver运行成功后，登录https://localhost:5001/swagger/index.html以获取swagger
+
