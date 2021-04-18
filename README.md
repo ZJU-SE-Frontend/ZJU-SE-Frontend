@@ -81,3 +81,12 @@ baseURL代表所有请求的前缀，在api.js的axios中进行的访问都会�
 
 devserver运行成功后，登录https://localhost:5001/swagger/index.html以获取swagger
 
+### API测试
+
+在个人中心页面中有一个button，点击以后页面上的hello应该会变成`pong!`
+
+![image-20210418141453958](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141454.png)
+
+同时f12控制台应该会有如下显示
+
+![image-20210418141441582](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141441.png)
