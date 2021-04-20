@@ -85,10 +85,30 @@ devserver运行成功后，登录https://localhost:5001/swagger/index.html以获
 
 ### API测试
 
-在个人中心页面中有一个button，点击以后页面上的hello应该会变成`pong!`
+API测试更改为登陆测试
 
-![image-20210418141453958](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141454.png)
+测试用户属性
 
-同时f12控制台应该会有如下显示
+```json
+{
+  "userPhone": "13733333333",
+  "userName": "testGuest",
+  "password": "22b23b05c00baf253aaf197b77117fe37185256c36137ca8f104b3c18c164be7",//原文123456
+  "userEmail": "test@zju.edu.cn",
+  "authType": 1
+}
+```
 
-![image-20210418141441582](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141441.png)
+测试页面位置：个人中心
+
+登陆前：
+
+![image-20210420174321055](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210420174321.png)
+
+登陆后：显示登陆成功与jwt的token
+
+![image-20210420174349144](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210420174349.png)
+
+测试代码位置：pages/center/index.vue:26
+
+出于简单考虑，采用了硬编码形式

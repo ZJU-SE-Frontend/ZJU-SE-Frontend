@@ -1,4 +1,5 @@
-	import axios from 'axios'
+import axios from 'axios'
+import {getEncryptedPassword} from "../common/encrypt.js"
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = '/api';
@@ -34,8 +35,38 @@ function fetchGet(url, param) {
 	})
 }
 
+function fetchPost(url, data) {
+	return new Promise((resolve, reject) => {
+		axios.post(url, data)
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
 // 对应的后端接口
-export function ping() {
-	console.log("ping started")
-	return fetchGet(`/ping`);
+export function loginIn(userPhone, password){
+	var data = {
+		"userPhone": userPhone,
+		"password": getEncryptedPassword(password)
+	}
+	return fetchPost(`/login`, data=data);
+}
+export function joinIn(userPhone, userName, password, authType=1, userEmail){
+	var data = {
+		"userPhone": userPhone,
+		"userName": userName,
+		"password": getEncryptedPassword(password),
+		"authType": authType
+	}
+	if(userEmail !== undefined){
+		data.userEmail = userEmail
+	}
+	return fetchPost(`/join`, data=data);
 }
