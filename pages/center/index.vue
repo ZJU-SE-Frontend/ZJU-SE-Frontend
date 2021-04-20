@@ -2,30 +2,42 @@
 	<view class="content">
 		<image class="logo" src="/static/logo.png"></image>
 		<view class="text-area">
-			<text class="text">{{text}}</text>
+			<text class="text" style="text-align:center">{{text}}</text>
 		</view>
 		<section>
-			<button type="button" @click="onButtonClicked">点击</button>
+			<button type="button" @click="onButtonClicked">登陆测试用户</button>
 		</section>
 	</view>
 </template>
 
 <script>
-	import {ping} from "../../fetch/api.js"
+	import {loginIn, joinIn} from "../../fetch/api.js"
+	import {getEncryptedPassword} from "../../common/encrypt.js"
 	export default {
 		data() {
 			return {
-				text: 'Hello'
+				text: '未登录'
 			}
 		},
 		onLoad() {
 		},
 		methods: {
 			onButtonClicked(){
-				ping().then((res)=>{
-					this.text=res.data.message
+				loginIn("13733333333", "123456").then((res)=>{
+					if(res.st==0)
+						this.text="登陆成功\n"+res.data.jwt
+					else if(res.st==1)
+						this.text="登陆失败"
 				});
 			}
+			/*onButtonClicked(){
+				joinIn("13744444444","hahh", "123456", 1, "test1@zju.edu.cn").then((res)=>{
+					if(res.st==0)
+						this.text="注册成功\n"+res.data.jwt
+					else if(res.st==1)
+						this.text="注册失败"
+				});
+			}*/
 		}
 	}
 </script>
