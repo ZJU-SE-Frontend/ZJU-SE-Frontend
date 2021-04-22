@@ -17,11 +17,14 @@
 		
 		data() {
 			return {
-				appointment:null
+				appointment:null,
+				user_phone:0
 			}
 		},
 		methods: {
-			onLoad() {
+			onLoad: function(option)  {
+				this.user_phone = option.user_phone;
+				console.log(this.user_phone);
 				this.appointment = fake_fetchGet('/api/exam/physical/appointment').data.appointments
 			},
 			stampToDate(s){

@@ -47,6 +47,9 @@
 				
 				hospitals: null,
 				index: 0,
+				
+				username: "Default",
+				user_phone: 10086
 			}
 		},
 		
@@ -82,14 +85,25 @@
 				
 			gotoHistory() {
 				uni.navigateTo({
-					url:"history/history"
+					url:"history/history?user_phone=" + this.user_phone
 				})
 			},
 			
 			gotoTimesel() {
+				
+				console.log('Phys -> Timesel：');
+				console.log('hospital => '+ this.hospitals[this.index]);
+				console.log('date => '+ this.date);
+				
 				uni.navigateTo({
-					url:"timesel/timesel"
+					url:"timesel/timesel?hospital=" + this.hospitals[this.index]
+						+ "&appoint_date=" +  this.date
+						+ "&username=" +  this.username
+						+ "&user_phone=" +  this.user_phone
 				})
+				
+				
+				
 			}
 			
 		}
