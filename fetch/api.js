@@ -8,14 +8,14 @@ axios.defaults.baseURL = '';
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
-	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
+	//config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
 	return config;
 }, (error) => {
 	return Promise.reject(error);
 });
 
 // axios返回结果拦截器，返回状态判断
-axios.interceptors.response.use((res) => {
+axios.interceptors.response.use((res) => {/*
 	if(res.data.data.jwt!=undefined){
 		uni.setStorage({
 		    key: 'jwt',
@@ -24,7 +24,7 @@ axios.interceptors.response.use((res) => {
 		        console.log('jwt凭据保存成功');
 		    }
 		});
-	}
+	}*/
 	return res;
 }, (error) => {
 	return Promise.reject(error);
