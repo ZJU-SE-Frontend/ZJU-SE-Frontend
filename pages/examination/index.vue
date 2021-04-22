@@ -1,8 +1,12 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
+		<view class="switch-item">
+			<image class="logo" src="/static/exam_phy.png" @click="gotoPhy"></image>
+			<text class="title" @click="gotoPhy"> 体检服务 </text>
+		</view>
+		<view class="switch-item">
+			<image class="logo" src="/static/exam_covid.png"></image>
+			<text class="title"> 核酸检测 </text>
 		</view>
 	</view>
 </template>
@@ -18,6 +22,11 @@
 
 		},
 		methods: {
+			gotoPhy() {
+				uni.navigateTo({
+					url:"phys/phys"
+				})
+			}
 
 		}
 	}
@@ -26,27 +35,30 @@
 <style>
 	.content {
 		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		margin-top: 50%;
+	}
+	
+	.switch-item {
+		width: 240rpx;
+		height: 240rpx;
+		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		margin: 2.5%;
 	}
 
 	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
+		height: 60%;
+		width: 60%;
 	}
 
 	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+		font-size: 30rpx;
+		margin-top: 15rpx;
+		font-weight: 500;
+		color: #000000;
 	}
 </style>

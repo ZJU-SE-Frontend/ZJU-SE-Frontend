@@ -30,7 +30,43 @@
 				"navigationBarTitleText": "个人中心"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/examination/phys/phys",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "体检预约",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/examination/phys/timesel/timesel",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "余量查询",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/examination/phys/confirm/confirm",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "确认预约信息",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/examination/phys/history/history",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "预约历史",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"pageOrientation": "portrait",
 		"navigationBarTitleText": "健康导航",
