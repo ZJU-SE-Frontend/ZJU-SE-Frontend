@@ -62,7 +62,7 @@ function fetchPost(url, data) {
 	})
 }
 
-/*基本权限管理API*/
+/*基本功能API*/
 export function getStatic(path) {
 	return fetchGet(`/static`+path)
 }
