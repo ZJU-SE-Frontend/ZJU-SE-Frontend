@@ -20,7 +20,7 @@ export function fake_fetchGet(url, param) {
         "msg": "",
         "data": {
           "sections": [
-            0,
+			0,
             3,
             6,
             9,
