@@ -18,8 +18,8 @@
 						体检医院
 					</view>
 					<view class="uni-list-cell-db" style="font-size: small; font-weight: 700;">
-						<picker @change="bindPickerChange" :value="index" :range="hospitals" range-key="name">
-							<view class="uni-input">{{hospitals[index].name}}</view>
+						<picker @change="bindPickerChange" :value="index" :range="hospitals">
+							<view class="uni-input">{{hospitals[index]}}</view>
 						</picker>
 					</view>
 				</view>
@@ -57,7 +57,6 @@
 		  
 		onLoad() {
 			this.hospitals = fake_fetchGet('/api/exam/physical/hospital').data.hospitalList;
-			this.hospitals = this.hospitals.map(item => {return { name: item }})
 		},
 		
 		methods: {
