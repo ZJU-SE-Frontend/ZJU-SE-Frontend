@@ -29,6 +29,12 @@
 			"style": {
 				"navigationBarTitleText": "个人中心"
 			}
+		},
+		{
+			"path": "pages/test/index",
+			"style": {
+				"navigationBarTitleText": "测试页面"
+			}
 		}
 	    ,{
             "path" : "pages/examination/phys/phys",
@@ -121,6 +127,12 @@
 				"iconPath": "static/个人中心.svg",
 				"selectedIconPath": "static/个人中心.svg",
 				"text": ""
+			},
+			{
+				"pagePath": "pages/test/index",
+				"iconPath": "",
+				"selectedIconPath": "",
+				"text": "测试页"
 			}
 		]	
 	}
