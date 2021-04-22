@@ -107,3 +107,36 @@ export function getPharBoothList(cata, count){
 export function getPharBoothDetail(id){
 	return fetchGet(`/api/phar/booth/detail/`+id)
 }
+
+
+/* 健康检测模块API */
+
+export function getHospitalList_Phy() {
+	return fetchGet(`/api/exam/physical/hospital`)
+}
+
+export function getRemainder_Phy(hospital, appoint_date) {
+	const params = {
+		"hospital": hospital,
+		"appoint_date": appoint_date
+	}
+	return fetchGet(`/api/exam/physical/remainder`, params)
+}
+
+export function postAppointment_Phy(tel, hospital, date, section) {
+	var data = {
+		"user_Phone": tel,
+		"hospital": hospital,
+		"appoint_date": date,
+		"section": section
+	}
+	return fetchPost(`/api/exam/physical/appointment`, data = data);
+}
+
+export function getAppointments_Phy(tel) {
+	return fetchGet(`/api/exam/physical/appointment/`, tel)
+}
+
+export function getReport_Phy(appoint_id) {
+	return fetchGet(`/api/exam/physical/report/`, appoint_id)
+}
