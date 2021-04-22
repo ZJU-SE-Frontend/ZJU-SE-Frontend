@@ -1,11 +1,14 @@
 import axios from 'axios'
-import {getEncryptedPassword} from "../common/encrypt.js"
+import {
+	getEncryptedPassword
+} from "../common/encrypt.js"
 
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = '/api';
+axios.defaults.baseURL = '';
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
+	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
 	return config;
 }, (error) => {
 	return Promise.reject(error);
@@ -13,6 +16,15 @@ axios.interceptors.request.use((config) => {
 
 // axios返回结果拦截器，返回状态判断
 axios.interceptors.response.use((res) => {
+	if(res.data.data.jwt!=undefined){
+		uni.setStorage({
+		    key: 'jwt',
+		    data: res.data.data.jwt,
+		    success: function () {
+		        console.log('jwt凭据保存成功');
+		    }
+		});
+	}
 	return res;
 }, (error) => {
 	return Promise.reject(error);
@@ -50,23 +62,48 @@ function fetchPost(url, data) {
 	})
 }
 
-// 对应的后端接口
-export function loginIn(userPhone, password){
+/*基本功能API*/
+export function getStatic(path) {
+	return fetchGet(`/static`+path)
+}
+
+
+/*用户权限管理API*/
+export function postLoginIn(userPhone, password) {
 	var data = {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
 	}
-	return fetchPost(`/login`, data=data);
+	return fetchPost(`/api/login`, data = data);
 }
-export function joinIn(userPhone, userName, password, authType=1, userEmail){
+
+export function postJoinIn(userPhone, userName, password, authType = 1, userEmail) {
 	var data = {
 		"userPhone": userPhone,
 		"userName": userName,
 		"password": getEncryptedPassword(password),
 		"authType": authType
 	}
-	if(userEmail !== undefined){
+	if (userEmail !== undefined) {
 		data.userEmail = userEmail
 	}
-	return fetchPost(`/join`, data=data);
+	return fetchPost(`/api/join`, data = data);
+}
+
+export function getUserInfo(userPhone){
+	return fetchGet("/api/user/info/"+userPhone)
+}
+
+
+/*在线药房模块API*/
+export function getPharBoothList(cata, count){
+	const params = {
+		"cata": cata,
+		"count": count
+	}
+	return fetchGet(`/api/phar/booth/list`, params)
+}
+
+export function getPharBoothDetail(id){
+	return fetchGet(`/api/phar/booth/detail/`+id)
 }
