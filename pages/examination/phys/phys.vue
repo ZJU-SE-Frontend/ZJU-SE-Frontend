@@ -18,8 +18,8 @@
 						体检医院
 					</view>
 					<view class="uni-list-cell-db" style="font-size: small; font-weight: 700;">
-						<picker @change="bindPickerChange" :value="index" :range="array" range-key="name">
-							<view class="uni-input">{{array[index].name}}</view>
+						<picker @change="bindPickerChange" :value="index" :range="hospitals" range-key="index">
+							<view class="uni-input">{{hospitals[index]}}</view>
 						</picker>
 					</view>
 				</view>
@@ -32,6 +32,7 @@
 
 <script>
 	import MxDatePicker from "@/components/mx-datepicker/mx-datepicker.vue";
+	import {fake_fetchGet, fake_fetchPost} from "../fake_backend.js";
 	export default {
 		components: {
 		            MxDatePicker
@@ -44,10 +45,7 @@
 				type: 'date',
 				value: '',
 				
-				array: [{name:'浙江大学医学院附属第一医院体检中心'},
-						{name:'杭州市第一人民医院体检中心'}, 
-						{name:'浙江省人民医院体检中心'}, 
-						{name:'体检中心'}],
+				hospitals: null,
 				index: 0,
 			}
 		},
@@ -58,7 +56,7 @@
 		  },
 		  
 		onLoad() {
-
+			this.hospitals = fake_fetchGet('/api/exam/physical/hospital').data.hospitalList;
 		},
 		
 		methods: {
