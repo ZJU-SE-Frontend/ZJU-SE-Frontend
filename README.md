@@ -75,6 +75,18 @@ https://uniapp.dcloud.io/
 
 ### API测试
 
+测试用户属性
+
+```json
+{
+  "userPhone": "13733333333",
+  "userName": "testGuest",
+  "password": "22b23b05c00baf253aaf197b77117fe37185256c36137ca8f104b3c18c164be7",//原文123456
+  "userEmail": "test@zju.edu.cn",
+  "authType": 1
+}
+```
+
 测试列表：
 
 * 本地文件访问测试
