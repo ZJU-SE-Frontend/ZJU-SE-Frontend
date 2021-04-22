@@ -2,7 +2,7 @@
 	<view>
 		<uni-list>
 			<uni-list-item  v-for="(val, key) in appointment" :key="key"
-			 :title="val.appointDate.toString()" rightText="查看报告" showArrow>
+			 :title="stampToDate(val.appointDate)" rightText="查看报告" showArrow>
 			</uni-list-item>
 		</uni-list>
 	</view>
@@ -24,6 +24,10 @@
 			onLoad() {
 				this.appointment = fake_fetchGet('/api/exam/physical/appointment').data.appointments
 			},
+			stampToDate(s){
+				var time = new Date(s*1000);
+				return time.getFullYear() + '-' + (time.getMonth()+1) + '-' + time.getDate();
+			}
 		}
 	}
 </script>
