@@ -1,13 +1,17 @@
 <template>
 	<view>
-	<uni-list>
-			<uni-list-item show-badge="true" badge-text="99" showArrow  title="8:00" link=""  @click="onClick"/>
-			<uni-list-item disabled="true" show-badge="true" badge-text="0"  showArrow title="8:30" />
+		<uni-list>
+			<uni-list-item  v-for="(val, key) in remainder" :key="key" link="" @click="onClick"
+			 :title="convertText[key]" showArrow show-badge="true" :badge-text="val.toString()"
+			 :disabled="val<=0">
+			</uni-list-item>
 		</uni-list>
 	</view>
+	
 </template>
 
 <script>
+	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
 	export default {
 		components: {
 			
@@ -15,16 +19,20 @@
 		
 		data() {
 			return {
-				
+				convertText: ["8:00~9:00","9:00~10:00","10:00~11:00","11:00~12:00",
+					"13:30~14:30","14:30~15:30","15:30~16:30","16:30~17:30"],
+				remainder: null
 			}
 		},
 		methods: {
+			onLoad() {
+				this.remainder = fake_fetchGet('/api/exam/physical/remainder').data.sections;
+			},
 			onClick(e) {
 				uni.navigateTo({
 					url: "../confirm/confirm"
 				})
 			},
-			
 		}
 	}
 </script>
