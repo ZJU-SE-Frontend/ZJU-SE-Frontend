@@ -1,11 +1,13 @@
 <template>
-	<view>
-		<uni-list>
-			<uni-list-item  v-for="(val, key) in remainder" :key="key" link="" @click="onClick(key)"
-			 :title="convertText[key]" showArrow show-badge="true" :badge-text="val.toString()"
-			 :disabled="val<=0">
-			</uni-list-item>
-		</uni-list>
+	<view class="page">
+		<view class="content">
+			<uni-list style="width: 100%">
+				<uni-list-item  v-for="(val, key) in remainder" :key="key" link="" @click="onClick(key)"
+				 :title="convertText[key]" showArrow show-badge="true" :badge-text="val.toString()"
+				 :disabled="val<=0">
+				</uni-list-item>
+			</uni-list>
+		</view>
 	</view>
 	
 </template>
@@ -53,5 +55,25 @@
 </script>
 
 <style>
-
+	.page {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			background-image: url(../../../../static/exam/bkg_info.png);
+			background-size: cover;
+			height: max-content;
+		}
+	
+	.content {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
+		width: 85%;
+		height: fit-content;
+		margin-top: 100px;
+		background-color: #FFFFFF;
+		border-radius: 0px;
+		box-shadow:1px 1px 2px #7d7d7d;
+	}
 </style>

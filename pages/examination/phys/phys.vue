@@ -33,6 +33,7 @@
 <script>
 	import MxDatePicker from "@/components/mx-datepicker/mx-datepicker.vue";
 	import {fake_fetchGet, fake_fetchPost} from "../fake_backend.js";
+	import {getHospitalList_Cov} from "../../../fetch/api.js";
 	export default {
 		components: {
 		            MxDatePicker
@@ -59,7 +60,8 @@
 		  },
 		  
 		onLoad() {
-			this.hospitals = fake_fetchGet('/api/exam/physical/hospital').data.hospitalList;
+			this.hospitals = fake_fetchGet(`/api/exam/covid/hospital`).data.hospitalList;  
+			console.log("data fetched"); 
 		},
 		
 		methods: {
@@ -115,7 +117,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-image: url(../../../static/bkg_info.png);
+		background-image: url(../../../static/exam/bkg_info.png);
 		background-size: cover;
 		height: max-content;
 	}
