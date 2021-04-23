@@ -41,7 +41,7 @@
 			onClick(key) {
 				console.log(this.convertText[key])
 				uni.navigateTo({
-					url: "../confirm/confirm?hospital=" + this.curHospital
+					url: "../confirm/confirm_cov?hospital=" + this.curHospital
 						+ "&appoint_date=" +  this.curDate
 						+ "&username=" +  this.username
 						+ "&user_phone=" +  this.user_phone

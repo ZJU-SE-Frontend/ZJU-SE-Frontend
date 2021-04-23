@@ -5,8 +5,8 @@
 			<text class="title" @click="gotoPhy"> 体检服务 </text>
 		</view>
 		<view class="switch-item">
-			<image class="logo" src="/static/exam_covid.png"></image>
-			<text class="title"> 核酸检测 </text>
+			<image class="logo" src="/static/exam_covid.png" @click="gotoCov"></image>
+			<text class="title" @click="gotoCov"> 核酸检测 </text>
 		</view>
 	</view>
 </template>
@@ -26,6 +26,12 @@
 				uni.navigateTo({
 					url:"phys/phys"
 				})
+			},
+			
+			gotoCov() {
+				uni.navigateTo({
+					url:"covid/covid"
+				})
 			}
 
 		}
@@ -37,7 +43,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		margin-top: 50%;
+		margin-top: 20%;
 	}
 	
 	.switch-item {

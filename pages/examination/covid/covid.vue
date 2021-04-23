@@ -15,7 +15,7 @@
 			<view class="uni-list">
 				<view class="uni-list-cell" style=" margin-left: 20px; margin-top: 10px; margin-bottom: 10px;">
 					<view class="uni-list-cell-left" style="font-size: small;">
-						体检医院
+						核酸检测点
 					</view>
 					<view class="uni-list-cell-db" style="font-size: small; font-weight: 700;">
 						<picker @change="bindPickerChange" :value="index" :range="hospitals">
@@ -85,7 +85,7 @@
 				
 			gotoHistory() {
 				uni.navigateTo({
-					url:"history/history_phy?user_phone=" + this.user_phone
+					url:"history/history_cov?user_phone=" + this.user_phone
 				})
 			},
 			
@@ -96,7 +96,7 @@
 				console.log('date => '+ this.date);
 				
 				uni.navigateTo({
-					url:"timesel/timesel_phy?hospital=" + this.hospitals[this.index]
+					url:"timesel/timesel_cov?hospital=" + this.hospitals[this.index]
 						+ "&appoint_date=" +  this.date
 						+ "&username=" +  this.username
 						+ "&user_phone=" +  this.user_phone
@@ -115,7 +115,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-image: url(../../../static/bkg_info.png);
+		background-image: url(../../../static/bkg_cov.png);
 		background-size: cover;
 		height: max-content;
 	}
