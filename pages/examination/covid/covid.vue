@@ -15,7 +15,7 @@
 			<view class="uni-list">
 				<view class="uni-list-cell" style=" margin-left: 20px; margin-top: 10px; margin-bottom: 10px;">
 					<view class="uni-list-cell-left" style="font-size: small;">
-						体检医院
+						核酸检测点
 					</view>
 					<view class="uni-list-cell-db" style="font-size: small; font-weight: 700;">
 						<picker @change="bindPickerChange" :value="index" :range="hospitals">
@@ -33,7 +33,7 @@
 <script>
 	import MxDatePicker from "@/components/mx-datepicker/mx-datepicker.vue";
 	import {fake_fetchGet, fake_fetchPost} from "../fake_backend.js";
-	import {getHospitalList_Cov} from "../../../fetch/api.js";
+	import {getHospitalList_Cov, fetchGet} from "../../../fetch/api.js";
 	export default {
 		components: {
 		            MxDatePicker
@@ -56,12 +56,16 @@
 		
 		mounted () {
 		    
-		    
+		     
 		  },
 		  
 		onLoad() {
-			this.hospitals = fake_fetchGet(`/api/exam/covid/hospital`).data.hospitalList;  
-			console.log("data fetched"); 
+			console.log("fetching...");
+			var val;
+			getHospitalList_Cov().then((res) => {
+				this.hospitals = res.data.hospitalList
+			});
+			console.log(this.hospitals);
 		},
 		
 		methods: {
@@ -87,7 +91,7 @@
 				
 			gotoHistory() {
 				uni.navigateTo({
-					url:"history/history_phy?user_phone=" + this.user_phone
+					url:"history/history_cov?user_phone=" + this.user_phone
 				})
 			},
 			
@@ -98,7 +102,7 @@
 				console.log('date => '+ this.date);
 				
 				uni.navigateTo({
-					url:"timesel/timesel_phy?hospital=" + this.hospitals[this.index]
+					url:"timesel/timesel_cov?hospital=" + this.hospitals[this.index]
 						+ "&appoint_date=" +  this.date
 						+ "&username=" +  this.username
 						+ "&user_phone=" +  this.user_phone
@@ -117,7 +121,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-image: url(../../../static/exam/bkg_info.png);
+		background-image: url(../../../static/exam/bkg_cov.png);
 		background-size: cover;
 		height: max-content;
 	}

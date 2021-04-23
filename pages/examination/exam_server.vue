@@ -64,13 +64,13 @@
 		methods: {
 			gotoPhy() {
 				uni.navigateTo({
-					url:"phys/phys"
+					url:"phys/server"
 				})
 			},
 			
 			gotoCov() {
 				uni.navigateTo({
-					url:"covid/covid"
+					url:"covid/server"
 				})
 			}
 
