@@ -15,36 +15,7 @@
 			        	<text class="title" @click="gotoPhy()"> 健康体检 </text>
 			        </view>
 			    </uni-grid-item>
-			    <uni-grid-item>
-					<view class="switch-item">
-						<text class="title"> dummy </text>
-					</view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
-				<uni-grid-item>
-				    <view class="switch-item">
-				    	<text class="title"> dummy </text>
-				    </view>
-				</uni-grid-item>
-				<uni-grid-item>
-				    <view class="switch-item">
-				    	<text class="title"> dummy </text>
-				    </view>
-				</uni-grid-item>
+
 			</uni-grid>
 
 		</view>

@@ -6,12 +6,14 @@
 			<view class="texts">体检医院：{{this.curHospital}}</view>
 			<view class="texts">预约时间：{{new Date(this.curDate).toLocaleDateString()}} {{this.timeslot}}</view>
 			
-			<button size="mini" style="align-self: center; border-radius: 1rpx; border-color: #ffffff; margin-bottom: 20px;" type="primary">确认预约</button>
+			<button size="mini" style="align-self: center; border-radius: 1rpx; border-color: #ffffff; 
+				margin-bottom: 20px;" type="primary" @click="postConfirm">确认预约</button>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {postAppointment_Cov, fetchGet, fetchPost} from "../../../../fetch/api.js";
 	export default {
 		data() {
 			return {
@@ -19,19 +21,58 @@
 				curDate: "",
 				username: "",
 				user_phone: 0,
-				timeslot: ""
+				timeslot: "",
+				section:0
 			}
 		},
+		
+		onLoad: function(option) {
+			this.curHospital = option.hospital;
+			this.curDate = parseInt(option.appoint_date);
+			this.username = option.username;
+			this.user_phone = option.user_phone;
+			this.timeslot = option.timeslot;
+			this.section = option.section;
+			this.state = "unknown";
+			
+			console.log("confrim "+this.section)
+			},
+		
 		methods: {
-			onLoad: function(option) {
-				this.curHospital = option.hospital;
-				this.curDate = parseInt(option.appoint_date);
-				this.username = option.username;
-				this.user_phone = option.user_phone;
-				this.timeslot = option.timeslot;
+			
+			
+			postConfirm() {
 				
-				console.log(this.curHospital + this.curDate + this.username + this.user_phone)
-				},
+
+				
+				console.log("post...");
+				fetchPost('/api/exam/covid/appointment', {
+					"userPhone": this.user_phone,
+					"hospital": this.curHospital,
+					"appointDate": this.curDate / 1000,
+					"section": this.section
+				}).then(res => {
+					this.state = res.data.result;
+					console.log(res.data.result);
+					if (res.data.result == true) {
+						uni.showToast({
+							title: '预约成功'
+						})
+						}
+						 else {
+							uni.showToast({
+								title: '预约失败'
+							})
+						};
+					
+				})
+				
+				uni.switchTab({
+					url:"../../index"
+				});
+				
+			}
+				
 		}
 	}
 </script>

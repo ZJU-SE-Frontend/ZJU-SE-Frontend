@@ -47,7 +47,7 @@ export function fetchGet(url, param) {
 	})
 }
 
-function fetchPost(url, data) {
+export function fetchPost(url, data) {
 	return new Promise((resolve, reject) => {
 		axios.post(url, data)
 			.then(response => {
