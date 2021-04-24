@@ -23,7 +23,7 @@
 				<uni-grid-item>
 				    <view class="switch-item">
 				    	<image src="/static/exam/dummy" class="image" mode="aspectFit" @click="gotoSer()"/>
-				    	<text class="title" @click="gotoSer()"> [服务器端] </text>
+				    	<text class="title" @click="gotoSer()"> [医院管理员入口] </text>
 				    </view>
 				</uni-grid-item>
 			</uni-grid>
