@@ -12,6 +12,7 @@
 
 <script>
 	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
+	import {fetchGet} from "@/fetch/api.js"
 	export default {
 		components: {
 			
@@ -27,7 +28,9 @@
 			onLoad: function(option)  {
 				this.user_phone = option.user_phone;
 				console.log(this.user_phone);
-				this.appointment = fake_fetchGet('/api/exam/physical/appointment').data.appointments
+				fetchGet('/api/exam/covid/appointment/'+this.user_phone).then(res => {
+					this.appointment = res.data.appointments;
+				})
 			},
 			stampToDate(s){
 				var time = new Date(s*1000); 

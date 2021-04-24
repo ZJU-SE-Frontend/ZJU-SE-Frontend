@@ -14,6 +14,7 @@
 
 <script>
 	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
+	import {fetchGet} from "@/fetch/api.js";
 	export default {
 		components: {
 			
@@ -22,7 +23,7 @@
 		data() {
 			return {
 				curHospital: "",
-				curDate: "",
+				curDate: 0,
 				username: "",
 				user_phone: 0,
 				
@@ -35,10 +36,16 @@
 		methods: {
 			onLoad: function(option) {
 				this.curHospital = option.hospital;
-				this.curDate = option.appoint_date;
+				this.curDate = new Date(option.appoint_date).getTime();
+				console.log(this.curDate + ' ')
 				this.username = option.username;
 				this.user_phone = option.user_phone;
-				this.remainder = fake_fetchGet('/api/exam/physical/remainder').data.sections;
+				fetchGet('/api/exam/covid/remainder/',{
+					hospital: this.curHospital,
+					appointDate: this.curDate / 1000
+				}).then(res => {
+					this.remainder = res.data.sections;
+				})
 			},
 			onClick(key) {
 				console.log(this.convertText[key])

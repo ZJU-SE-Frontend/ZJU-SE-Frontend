@@ -3,7 +3,8 @@
 		<view class="content">
 			<uni-list style="width: 100%;">
 				<uni-list-item  v-for="(val, key) in appointment" :key="key"
-				 :title="stampToDate(val.appointDate)" rightText="查看报告" showArrow>
+				 :title="new Date(val.appointDate*1000).toLocaleDateString().slice(0, 10)"
+				  rightText="查看报告" showArrow>
 				</uni-list-item>
 			</uni-list>
 		</view>
@@ -29,10 +30,6 @@
 				console.log(this.user_phone);
 				this.appointment = fake_fetchGet('/api/exam/physical/appointment').data.appointments
 			},
-			stampToDate(s){
-				var time = new Date(s*1000);
-				return time.getFullYear() + '-' + (time.getMonth()+1) + '-' + time.getDate();
-			}
 		}
 	}
 </script>
