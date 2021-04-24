@@ -22,7 +22,8 @@
 			    </uni-grid-item>
 				<uni-grid-item>
 				    <view class="switch-item">
-				    	<text class="title" @click="gotoSer">  </text>
+				    	<image src="/static/exam/dummy" class="image" mode="aspectFit" @click="gotoSer()"/>
+				    	<text class="title" @click="gotoSer()"> [服务器端] </text>
 				    </view>
 				</uni-grid-item>
 			</uni-grid>

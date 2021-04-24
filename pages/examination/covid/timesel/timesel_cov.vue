@@ -2,9 +2,9 @@
 	<view class="page">
 		<view class="content">
 			<uni-list style="width: 100%">
-				<uni-list-item  v-for="(val, key) in remainder" :key="key" link="" @click="onClick(key)"
+				<uni-list-item  v-for="(val, key) in remainder" :disabled="val<=0" :key="key" link="" @click="onClick(val, key)"
 				 :title="convertText[key]" showArrow show-badge="true" :badge-text="val.toString()"
-				 :disabled="val<=0">
+				 >
 				</uni-list-item>
 			</uni-list>
 		</view>
@@ -46,16 +46,19 @@
 				}).then(res => {
 					this.remainder = res.data.sections;
 				})
-			},
-			onClick(key) {
+			}, 
+			onClick(val, key) {
 				console.log(this.convertText[key])
-				uni.navigateTo({
-					url: "../confirm/confirm_cov?hospital=" + this.curHospital
-						+ "&appoint_date=" +  this.curDate
-						+ "&username=" +  this.username
-						+ "&user_phone=" +  this.user_phone
-						+ "&timeslot=" +  this.convertText[key]
-				})
+				if (val>0) {
+					uni.navigateTo({
+						url: "../confirm/confirm_cov?hospital=" + this.curHospital
+							+ "&appoint_date=" +  this.curDate
+							+ "&username=" +  this.username
+							+ "&user_phone=" +  this.user_phone
+							+ "&timeslot=" +  this.convertText[key]
+							+ "&section=" +  parseInt(key+1)
+					})
+				}
 			},
 		}
 	}
