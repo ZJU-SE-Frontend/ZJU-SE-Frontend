@@ -17,32 +17,12 @@
 			    </uni-grid-item>
 			    <uni-grid-item>
 					<view class="switch-item">
-						<text class="title"> dummy </text>
+						<text class="title">   </text>
 					</view>
 			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<text class="title"> dummy </text>
-			        </view>
-			    </uni-grid-item>
 				<uni-grid-item>
 				    <view class="switch-item">
-				    	<text class="title"> dummy </text>
-				    </view>
-				</uni-grid-item>
-				<uni-grid-item>
-				    <view class="switch-item">
-				    	<text class="title"> dummy </text>
+				    	<text class="title" @click="gotoSer">  </text>
 				    </view>
 				</uni-grid-item>
 			</uni-grid>
@@ -71,6 +51,12 @@
 			gotoCov() {
 				uni.navigateTo({
 					url:"covid/covid"
+				})
+			},
+			
+			gotoSer(){
+				uni.navigateTo({
+					url:"exam_server"
 				})
 			}
 

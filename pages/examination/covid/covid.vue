@@ -42,7 +42,7 @@
 		data() {
 			return {
 				showPicker: false,
-				date: new Date().toLocaleDateString().slice(0, 10),
+				date: new Date().toLocaleDateString(),
 				type: 'date',
 				value: '',
 				
@@ -50,7 +50,7 @@
 				index: 0,
 				
 				username: "Default",
-				user_phone: 10086
+				user_phone: 18888888888
 			}
 		},
 		

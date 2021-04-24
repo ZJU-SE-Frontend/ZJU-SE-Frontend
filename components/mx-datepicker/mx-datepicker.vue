@@ -478,7 +478,7 @@
 				};
 				//定义默认格式
 				let defaultFormat = {
-					'date': 'yyyy-mm-dd',
+					'date': 'yyyy/m/dd',
 					'time': 'hh:ii' + (this.showSeconds ? ':ss' : ''),
 					'datetime': ''
 				};
