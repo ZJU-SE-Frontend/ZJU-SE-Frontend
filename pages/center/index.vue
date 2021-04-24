@@ -2,30 +2,23 @@
 	<view class="content">
 		<image class="logo" src="/static/logo.png"></image>
 		<view class="text-area">
-			<text class="text">{{text}}</text>
+			<text class="title">{{title}}</text>
 		</view>
-		<section>
-			<button type="button" @click="onButtonClicked">点击</button>
-		</section>
 	</view>
 </template>
 
 <script>
-	import {ping} from "../../fetch/api.js"
 	export default {
 		data() {
 			return {
-				text: 'Hello'
+				title: 'Hello'
 			}
 		},
 		onLoad() {
+
 		},
 		methods: {
-			onButtonClicked(){
-				ping().then((res)=>{
-					this.text=res.data.message
-				});
-			}
+
 		}
 	}
 </script>

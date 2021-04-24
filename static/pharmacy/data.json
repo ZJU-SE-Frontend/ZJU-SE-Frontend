@@ -1,0 +1,22 @@
+{
+    "st": 0,
+    "msg": "",
+    "data": {
+        "length": 20,
+        "list": [{
+                "id": 1,
+                "name": "阿司匹林",
+                "type": "抗生素",
+                "price": 21.99,
+                "sIndication": "用于发热,疼痛及类风湿关节炎等"
+            },
+            {
+                "id": 2,
+                "name": "阿莫西林",
+                "type": "抗生素",
+                "price": 13.99,
+                "sIndication": "细菌感染"
+            }
+        ]
+    }
+}

@@ -53,23 +53,15 @@ https://uniapp.dcloud.io/
 
 本项目采用前后端分离，现在介绍在开发阶段应该注意的API相关事项
 
-项目采用axios作为网络请求库，axios的配置位于fetch/api.js中，baseURL为/api，开发人员可以在文件最下方添加新请求函数
+项目采用axios作为网络请求库，axios的配置位于fetch/api.js中，无baseURL，开发人员可以在文件最下方添加新请求函数
 
 **为解决跨域问题，本项目采用vue代理方式**
 
-例如，当我们想要访问https://localhost:5001/ping接口，由于跨域限制，我们无法直接访问。需要使用路由，访问https://localhost:8080/api/ping接口，此时已配置好的vue路由会将请求重定向至https://localhost:5001/ping。在此过程中，vue会检索https://localhost:8080/api字样，并将其替换为https://localhost:5001/ping。
+例如，当我们想要访问http://121.41.94.85:5000/api/user/info/13733333333时，我们只需要访问`/api/user/info/13733333333`即可，此时axios会将路径补全为http://localhost:8080/api/user/info/13733333333，最终被vue代理至目标http://121.41.94.85:5000/api/user/info/13733333333
 
-**关于baseURL的解释**
-
-baseURL代表所有请求的前缀，在api.js的axios中进行的访问都会被加上该前缀。例如当我们使用axios访问/ping，实际访问到的是https://localhost:8080/api/ping，即源+/api+/ping
+其中，后端api统一以/api开头，本地文件统一以/static开头，例如`./static/pharmacy/data.json`可以通过http://localhost:8080/static/pharmacy/data.json访问
 
 ## 项目demo运行教程
-
-### 配置devserver
-
-参考backend的教程，这里不做赘述
-
-配置好后，devserver应该位于https://localhost:5001与http://localhost:5000
 
 ### 运行本项目
 
@@ -79,14 +71,34 @@ baseURL代表所有请求的前缀，在api.js的axios中进行的访问都会�
 
 ### API查找
 
-devserver运行成功后，登录https://localhost:5001/swagger/index.html以获取swagger
+登录http://121.41.94.85:5000/swagger/index.html以获取swagger
 
 ### API测试
 
-在个人中心页面中有一个button，点击以后页面上的hello应该会变成`pong!`
+测试用户属性
 
-![image-20210418141453958](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141454.png)
+```json
+{
+  "userPhone": "13733333333",
+  "userName": "testGuest",
+  "password": "22b23b05c00baf253aaf197b77117fe37185256c36137ca8f104b3c18c164be7",//原文123456
+  "userEmail": "test@zju.edu.cn",
+  "authType": 1
+}
+```
 
-同时f12控制台应该会有如下显示
+测试列表：
 
-![image-20210418141441582](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210418141441.png)
+* 本地文件访问测试
+* 远程服务器访问测试
+* jwt测试
+
+测试流程：
+
+* 进入测试页，应看到如下结构
+
+![image-20210422170951798](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210422170951.png)
+
+* 在三个按钮被按照从上往下顺序点击后，应该有如下效果
+
+![image-20210422171051854](https://syh-pic-bed.oss-cn-shanghai.aliyuncs.com/20210422171051.png)
