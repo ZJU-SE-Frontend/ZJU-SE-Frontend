@@ -110,7 +110,7 @@
             "path" : "pages/examination/exam_server",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "server",
+                "navigationBarTitleText": "医院管理员入口",
                 "enablePullDownRefresh": false
             }
             
@@ -119,7 +119,7 @@
             "path" : "pages/examination/phys/server",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "server",
+                "navigationBarTitleText": "医院管理员入口",
                 "enablePullDownRefresh": false
             }
             
@@ -128,7 +128,7 @@
             "path" : "pages/examination/covid/server",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "server",
+                "navigationBarTitleText": "医院管理员入口",
                 "enablePullDownRefresh": false
             }
             
