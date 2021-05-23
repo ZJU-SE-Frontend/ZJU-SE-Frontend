@@ -104,3 +104,5 @@ dist
 
 .idea
 .hbuilderx
+
+node_modules
