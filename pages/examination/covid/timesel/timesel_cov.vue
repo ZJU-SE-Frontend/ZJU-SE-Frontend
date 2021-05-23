@@ -13,7 +13,6 @@
 </template>
 
 <script>
-	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
 	import {fetchGet} from "@/fetch/api.js";
 	export default {
 		components: {

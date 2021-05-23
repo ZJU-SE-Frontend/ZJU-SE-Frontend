@@ -3,7 +3,8 @@
 		<view class="content">
 			<uni-list style="width: 100%;">
 				<uni-list-item  v-for="(val, key) in appointment" :key="key"
-				 :title="stampToDate(val.appointDate)" rightText="查看报告" showArrow>
+				 :title="new Date(parseInt(val.appointDate)*1000).toLocaleDateString()" rightText="查看报告" 
+				 showArrow link="" @click="onClick(val, key)">
 				</uni-list-item>
 			</uni-list>
 		</view>
@@ -11,7 +12,6 @@
 </template>
 
 <script>
-	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
 	import {fetchGet} from "@/fetch/api.js"
 	export default {
 		components: {
@@ -32,10 +32,11 @@
 					this.appointment = res.data.appointments;
 				})
 			},
-			stampToDate(s){
-				var time = new Date(s*1000); 
-				return time.getFullYear() + '-' + (time.getMonth()+1) + '-' + time.getDate();
-			} 
+			onClick(val, key) {
+				uni.navigateTo({
+					url: "../../show_report?appointId=" + val.appointId
+				})
+			}
 		}
 	}
 </script>
