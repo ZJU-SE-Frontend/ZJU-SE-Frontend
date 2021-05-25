@@ -3,7 +3,7 @@
 		<view class="content">
 			<uni-list style="width: 100%;">
 				<uni-list-item  v-for="(val, key) in appointment" :key="key"
-				 :title="new Date(parseInt(val.appointDate)*1000).toLocaleDateString()" rightText="查看报告" 
+				 :title="new Date(parseInt(val.appointDate)*1000).toLocaleDateString()" rightText="查看报告"
 				 showArrow link="" @click="onClick(val, key)">
 				</uni-list-item>
 			</uni-list>
@@ -21,6 +21,7 @@
 		data() {
 			return {
 				appointment:null,
+				text: "",
 				user_phone:0
 			}
 		},
@@ -28,14 +29,59 @@
 			onLoad: function(option)  {
 				this.user_phone = option.user_phone;
 				console.log(this.user_phone);
-				fetchGet('/api/exam/covid/appointment/'+this.user_phone).then(res => {
+				// fetchGet('/api/exam/covid/appointment/'+this.user_phone).then(res => {
+				fetchGet('/api/exam/covid/appointment/'+18888888888).then(res => {
 					this.appointment = res.data.appointments;
 				})
 			},
 			onClick(val, key) {
-				uni.navigateTo({
-					url: "../../show_report?appointId=" + val.appointId
-				})
+				if (val.reportStatus == 1) {
+					
+					uni.request({
+						// url: '/api/exam/covid/report/'+val.appointId,
+						url: '/api/exam/covid/report/'+39,
+						data: '',
+						method: 'GET',
+						responseType: 'arraybuffer',
+						header: {
+						    Authorization: sessionStorage.getItem('token')
+						},
+						success: res => {
+							let pdfData = res.data
+							console.log("pdfData: "+pdfData)
+							
+							let blob = new Blob([pdfData], {
+								type: 'application/pdf;charset=UTF-8'
+							})
+							pdfData = window.URL.createObjectURL(blob)			
+							this.file_url = encodeURIComponent(pdfData)
+							
+							
+							uni.navigateTo({
+								url: "../../show_report?url=" + this.file_url
+							})
+						}
+					})
+					
+					
+					// fetchGet('/api/exam/covid/report/'+val.appointId).then(res => {
+					// 	let pdfData = res
+					// 	console.log("pdfData: "+pdfData)
+						
+					// 	let blob = new Blob([pdfData], {
+					// 		type: 'application/pdf;charset=UTF-8'
+					// 	})
+					// 	pdfData = window.URL.createObjectURL(blob)			
+					// 	this.file_url = encodeURIComponent(pdfData)
+					// 	uni.navigateTo({
+					// 		url: "../../show_report?url=" + this.file_url
+					// 	})
+						
+					// })
+					
+				} else {
+					
+				}
 			}
 		}
 	}
