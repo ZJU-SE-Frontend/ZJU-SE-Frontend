@@ -46,7 +46,7 @@
 				type: 'date',
 				value: '',
 				
-				hospitals: null,
+				hospitals: [],
 				index: 0,
 				
 				username: "Default",
