@@ -1,25 +1,35 @@
 <template>
 	<view class="page">
 		<view class="content">
-		<view style="display: flex; flex-direction: row; align-items: baseline; ">
-		    <view class="title"><text class="uni-form-item__title">默认容量</text></view>
-		    <view class="uni-input-wrapper">
-		        <input class="uni-input-head" focus  :value="defaultval" />
-		    </view>
-		</view>
-		
-		<view class="datesel">
-			<view style=" margin-left: 15px; margin-top: 0px; margin-bottom: 5px;" @click="onShowDatePicker('date')">{{date}}</view>
-		</view>
-		
-		<uni-list style="width: 100%">
-			<view class="block"  v-for="(val, key) in remainder" :key="key" link="" @click="onClick(key)">
-				<text style="width: 100px; margin-left: 5%; ">{{convertText[key]}}</text>
-				<input class="uni-input" :value="val"> </input>
+		<view class=myitem>
+		    <view class="title">默认容量</view>
+			<view style="display: flex; flex-direction: row; align-content: flex-end;">
+				<input class="uni-input" v-model="defaultval"  focus :value="defaultval" />
+				<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/updateR.png" @click="applyDef"></image>
 			</view>
-			</uni-list-item>
-		</uni-list>
-		<button size="mini" style="align-self: center; border-radius: 1rpx; border-color: #ffffff;" type="warn" @click="gotoTimesel">提交更改</button>
+		</view>
+		
+		<view class=block style="width: 100%; padding-bottom: 20rpx;">
+		
+			<view class="datesel" style="align-self: center; margin-top: 20rpx; margin-bottom: 20rpx;">
+				<image class="image" src="../../../static/exam/calendar.png" @click="onShowDatePicker('date')"></image>
+				<view style=" margin-left: 0px; " >{{date}}</view>
+			</view>
+			
+			<view style="width: 100%" v-if="updata" >
+				<view class=mylistitem  v-for="(val, key) in remainder" :key="key" link="" >
+					<text style="width: 100px; margin-left: 5%; ">{{convertText[key]}}</text>
+					
+					<view style="display: flex; flex-direction: row;"> 
+						<input class="uni-input" v-model="remainder[key]" :value="val"> </input>
+						<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/update.png" @click="apply(key)"></image>
+					</view>
+					
+					
+				</view>
+			</view>
+		
+		</view>
 		
 		<mx-date-picker :show="showPicker" :type="type" :value="value" :show-tips="true" :begin-text="'入住'" :end-text="'离店'" :show-seconds="true" @confirm="onSelected" @cancel="onSelected" />
 		</view>
@@ -28,8 +38,7 @@
 </template>
 
 <script>
-	import {fake_fetchGet, fake_fetchPost} from "../fake_backend.js";
-	import {fetchGet} from "@/fetch/api.js";
+	import {fetchGet, fetchPut} from "@/fetch/api.js";
 	import MxDatePicker from "../../../components/mx-datepicker/mx-datepicker.vue";
 	export default {
 		components: {
@@ -38,8 +47,8 @@
 		
 		data() {
 			return {
-				curHospital: "",
-				curDate: "",
+				curHospital: "杭州市第一人民医院",
+				curDate: new Date().toLocaleDateString(),
 				username: "",
 				user_phone: 0,
 				
@@ -47,32 +56,34 @@
 				date: new Date().toLocaleDateString().slice(0, 10),
 				type: 'date',
 				value: '',
-				defaultval: 100,
+				defaultval: '',
 				
 				
 				convertText: ["8:00-9:00","9:00-10:00","10:00-11:00","11:00-12:00",
 					"13:30-14:30","14:30-15:30","15:30-16:30","16:30-17:30"],
-				remainder: null
+				remainder: null,
+				
+				updata: true,
+				cursections: "",
 			}
 		},
+		
+		onLoad() {
+
+			fetchGet('/api/exam/covid/remainder/',{
+				hospital: this.curHospital,
+				appointDate: new Date(this.curDate).getTime() / 1000,
+			}).then(res => {
+				this.remainder = res.data.sections;
+				this.defaultval = res.data.defaultCapacity;
+			})
+			
+			this.$forceUpdate();
+		},
+		
 		methods: {
-			onLoad: function(option) {
-				this.curHospital = option.hospital;
-				this.curDate = option.appoint_date;
-				this.username = option.username;
-				this.user_phone = option.user_phone;
-				this.remainder = fake_fetchGet('/api/exam/physical/remainder').data.sections;
-			},
-			onClick(key) {
-				console.log(this.convertText[key])
-				uni.navigateTo({
-					url: "../confirm/confirm_phy?hospital=" + this.curHospital
-						+ "&appoint_date=" +  this.curDate
-						+ "&username=" +  this.username
-						+ "&user_phone=" +  this.user_phone
-						+ "&timeslot=" +  this.convertText[key]
-				})
-			},
+			
+			
 			onShowDatePicker(type){//显示
 				this.type = type;
 				this.showPicker = true;
@@ -82,10 +93,93 @@
 				this.showPicker = false;
 				if(e) {
 					this[this.type] = e.value; 
-					console.log('value => '+ e.value);
-					console.log('date => ' + e.date);
+					this.updata = false;
+					fetchGet('/api/exam/covid/remainder/',{
+						hospital: this.curHospital,
+						appointDate: new Date(this.date).getTime() / 1000,
+					}).then(res => {
+						this.remainder = res.data.sections;
+						this.updata = true;
+						this.$forceUpdate();
+						
+					})
 					}
 				},
+			apply:function(e) {
+				
+				if (isNaN(e)) {
+					uni.showToast({
+						title: '请输入数字',
+						icon: 'none'
+					})
+				} else {
+				
+				
+					this.updata = false;
+					
+					console.log(e)
+					
+					console.log(this.curHospital)
+					console.log(this.defaultval)
+					let i = 0;
+					
+					fetchPut('/api/exam/covid/setting',{
+						hospital: this.curHospital,
+						type: 1,
+						appointDate: new Date(this.date).getTime() / 1000,
+						defaultCapacty: this.defaultval,
+						defaultCapacity: this.defaultval,
+						section: e+1,
+						remainder: this.remainder[e]
+					}).then(res => {
+						console.log(res)
+						this.updata = true;
+						this.$forceUpdate();
+						uni.showToast({
+							title: '更新成功'
+						})
+					})
+				
+				}
+								
+			},
+			
+			applyDef() {
+				
+				if (isNaN(this.defaultval)) {
+					uni.showToast({
+						title: '请输入数字',
+						icon: 'none'
+					})
+				} else {
+				
+				
+					this.updata = false;
+					
+					console.log("Modify Default")
+					console.log(this.defaultval)
+					let i = 0;
+					
+					fetchPut('/api/exam/covid/setting',{
+						hospital: this.curHospital,
+						type: 0,
+						appointDate: new Date(this.date).getTime() / 1000,
+						defaultCapacty: this.defaultval,
+						defaultCapacity: this.defaultval,
+					}).then(res => {
+						console.log(res)
+						this.updata = true;
+						this.$forceUpdate();
+						uni.showToast({
+							title: '更新成功'
+						})
+					})
+									
+				}
+			
+			
+			}
+
 		}
 	}
 </script>
@@ -108,9 +202,29 @@
 		width: 85%;
 		height: fit-content;
 		margin-top: 100px;
+	}
+	
+	.myitem {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: space-between;
+		padding-top: 15rpx;
+		height: 65rpx;
+		width: 100%;
+		margin-top : 2rpx;
 		background-color: #FFFFFF;
-		border-radius: 0px;
+		border-radius: 5px;
 		box-shadow:1px 1px 2px #7d7d7d;
+	}
+	.mylistitem {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: space-between;
+		height: 80rpx;
+		width: 100%;
+		margin-top : 2rpx;
 	}
 	.uni-input-wrapper {
 	    padding: 8px 13px;
@@ -121,15 +235,19 @@
 	.uni-input-head {
 	    padding: 0px;
 	    flex: 1;
-		border-left: 0px;
-		border-right: 0px;
-		border-top: 0px;
-		border-radius: 0;
-		border-bottom-width: 1px;
-		border-bottom-color: #000000;
-	    background-color: #FFFFFF;
+		margin-top: 30rpx;
+	    margin-left: 50%;
+	    text-align: center;
+	    margin-right: 10%;
+	    border-left: 0px;
+	    border-right: 0px;
+	    border-top: 0px;
+	    border-radius: 0;
+	    border-bottom-width: 1px;
+	    border-bottom-color: #000000;
 	}
 	.uni-input {
+		align-self: baseline;
 	    padding: 0px;
 	    flex: 1;
 		margin-left: 40%;
@@ -141,32 +259,36 @@
 		border-radius: 0;
 		border-bottom-width: 1px;
 		border-bottom-color: #000000;
-	    background-color: #FFFFFF;
-	}
-	.uni-form-item__title {
-		margin-left: 20px;
-	    font-size: 12px;
-	    line-height: 20px;
 	}
 	
 	.title {
-	    padding: 0px 0px;
+		margin-left: 20px;
+		font-size: 14px;
+		line-height: 20px;
+		width: 100px;
 	}
-	
-	
 	.block {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		justify-content: baseline;
 		height: min-content;
-		height: 30px;
+		height: max-content;
+		background-color: #FFFFFF;
+		border-radius: 5px;
+		box-shadow:1px 1px 2px #7d7d7d;
+		margin-top: 10rpx;
 	}
-	
 	.datesel {
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 	}
+	.image {
+			width: 35rpx;
+			height: 35rpx;
+			padding-left: 20rpx;
+			padding-right: 20rpx;
+		}
 	
 </style>

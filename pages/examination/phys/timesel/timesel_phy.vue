@@ -50,6 +50,8 @@
 						+ "&timeslot=" +  this.convertText[key]
 				})
 			},
+			
+			
 		}
 	}
 </script>

@@ -133,6 +133,16 @@
             }
             
         }
+        ,{
+            "path" : "pages/examination/show_report",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
     ],
 	"globalStyle": {
 		"pageOrientation": "portrait",
