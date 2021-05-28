@@ -2,7 +2,10 @@
 	<view class="page">
 		<view class="content">
 			<view class=myitem v-for="(val, key) in appointment">
-				<view style="margin: 10px; color: #474747; font-size: small; justify-self: center;">{{val.hospital+"   "+ new Date(parseInt(val.appointDate)*1000).toLocaleDateString()}}</view>
+				<view style="display: flex; flex-direction: column">
+					<view style="margin-left: 10px; color: #474747; font-size: small; justify-self: center;">{{val.hospital}}</view>					
+					<view style="margin-left: 10px; color: #474747; font-size: small; justify-self: center;">{{new Date(parseInt(val.appointDate)*1000).toLocaleDateString()}}</view>					
+				</view>
 				<view style="display: flex;">
 					<image class="image" :src="img1url+val.reportStatus+'.png'" @click="onClick(val, key)"></image>
 					<image class="image" :src="img2url+val.reportStatus+'.png'" @click="onClickD(val, key)"></image>
@@ -122,7 +125,7 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		height: 80rpx;
+		height: 120rpx;
 		width: 100%;
 		margin-top : 10rpx;
 		

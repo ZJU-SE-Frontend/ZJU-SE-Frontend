@@ -36,7 +36,7 @@
 			onLoad: function(option) {
 				this.curHospital = option.hospital;
 				this.curDate = new Date(option.appoint_date).getTime();
-				console.log(this.curDate + ' ')
+				console.log(this.curDate + '[CURDATE]')
 				this.username = option.username;
 				this.user_phone = option.user_phone;
 				fetchGet('/api/exam/covid/remainder/',{

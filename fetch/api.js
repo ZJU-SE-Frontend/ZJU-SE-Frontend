@@ -62,6 +62,21 @@ export function fetchPost(url, data) {
 	})
 }
 
+export function fetchPut(url, data) {
+	return new Promise((resolve, reject) => {
+		axios.put(url, data)
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
 /*基本功能API*/
 export function getStatic(path) {
 	return fetchGet(`/static`+path)
