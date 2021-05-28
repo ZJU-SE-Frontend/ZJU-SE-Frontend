@@ -128,6 +128,7 @@
 						type: 1,
 						appointDate: new Date(this.date).getTime() / 1000,
 						defaultCapacty: this.defaultval,
+						defaultCapacity: this.defaultval,
 						section: e+1,
 						remainder: this.remainder[e]
 					}).then(res => {
@@ -143,7 +144,7 @@
 								
 			},
 			
-			applyDef:function(e) {
+			applyDef() {
 				
 				if (isNaN(this.defaultval)) {
 					uni.showToast({
@@ -164,6 +165,7 @@
 						type: 0,
 						appointDate: new Date(this.date).getTime() / 1000,
 						defaultCapacty: this.defaultval,
+						defaultCapacity: this.defaultval,
 					}).then(res => {
 						console.log(res)
 						this.updata = true;
