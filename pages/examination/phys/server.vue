@@ -107,9 +107,9 @@
 				},
 			apply:function(e) {
 				
-				if (isNaN(e)) {
+				if (!/^[0-9]+$/.test(e)) {
 					uni.showToast({
-						title: '请输入数字',
+						title: '请输入非负整数',
 						icon: 'none'
 					})
 				} else {
@@ -146,9 +146,9 @@
 			
 			applyDef() {
 				
-				if (isNaN(this.defaultval)) {
+				if (!/^[0-9]+$/.test(this.defaultval)) {
 					uni.showToast({
-						title: '请输入数字',
+						title: '请输入非负整数',
 						icon: 'none'
 					})
 				} else {
