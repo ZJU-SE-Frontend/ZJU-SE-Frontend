@@ -2,9 +2,9 @@
 	<view class="page">
 		<view class="content">
 			<uni-list style="width: 100%">
-				<uni-list-item  v-for="(val, key) in remainder" :key="key" link="" @click="onClick(key)"
+				<uni-list-item  v-for="(val, key) in remainder" :disabled="val<=0" :key="key" link="" @click="onClick(val, key)"
 				 :title="convertText[key]" showArrow show-badge="true" :badge-text="val.toString()"
-				 :disabled="val<=0">
+				 >
 				</uni-list-item>
 			</uni-list>
 		</view>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import {fake_fetchGet, fake_fetchPost} from "../../fake_backend.js";
+import {fetchGet} from "@/fetch/api.js";
 	export default {
 		components: {
 			
@@ -22,7 +22,7 @@
 		data() {
 			return {
 				curHospital: "",
-				curDate: "",
+				curDate: 0,
 				username: "",
 				user_phone: 0,
 				
@@ -35,23 +35,30 @@
 		methods: {
 			onLoad: function(option) {
 				this.curHospital = option.hospital;
-				this.curDate = option.appoint_date;
+				this.curDate = new Date(option.appoint_date).getTime();
+				console.log(this.curDate + '[CURDATE]')
 				this.username = option.username;
 				this.user_phone = option.user_phone;
-				this.remainder = fake_fetchGet('/api/exam/physical/remainder').data.sections;
-			},
-			onClick(key) {
-				console.log(this.convertText[key])
-				uni.navigateTo({
-					url: "../confirm/confirm_phy?hospital=" + this.curHospital
-						+ "&appoint_date=" +  this.curDate
-						+ "&username=" +  this.username
-						+ "&user_phone=" +  this.user_phone
-						+ "&timeslot=" +  this.convertText[key]
+				fetchGet('/api/exam/physical/remainder/',{
+					hospital: this.curHospital,
+					appointDate: this.curDate / 1000
+				}).then(res => {
+					this.remainder = res.data.sections;
 				})
+			}, 
+			onClick(val, key) {
+				console.log(this.convertText[key])
+				if (val>0) {
+					uni.navigateTo({
+						url: "confirm_phy?hospital=" + this.curHospital
+							+ "&appoint_date=" +  this.curDate
+							+ "&username=" +  this.username
+							+ "&user_phone=" +  this.user_phone
+							+ "&timeslot=" +  this.convertText[key]
+							+ "&section=" +  parseInt(key+1)
+					})
+				}
 			},
-			
-			
 		}
 	}
 </script>
@@ -61,7 +68,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			background-image: url(../../../../static/exam/bkg_info.png);
+			background-image: url(../../../static/exam/bkg_info.png);
 			background-size: cover;
 			height: max-content;
 		}
