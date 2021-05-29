@@ -26,8 +26,8 @@
 		
 		data() {
 			return {
-				img1url: "../../../../static/exam/explore",
-				img2url: "../../../../static/exam/download",
+				img1url: "../../../static/exam/explore",
+				img2url: "../../../static/exam/download",
 				
 				repstatus: 0,
 				appointment:null,
@@ -39,16 +39,14 @@
 			onLoad: function(option)  {
 				this.user_phone = option.user_phone;
 				console.log(this.user_phone);
-				// fetchGet('/api/exam/covid/appointment/'+this.user_phone).then(res => {
-				fetchGet('/api/exam/covid/appointment/'+18888888888).then(res => {
+				fetchGet('/api/exam/physical/appointment/'+this.user_phone).then(res => {
 					this.appointment = res.data.appointments;
 				})
 			},
 			onClick(val, key) {
 				if (val.reportStatus == 1) {
 					uni.request({
-						// url: '/api/exam/covid/report/'+val.appointId,
-						url: '/api/exam/covid/report/'+39,
+						url: '/api/exam/physical/report/'+val.appointId,
 						data: '',
 						method: 'GET',
 						responseType: 'arraybuffer',
@@ -64,7 +62,7 @@
 							pdfData = window.URL.createObjectURL(blob)			
 							this.file_url = encodeURIComponent(pdfData)
 							uni.navigateTo({
-								url: "../../show_report?url=" + this.file_url
+								url: "../show_report?url=" + this.file_url
 							})
 						}
 					})
@@ -78,8 +76,7 @@
 				if (val.reportStatus == 1) {
 					
 					uni.request({
-						// url: '/api/exam/covid/report/'+val.appointId,
-						url: '/api/exam/covid/report/'+39,
+						url: '/api/exam/physical/report/'+val.appointId,
 						data: '',
 						method: 'GET',
 						responseType: 'arraybuffer',
@@ -105,7 +102,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			background-image: url(../../../../static/exam/bkg_cov.png);
+			background-image: url(../../../static/exam/bkg_info.png);
 			background-size: cover;
 			height: max-content;
 		}

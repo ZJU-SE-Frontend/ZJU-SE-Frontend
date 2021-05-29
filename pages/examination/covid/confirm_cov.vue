@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import {postAppointment_Cov, fetchGet, fetchPost} from "../../../../fetch/api.js";
+	import {postAppointment_Cov, fetchGet, fetchPost} from "../../../fetch/api.js";
 	export default {
 		data() {
 			return {
@@ -52,23 +52,22 @@
 					"appointDate": this.curDate / 1000,
 					"section": this.section
 				}).then(res => {
-					this.state = res.data.result;
-					console.log(res.data.result);
-					if (res.data.result == true) {
+					if (res.st == 0) {
 						uni.showToast({
 							title: '预约成功'
 						})
 						}
-						 else {
-							uni.showToast({
-								title: '预约失败'
-							})
+					else {
+						uni.showToast({
+							icon: 'none',
+							title: '预约失败'
+						})
 						};
 					
 				})
 				
 				uni.switchTab({
-					url:"../../index"
+					url:"../index"
 				});
 				
 			}

@@ -91,7 +91,7 @@
 				
 			gotoHistory() {
 				uni.navigateTo({
-					url:"history/history_cov?user_phone=" + this.user_phone
+					url:"history_cov?user_phone=" + this.user_phone
 				})
 			},
 			
@@ -102,7 +102,7 @@
 				console.log('date => '+ this.date);
 				
 				uni.navigateTo({
-					url:"timesel/timesel_cov?hospital=" + this.hospitals[this.index]
+					url:"timesel_cov?hospital=" + this.hospitals[this.index]
 						+ "&appoint_date=" +  this.date
 						+ "&username=" +  this.username
 						+ "&user_phone=" +  this.user_phone

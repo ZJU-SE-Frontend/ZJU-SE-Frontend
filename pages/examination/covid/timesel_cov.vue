@@ -48,9 +48,10 @@
 			}, 
 			onClick(val, key) {
 				console.log(this.convertText[key])
+				console.log(val)
 				if (val>0) {
 					uni.navigateTo({
-						url: "../confirm/confirm_cov?hospital=" + this.curHospital
+						url: "confirm_cov?hospital=" + this.curHospital
 							+ "&appoint_date=" +  this.curDate
 							+ "&username=" +  this.username
 							+ "&user_phone=" +  this.user_phone
@@ -68,7 +69,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			background-image: url(../../../../static/exam/bkg_cov.png);
+			background-image: url(../../../static/exam/bkg_cov.png);
 			background-size: cover;
 			height: max-content;
 		}
