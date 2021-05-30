@@ -1,81 +1,45 @@
 <template>
-    <view class="patient">
-       <view class="patient-list">
-             <view class="list-title">
- 
-              <view class="list-text">
-                    <text class="title">病案号：9527618975\n时间：2018-9-15-10:32</text>
-                  <text class="content">主治医师：张任谦</text>
-              </view>
-             </view>
-          <!-- 按钮 -->
-          <view class="btn" @click="viewDetail">进入</view>
-       </view>
-	   <view class="patient-list">
-	         <view class="list-title">
-	    
-	          <view class="list-text">
-	                <text class="title">病案号：6165981657\n时间：2020-5-27-14:11</text>
-	              <text class="content">主治医师：朱凯彰</text>
+	<view class="patient">
+	    <view class="patient-list" v-for="(item,i) in data">
+	          <view class="list-title">
+	 
+	           <view class="list-text" >
+	                 <text class="title">病案号：{{item.caseId}}\n描述：{{item.caseResult}}</text>
+	               <text class="content">病人姓名：{{item.patientName}}</text>
+	           </view>
 	          </view>
-	         </view>
-	      <!-- 按钮 -->
-	      <view class="btn" @click="viewDetail">进入</view>
-	   </view>
-	   <view class="patient-list">
-	         <view class="list-title">
-	    
-	          <view class="list-text">
-	                <text class="title">病案号：9548752656\n时间：2020-7-2-17:01</text>
-	              <text class="content">主治医师：孟宇瀚</text>
-	          </view>
-	         </view>
-	      <!-- 按钮 -->
-	      <view class="btn" @click="viewDetail">进入</view>
-	   </view>
-	   <view class="patient-list">
-	         <view class="list-title">
-	    
-	          <view class="list-text">
-	                <text class="title">病案号：9527618975\n时间：2018-9-15-10:32</text>
-	              <text class="content">主治医师：孟宇瀚</text>
-	          </view>
-	         </view>
-	      <!-- 按钮 -->
-	      <view class="btn" @click="viewDetail">进入</view>
-	   </view>
-	   <view class="patient-list">
-	         <view class="list-title">
-	    
-	          <view class="list-text">
-	                <text class="title">病案号：9527618975\n时间：2018-9-19-10:12</text>
-	              <text class="content">主治医师：孟宇瀚</text>
-	          </view>
-	         </view>
-	      <!-- 按钮 -->
-	      <view class="btn" @click="viewDetail">进入</view>
-	   </view>
-    </view>
-	
+	       
+	       <view  class="btn" @click="detail(item.caseId)">详情</view>
+	    </view>
+	</view>
 </template>
 <script>
+	import {getPcase} from "../../fetch/api.js";
 	export default {
 		data() {
 			return {
+				phone:"",
+				data:[],
 			}
 		},
-		onLoad() {
-			// if(this.hasLogin){
-			// 	console.log("hahaha")
-			// }
+		onLoad:function(option) {
+			this.phone=option.phone
+			console.log(this.phone)
+			getPcase(this.phone).then((res)=>{
+				console.log(res.data.caseList)
+				this.data=res.data.caseList
+				console.log(this.data)
+			})
+			
 		},
 		methods: {
-			 viewDetail(){
-				 uni.navigateTo({
-				 	url:"./detail"
-				 })
-			 }
-			
+		  detail(i){
+			  uni.navigateTo(
+			  	{
+			  		url:"./detail?phone="+this.phone+"&&caseid="+i
+			  	}
+			  )
+		  }		
 		}
 	}
 </script>

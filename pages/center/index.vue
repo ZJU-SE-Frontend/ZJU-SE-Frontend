@@ -3,21 +3,15 @@
 			<view class="logo" @click="Login" :hover-class="!hasLogin ? 'logo-hover' : ''">
 					<image class="logo-img" :src="visitorUrl"></image>
 					<view class="logo-title">
-						<text class="uer-name">Hi，{{hasLogin ? "张三" : '您未登录'}}</text>
+						<text class="uer-name">Hi，{{hasLogin ? "您已登录" : '您未登录'}}</text>
 						<text class="go-login navigat-arrow" v-if="!hasLogin">&#xe65e;</text>
 					</view>
 			</view>
-			<view class="center-list">
-				<view class="center-list-item border-bottom" v-show="hasLogin" @click="goto">
-					<text class="list-icon">&#xe60f;</text>
-					<text class="list-text">修改密码</text>
-					<text class="navigat-arrow">&#xe65e;</text>
-				</view>
-				
+			<view class="center-list">		
 				<view class="center-list-item">
 					<text class="list-icon">&#xe639;</text>
 					<text class="list-text">姓名</text>
-					<text class="list-text">{{hasLogin ? "张三" : ''}}</text>
+					<text class="list-text">{{hasLogin ? uerInfo.userName : ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -26,19 +20,19 @@
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">身高</text>
-					<text class="list-text">{{hasLogin? patient_height: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userHeight: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">体重</text>
-					<text class="list-text">{{hasLogin? patient_weight: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userWeight: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item">
 					<text class="list-icon">&#xe65f;</text>
-					<text class="list-text">年龄</text>
-					<text class="list-text">{{hasLogin? patient_age: ''}}</text>
+					<text class="list-text">性别</text>
+					<text class="list-text">{{hasLogin? uerInfo.userGender: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -47,18 +41,31 @@
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">电话</text>
-					<text class="list-text">{{hasLogin? patient_phone: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userPhone: ''}}</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
+				<view class="center-list-item border-bottom">
+					<text class="list-icon">&#xe60b;</text>
+					<text class="list-text">电子邮箱</text>
+					<text class="list-text">{{hasLogin? uerInfo.userEmail: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">身份证号</text>
-					<text class="list-text">{{hasLogin? patient_id: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userIDNumber: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item" v-show="hasLogin" @click="patientView">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">病历</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
+			</view>
+			<view class="center-list">
+				<view class="center-list-item border-bottom" v-show="hasLogin" @click="exit">
+					<text class="list-icon">&#xe60f;</text>
+					<text class="list-text">退出登录</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -73,16 +80,17 @@
 		mapMutations
 	} from 'vuex';
 	export default {
-		computed: mapState([ 'hasLogin','userInfo']),
+		computed: mapState([ 'hasLogin','uerInfo']),
 		data() {
 			return {
+				//user_name:"王赵烨",
 				visitorUrl: "../../static/center/logo.png",
 				//hasLogin: false,
-				patient_weight: '60kg',
-				patient_height: '170cm',
-				patient_age:    '21岁',
-				patient_phone:  '18112345678',
-				patient_id:     '330103200002131998',
+				// patient_weight: '60kg',
+				// patient_height: '170cm',
+				// patient_age:    '21岁',
+				// patient_phone:  '18112345678',
+				// patient_id:     '330103200002131998',
 				history_title:  '',
 			}
 		},
@@ -109,9 +117,14 @@
 			patientView(){
 				//console.log("hello")
 				uni.navigateTo({
-					url:"./patient"
+					url:"./patient?phone="+this.uerInfo.userPhone
 				})
-			}
+			},
+			exit(){
+				console.log("exit")
+				this.logout()
+			},
+			...mapMutations(['logout'])
 		}
 	}
 </script>

@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
 		<image class="logo" src="/static/logo.png"></image>
-<!-- 		<view class="text-area">
+ 		<view class="text-area">
 			<text class="title">{{title}}</text>
-		</view> -->
+		</view> 
 		<section>
 			<input class="uni-input" placeholder="请输入手机号" v-model="userPhone"></input>
 		</section>
@@ -25,7 +25,7 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello',
+				title: 'WELCOME',
 				userInfo: '',
 				userPhone: '',
 				password: '',
@@ -39,16 +39,12 @@
 			onLoginClicked(){
 				let t_name = this.userPhone
 				let t_pwd = this.password
-				t_name = "13733333333"
-				t_pwd = "123456"
+				this.title="登陆中"
 				postLoginIn(t_name, t_pwd).then((res)=>{
 					if(res.st==0){
 						this.title="登陆成功\n"
-						getUserInfo("13733333333").then((res)=>{
-							this.userInfo=res.data.userName
-							// uni.switchTab({
-							// 	url:"../pharmacy/index"
-							// })
+						getUserInfo(t_name).then((res)=>{
+							console.log(res.data);
 							this.login(res.data);
 							uni.navigateBack();
 						})

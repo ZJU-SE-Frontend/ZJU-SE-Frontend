@@ -4,11 +4,12 @@
              <view class="list-title">
  
               <view class="list-text">
-                    <text class="title">病案号：9527618975\n时间：2018-9-15-10:32</text>
-                  <text class="content">主治医师：张任谦</text>
-				  <text class="content">症状：心律失常，发热，乏力，有盗汗</text>
-				  <text class="content">诊断结果：干燥综合征</text>
-				  <text class="content">诊断建议：建议服用盐酸胺碘酮片</text>
+                    <text class="title">病案号：{{id}}\n时间：{{createTime}}</text>
+                  <text class="content">主治医师：{{doctorName}}\n联系方式：{{doctorPhone}}</text>
+				  <text class="content">就诊医院：{{hospital}}</text>
+				  <text class="content">诊断结果：{{caseResult}}</text>
+				  <text class="content">诊断费用：{{cost}}</text>
+				  <text class="content">诊断药物：{{medicine}}</text>
               </view>
              </view>
           
@@ -17,15 +18,35 @@
 	
 </template>
 <script>
+	import {getPdetail} from "../../fetch/api.js";
 	export default {
 		data() {
 			return {
+				phone:"",
+				id:"",
+				hospital: "",
+				doctorName: "",
+				doctorPhone: "",
+				caseResult: "",
+				cost: 0,
+				medicine: "",
+				createTime: 0,
 			}
 		},
-		onLoad() {
-			// if(this.hasLogin){
-			// 	console.log("hahaha")
-			// }
+		onLoad:function(option) {
+			
+			this.phone=option.phone;
+			this.id=option.caseid;
+			getPdetail(this.phone,this.id).then((res)=>{
+				this.hospital=res.data.hospital
+				this.doctorName=res.data.doctorName
+				this.doctorPhone=res.data.doctorPhone
+				this.caseResult=res.data.caseResult
+				this.cost=res.data.cost
+				this.medicine=res.data.medicine
+				this.createTime=res.data.createTime
+			})
+			
 		},
 		methods: {
  
