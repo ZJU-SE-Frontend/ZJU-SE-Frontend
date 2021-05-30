@@ -83,22 +83,12 @@
 		computed: mapState([ 'hasLogin','uerInfo']),
 		data() {
 			return {
-				//user_name:"王赵烨",
 				visitorUrl: "../../static/center/logo.png",
-				//hasLogin: false,
-				// patient_weight: '60kg',
-				// patient_height: '170cm',
-				// patient_age:    '21岁',
-				// patient_phone:  '18112345678',
-				// patient_id:     '330103200002131998',
 				history_title:  '',
 			}
 		},
 		
 		onLoad() {
-			// if(this.hasLogin){
-			// 	console.log("hahaha")
-			// }
 		},
 		methods: {
 			checkLogin(){
