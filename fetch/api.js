@@ -8,7 +8,7 @@ axios.defaults.baseURL = '';
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
-	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
+//	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
 	return config;
 }, (error) => {
 	return Promise.reject(error);
@@ -16,21 +16,21 @@ axios.interceptors.request.use((config) => {
 
 // axios返回结果拦截器，返回状态判断
 axios.interceptors.response.use((res) => {
-	if(res.data.data.jwt!=undefined){
-		uni.setStorage({
-		    key: 'jwt',
-		    data: res.data.data.jwt,
-		    success: function () {
-		        console.log('jwt凭据保存成功');
-		    }
-		});
-	}
+//	if(res.data.data.jwt!=undefined){
+//		uni.setStorage({
+//		    key: 'jwt',
+//		    data: res.data.data.jwt,
+//		    success: function () {
+//		        console.log('jwt凭据保存成功');
+//		    }
+//		});
+//	}
 	return res;
 }, (error) => {
 	return Promise.reject(error);
 });
 
-function fetchGet(url, param) {
+export function fetchGet(url, param) {
 	return new Promise((resolve, reject) => {
 		axios.get(url, {
 				params: param
@@ -47,9 +47,24 @@ function fetchGet(url, param) {
 	})
 }
 
-function fetchPost(url, data) {
+export function fetchPost(url, data) {
 	return new Promise((resolve, reject) => {
 		axios.post(url, data)
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
+export function fetchPut(url, data) {
+	return new Promise((resolve, reject) => {
+		axios.put(url, data)
 			.then(response => {
 				console.log("responsed")
 				resolve(response.data)
@@ -106,4 +121,68 @@ export function getPharBoothList(cata, count){
 
 export function getPharBoothDetail(id){
 	return fetchGet(`/api/phar/booth/detail/`+id)
+}
+
+
+/* 健康检测模块API */
+
+export function getHospitalList_Phy() {
+	return fetchGet(`/api/exam/physical/hospital`)
+}
+
+export function getRemainder_Phy(hospital, appoint_date) {
+	const params = {
+		"hospital": hospital,
+		"appoint_date": appoint_date
+	}
+	return fetchGet(`/api/exam/physical/remainder`, params)
+}
+
+export function postAppointment_Phy(tel, hospital, date, section) {
+	var data = {
+		"user_Phone": tel,
+		"hospital": hospital,
+		"appoint_date": date,
+		"section": section
+	}
+	return fetchPost(`/api/exam/physical/appointment`, data = data);
+}
+
+export function getAppointments_Phy(tel) {
+	return fetchGet(`/api/exam/physical/appointment/`, tel)
+}
+
+export function getReport_Phy(appoint_id) {
+	return fetchGet(`/api/exam/physical/report/`, appoint_id)
+}
+
+
+export function getHospitalList_Cov() {
+	return fetchGet(`/api/exam/covid/hospital/`)
+}
+
+export function getRemainder_Cov(hospital, appoint_date) {
+	const params = {
+		"hospital": hospital,
+		"appoint_date": appoint_date
+	}
+	return fetchGet(`/api/exam/covid/remainder`, params)
+}
+
+export function postAppointment_Cov(tel, hospital, date, section) {
+	var data = {
+		"user_Phone": tel,
+		"hospital": hospital,
+		"appoint_date": date,
+		"section": section
+	}
+	return fetchPost(`/api/exam/covid/appointment`, data = data);
+}
+
+export function getAppointments_Cov(tel) {
+	return fetchGet(`/api/exam/covid/appointment/`, tel)
+}
+
+export function getReport_Cov(appoint_id) {
+	return fetchGet(`/api/exam/covid/report/`, appoint_id)
 }
