@@ -19,6 +19,12 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/details",
+			"style": {
+				"navigationBarTitleText": "药品详情"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"

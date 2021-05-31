@@ -10,7 +10,6 @@ axios.defaults.baseURL = '';
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
-//	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
 	return config;
 }, (error) => {
 	return Promise.reject(error);
