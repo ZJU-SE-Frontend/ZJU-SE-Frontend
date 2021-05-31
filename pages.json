@@ -31,6 +31,24 @@
 			}
 		},
 		{
+			"path": "pages/center/patient",
+			"style": {
+				"navigationBarTitleText": "个人病历"
+			}
+		},
+		{
+			"path": "pages/center/detail",
+			"style": {
+				"navigationBarTitleText": "病案详情"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登陆"
+			}
+		},
+		{
 			"path": "pages/test/index",
 			"style": {
 				"navigationBarTitleText": "测试页面"
@@ -174,13 +192,13 @@
 				"iconPath": "static/个人中心.svg",
 				"selectedIconPath": "static/个人中心.svg",
 				"text": ""
-			},
-			{
-				"pagePath": "pages/test/index",
-				"iconPath": "",
-				"selectedIconPath": "",
-				"text": "测试页"
 			}
-		]
+			// {
+			// 	"pagePath": "pages/test/index",
+			// 	"iconPath": "",
+			// 	"selectedIconPath": "",
+			// 	"text": "测试页"
+			// }
+		]	
 	}
 }
