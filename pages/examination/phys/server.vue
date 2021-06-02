@@ -4,7 +4,7 @@
 		<view class=myitem>
 		    <view class="title">默认容量</view>
 			<view style="display: flex; flex-direction: row; align-content: flex-end;">
-				<input class="uni-input" v-model="defaultval"  focus :value="defaultval" />
+				<input class="uni-input" v-model="defaultval"  focus :name="defaultval" />
 				<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/updateR.png" @click="applyDef"></image>
 			</view>
 		</view>
@@ -21,7 +21,7 @@
 					<text style="width: 100px; margin-left: 5%; ">{{convertText[key]}}</text>
 					
 					<view style="display: flex; flex-direction: row;"> 
-						<input class="uni-input" v-model="remainder[key]" :value="val"> </input>
+						<input class="uni-input" v-model="remainder[key]" :name="val"> </input>
 						<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/update.png" @click="apply(key)"></image>
 					</view>
 					
