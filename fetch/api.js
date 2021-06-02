@@ -7,6 +7,11 @@ import {
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = '';
+// #ifdef MP-WEIXIN
+axios.defaults.baseURL = 'http://121.41.94.85:5000';
+// #endif
+
+
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
@@ -34,6 +39,39 @@ axios.interceptors.response.use((res) => {
 }, (error) => {
 	return Promise.reject(error);
 });
+
+// #ifdef MP-WEIXIN
+axios.defaults.adapter = function(config) { //自己定义个适配器，用来适配uniapp的语法
+    return new Promise((resolve, reject) => {
+        console.log(config)
+        var settle = require('axios/lib/core/settle');
+        var buildURL = require('axios/lib/helpers/buildURL');
+        uni.request({
+            method: config.method.toUpperCase(),
+            url: config.baseURL + buildURL(config.url, config.params, config.paramsSerializer),
+            header: config.headers,
+            data: config.data,
+            dataType: config.dataType,
+            responseType: config.responseType,
+            sslVerify: config.sslVerify,
+            complete: function complete(response) {
+                console.log("执行完成：",response)
+                response = {
+                    data: response.data,
+                    status: response.statusCode,
+                    errMsg: response.errMsg,
+                    header: response.header,
+                    config: config
+                };
+
+                settle(resolve, reject, response);
+            }
+        })
+    })
+}
+// #endif
+
+
 
 export function fetchGet(url, param) {
 	return new Promise((resolve, reject) => {
