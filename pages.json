@@ -19,6 +19,12 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/details",
+			"style": {
+				"navigationBarTitleText": "药品详情"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"
@@ -28,6 +34,24 @@
 			"path": "pages/center/index",
 			"style": {
 				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/center/patient",
+			"style": {
+				"navigationBarTitleText": "个人病历"
+			}
+		},
+		{
+			"path": "pages/center/detail",
+			"style": {
+				"navigationBarTitleText": "病案详情"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登陆"
 			}
 		},
 		{
@@ -174,13 +198,13 @@
 				"iconPath": "static/个人中心.svg",
 				"selectedIconPath": "static/个人中心.svg",
 				"text": ""
-			},
-			{
-				"pagePath": "pages/test/index",
-				"iconPath": "",
-				"selectedIconPath": "",
-				"text": "测试页"
 			}
-		]
+			// {
+			// 	"pagePath": "pages/test/index",
+			// 	"iconPath": "",
+			// 	"selectedIconPath": "",
+			// 	"text": "测试页"
+			// }
+		]	
 	}
 }
