@@ -45,7 +45,19 @@
 				</view>
 			</view>
 			<!-- No data -->
-			<ssx-no-data v-if="!topicList.length"></ssx-no-data>
+			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
+
+			<view  v-if="currentClassIfy==2" class="profile">
+				<view @tap="handleGetUserPost()" class="block" >					
+						<text>主题帖：{{this.postCnt}}</text>
+				</view>
+				<view class="block">
+					<text>提问:{{this.questionCnt}}</text>
+				</view>
+				<view class="block">
+					<text>回答:{{this.answerCnt}}</text>
+				</view>				
+			</view>
 		</view>
 		
 	</view>
@@ -55,7 +67,7 @@
 	const moment = require('moment')
 	import SsxNoData from './ssx-no-data'
 	import SsxHeader from './ssx-header'
-	import {getPostList} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion} from '../../fetch/api.js'
 	export default {
 		components: {
 			SsxNoData,
@@ -84,6 +96,10 @@
 				page: 1,
 				// 条数
 				limit: 10,
+				userPhone:18888888888,
+				postCnt: 0,
+				questionCnt:0,
+				answerCnt:0
 			}
 		},
 		methods: {
@@ -116,10 +132,84 @@
 					console.log('问答页')
 				}
 			},
+			
+			async handleGetUserPost(params){
+				
+				if(params == null){
+					params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:this.limit,
+						pageNo:this.page
+					}
+				}
+								
+				if(params.tab == '个人中心'){					
+					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+					
+					if (posts.data.posts.length > 0) {
+						this.topicList = posts.data.posts;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			},
+			
+			
+			async handleGetProfile(){
+				
+				const params = {
+					tab:this.handleGetTab(),
+					userPhone:this.userPhone,
+					pageSize:2147483647,
+					pageNo:1
+				}
+				
+				
+				if (params.tab == '个人中心'){
+					console.log('个人中心')
+										
+					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+					// var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
+					// var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
+					
+					console.log("查询成功")
+					if(posts.data.total){
+						this.postCnt = posts.data.total
+						
+						console.log(posts.data.total)
+					}
+					
+					// if(questions.data.total){
+						// this.questionCnt = questions.data.total
+					// 	console.log(questions.data.total)
+					// }
+					
+					// if(answers.data.total){
+						// this.answerCnt = answers.data.total
+					// 	console.log(answers.data.total)
+					// }
+					
+										
+				}
+			},
 			// 话题分类切换
 			handleClassIfyChange(classIfyId) {
 				if (this.currentClassIfy === classIfyId) {
 					return
+				}else if( classIfyId == 2){
+					console.log("切换到个人中心")
+					this.currentClassIfy = classIfyId
+					
+					
+					
+					this.topicList=[]
+					this.handleGetProfile()
 				} else {
 					// Reset topicList
 					this.topicList = []
@@ -140,33 +230,66 @@
 			},
 			// 上下一页
 			async handlePageChange(action) {
-				if (action === 'prev') {
-					if (this.page === 1) {
-						this.$util.toast('这是第一页鸭')
-					} else {
+				if(this.currentClassIfy == 2){
+					if(action === 'prev'){
+						if (this.page === 1) {
+							this.$util.toast('这是第一页鸭')
+						} else {
+							const params = {
+								tab:this.handleGetTab(),
+								userPhone:this.userPhone,
+								pageSize:this.limit,
+								pageNo:--this.page
+							}
+							// Request
+							this.handleGetUserPost(params)
+						}
+					}else if(action === 'next'){
 						const params = {
-							page: --this.page,
-							limit: this.limit,
-							tab: this.handleGetTab(),
+							tab:this.handleGetTab(),
+							userPhone:this.userPhone,
+							pageSize:this.limit,
+							pageNo:this.page+1
 						}
 						// Request
-						this.handleGetTopicList(params)
+						var result = await this.handleGetUserPost(params)
+						if(result) {
+							this.page++;
+						}
+						else {
+							this.$util.toast('没有更多贴子啦')
+						}
 					}
-				} else if (action === 'next') {
-					const params = {
-						tab: this.handleGetTab(),
-						page: this.page + 1,
-						limit: this.limit,
-					}
-					// Request
-					var result = await this.handleGetTopicList(params)
-					if(result) {
-						this.page++;
-					}
-					else {
-						this.$util.toast('没有更多贴子啦')
+				}else{
+					if (action === 'prev') {
+						if (this.page === 1) {
+							this.$util.toast('这是第一页鸭')
+						} else {
+							const params = {
+								page: --this.page,
+								limit: this.limit,
+								tab: this.handleGetTab(),
+							}
+							// Request
+							this.handleGetTopicList(params)
+						}
+					} else if (action === 'next') {
+						const params = {
+							tab: this.handleGetTab(),
+							page: this.page + 1,
+							limit: this.limit,
+						}
+						// Request
+						var result = await this.handleGetTopicList(params)
+						if(result) {
+							this.page++;
+						}
+						else {
+							this.$util.toast('没有更多贴子啦')
+						}
 					}
 				}
+				
 			},
 			// 获取当前分类id对应的tab
 			handleGetTab() {
@@ -371,6 +494,21 @@
 					color: #999;
 				}
 			}
+		}
+	}
+	.profile{
+		width: 750rpx;
+		margin: 0 0rpx 25rpx;
+		background-color: #fff;
+		border-radius: 6rpx;
+		
+		.block{
+			width: 200 rpx;
+			color: #333;
+			line-height: 80rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 </style>
