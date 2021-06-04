@@ -27,7 +27,35 @@
 		{
 			"path": "pages/forum/index",
 			"style": {
-				"navigationBarTitleText": "健康论坛"
+				"navigationBarTitleText": "健康论坛",
+				"app-plus": {
+					"titleNView": {
+					"buttons": [{
+					"text" : "+",
+					"float": "right"
+					}]}
+				}
+			}
+		},
+		{
+		    "path" : "pages/forum/createPost",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+			"path": "pages/forum/content",
+			"style": {
+				"navigationBarTitleText": "健康论坛",
+				"app-plus": {
+					"titleNView": {
+					"buttons": [{
+					"type":"menu",
+					"float": "right"
+					}]}
+				}
 			}
 		},
 		{

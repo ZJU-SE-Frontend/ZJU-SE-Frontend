@@ -244,3 +244,64 @@ export function getAppointments_Cov(tel) {
 export function getReport_Cov(appoint_id) {
 	return fetchGet(`/api/exam/covid/report/`, appoint_id)
 }
+
+/* 健康论坛模块API */
+
+export function getPostList(pageSize, pageNo) {
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/post", params)
+}
+
+export function getPost(topicId) {
+	return fetchGet("/api/forum/post/" + topicId)
+}
+
+export function publicPost(params) {
+	return fetchPost("/api/forum/post", params)
+}
+
+export function addViewCnt(topicId) {
+	return fetchPut('/api/forum/post/addViewCnt/' + topicId)
+}
+
+export function getLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/post/like/' + topicId, params)
+}
+
+export function postLike(topicId, params) {
+	return fetchPost("/api/forum/post/like/" + topicId, params)
+}
+
+export function fetchDelete(url, data) {
+	return new Promise((resolve, reject) => {
+		axios.delete(url, data)
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
+export function deleteLike(topicId, params) {
+	return fetchDelete("/api/forum/post/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function getFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/post/favorite/' + topicId, params)
+}
+
+export function addToFavorite(topicId, params) {
+	return fetchPost("/api/forum/post/favorite/" + topicId, params)
+}
+
+export function removeFromFavorite(topicId, params) {
+	return fetchDelete("/api/forum/post/favorite/" + topicId +'?userPhone=' + params.userPhone)
+}
