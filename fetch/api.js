@@ -305,3 +305,28 @@ export function addToFavorite(topicId, params) {
 export function removeFromFavorite(topicId, params) {
 	return fetchDelete("/api/forum/post/favorite/" + topicId +'?userPhone=' + params.userPhone)
 }
+
+//只考虑个人页面中的信息显示，封装了参数
+export function getUserPost(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/post/user/"+userPhone,params)
+}
+
+export function getUserQuestion(userPhone,pageSize,pageNo){
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/question/user/"+userPhone,params)
+}
+
+export function getUserAnswer(userPhone,pageSize,pageNo){
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/answer/user/"+userPhone,params)
+}

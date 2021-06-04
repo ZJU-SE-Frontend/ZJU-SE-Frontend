@@ -45,7 +45,13 @@
 				</view>
 			</view>
 			<!-- No data -->
-			<ssx-no-data v-if="!topicList.length"></ssx-no-data>
+			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
+
+			<view  v-if="currentClassIfy==2" class="profile">
+				<view class="postInfo" >
+					<text>发布的贴数：{{this.postCnt}}</text>
+				</view>
+			</view>
 		</view>
 		
 	</view>
@@ -84,6 +90,8 @@
 				page: 1,
 				// 条数
 				limit: 10,
+				userPhone:18888888888,
+				postCnt: 0
 			}
 		},
 		methods: {
@@ -116,10 +124,47 @@
 					console.log('问答页')
 				}
 			},
+			async handleGetProfile(params){
+				if (params.tab == '个人中心'){
+					console.log('个人中心')
+										
+					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+					// var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
+					// var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
+					
+					console.log("查询成功")
+					if(posts.data.total){
+						this.postCnt = posts.data.total
+						
+						console.log(posts.data.total)
+					}
+					
+					// if(questions.data.total){
+					// 	console.log(questions.data.total)
+					// }
+					
+					// if(answers.data.total){
+					// 	console.log(answers.data.total)
+					// }
+					
+										
+				}
+			},
 			// 话题分类切换
 			handleClassIfyChange(classIfyId) {
 				if (this.currentClassIfy === classIfyId) {
 					return
+				}else if( classIfyId == 2){
+					console.log("切换到个人中心")
+					this.currentClassIfy = classIfyId
+					const params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:2147483647,
+						pageNo:1
+					}
+					this.topicList=[]
+					this.handleGetProfile(params)
 				} else {
 					// Reset topicList
 					this.topicList = []
@@ -371,6 +416,21 @@
 					color: #999;
 				}
 			}
+		}
+	}
+	.profile{
+		width: 750rpx;
+		margin: 0 0rpx 25rpx;
+		background-color: #fff;
+		border-radius: 6rpx;
+		
+		.postInfo{
+			width: 200 rpx;
+			color: #333;
+			line-height: 40rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 </style>
