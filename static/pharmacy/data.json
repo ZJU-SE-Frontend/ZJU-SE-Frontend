@@ -1,22 +1,59 @@
 {
-    "st": 0,
-    "msg": "",
-    "data": {
-        "length": 20,
-        "list": [{
-                "id": 1,
-                "name": "阿司匹林",
-                "type": "抗生素",
-                "price": 21.99,
-                "sIndication": "用于发热,疼痛及类风湿关节炎等"
-            },
-            {
-                "id": 2,
-                "name": "阿莫西林",
-                "type": "抗生素",
-                "price": 13.99,
-                "sIndication": "细菌感染"
-            }
-        ]
-    }
+	"list": [{
+			"id": 1,
+			"name": "阿司匹林",
+			"type": "抗生素",
+			"description": "对血小板的聚集有抑制作用",
+			"price": 14.99
+		},
+		{
+			"id": 2,
+			"name": "阿莫西林",
+			"type": "抗生素",
+			"description": "治疗伤寒、其他沙门菌感染",
+			"price": 15.99
+		},
+		{
+			"id": 3,
+			"name": "感冒灵胶囊",
+			"type": "感冒发烧",
+			"description": "解热镇痛",
+			"price": 24.99
+		},
+		{
+			"id": 4,
+			"name": "黄连上清片",
+			"type": "感冒发烧",
+			"description": "滋阴养胃",
+			"price": 13.99
+		},
+		{
+			"id": 5,
+			"name": "养胃舒颗粒 ",
+			"type": "肠胃消化",
+			"description": "散风清热，泻火止痛",
+			"price": 23.99
+		},
+		{
+			"id": 6,
+			"name": "健胃消食片",
+			"type": "肠胃消化",
+			"description": "健胃消食",
+			"price": 6.99
+		},
+		{
+			"id": 7,
+			"name": "咽炎片",
+			"type": "呼吸用药 ",
+			"description": "养阴润肺，清热解毒",
+			"price": 34.99
+		},
+		{
+			"id": 8,
+			"name": "通宣理肺颗粒",
+			"type": "呼吸用药",
+			"description": "解表散寒，宣肺止咳",
+			"price": 55.99
+		}
+	]
 }
