@@ -4,29 +4,39 @@
 		<view class="medicine">
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
 			 @scroll="scroll">
-
 				<view class="medicine-wrapper">
 					<view class="medicine-content">
 						<view class="image-wrapper">
-							<image class="medicine-image" :src="medicine_picture_path" />
-
-							<image class="share-bt" src="/static/pharmacy/image/share.png" />
-							<image class="more-bt" src="/static/pharmacy/image/more.png" />
+							<swiper class="swiper-box" :style="{height: swpier_height}" autoplay="true" circular="true" indicatorDots="true" indicator-active-color="#fcf6f3">
+								<swiper-item  class="swiper-item" v-for="(item, index) in medicine_picture_path_list" :key="index">  
+									<view class="swiper-item-view">  
+										<image class="swiper-item-image":src="item" mode="aspectFit"/>  
+									</view>  
+								</swiper-item>
+							</swiper> 
 						</view>
 						<view class="content-wrapper">
-							<h2 class="name">
-								<!--medicine name-->
-								{{medicine_name}}
-							</h2>
-							<p class="reverse">
-								库存{{medicine_reverses}}
-							</p>
-							<p class="price">
-								<text class="text">￥{{medicine_price}}</text>
-								<text class="unit">/{{medicine_unit}}</text>
-							</p>
-							<view class="buy">
-								加入购物车
+							<view class="information">
+								<h2 class="name">
+									<!--medicine name-->
+									{{medicine_name}}
+								</h2>
+								<p class="reverse">
+									库存{{medicine_reverses}}
+								</p>
+								<p class="price">
+									<text class="text">￥{{medicine_price}}</text>
+									<text class="unit">/{{medicine_unit}}</text>
+								</p>
+							</view>
+							<view class="others">
+								<view class="image">
+									<image class="share-bt" src="../../static/pharmacy/image/share.png" mode="aspectFill"/>
+									<image class="more-bt" src="../../static/pharmacy/image/more.png" mode="aspectFill"/>
+								</view>
+								<view class="buy">
+									加入购物车
+								</view>
 							</view>
 						</view>
 					</view>
@@ -114,6 +124,7 @@
 	export default {
 		data() {
 			return {
+				swpier_height: 0,
 				title: '药品详情',
 				showFlag: false,
 				medicine_name: '',
@@ -129,12 +140,28 @@
 				medicine_number: '',
 				medicine_factory: '',
 				medicine_character: '',
-				medicine_picture_path: ''
+				medicine_picture_path_list: []
 			}
+		},
+		mounted() {
+			this.screenWidth = document.body.clientWidth;
+			this.screenHeight = document.body.clientHeight;
+			this.swpier_height = (this.screenWidth*3/4) + 'rpx'
+			window.onresize = () => {
+				return (() => {
+					this.screenWidth = document.body.clientWidth;
+					this.screenHeight = document.body.clientHeight;
+					this.swpier_height = (this.screenWidth*3/4) + 'rpx'
+				})()
+			};
+		},
+		computed:{
+
 		},
 		onLoad: function(option) {
 			getStatic("/pharmacy/details.json").then((res) => {
-				this.medicine_picture_path = res.data.list[option.id].path
+				for(var i = 0; i<3;++i)
+					this.medicine_picture_path_list.push(res.data.list[option.id].path)
 				this.medicine_name = res.data.list[option.id].name
 				this.medicine_price = res.data.list[option.id].price
 				this.medicine_reverses = res.data.list[option.id].reverses
@@ -169,15 +196,116 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.medicine {
-		position: fixed;
-		left: 0;
-		top: 50rpx;
-		bottom: 51px;
-		background: white;
-		width: 100%;
-		z-index: 90;
+		font-size: 150%;
+		margin-top: 30rpx;
+		.medicine-wrapper{
+			.medicine-content{
+				.image-wrapper{
+					width: 100%;
+					height: 100%;
+					.swiper-box
+					{
+						left: 0;
+						width: 100%;
+						.swiper-item{
+							height:100%;
+							.swiper-item-view{
+								width: 100%;
+								height: 100%;
+								.swiper-item-image{
+									width: 100%;
+									height: 100%;
+								}
+							}
+						}
+					}
+				}
+				.content-wrapper
+				{
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: flex-start;
+					align-content: flex-start;
+					position: relative;
+					width: 100%;
+					height:100%;
+					padding: 0 5% 0;
+					.information{
+						width: 100%;
+						height: 100%;
+						box-sizing:border-box;
+						.name{
+							font-size: 30px;
+							color: #333333;
+							line-height: 100%;
+							font-weight: bold;
+						}
+						.reverse {
+							font-size: 17px;
+							color: #9d9d9d;
+							margin-bottom: 5px;
+						}
+						.price {
+							font-size: 0;
+							.text {
+								font-size: 17px;
+								color: #FB4E44;
+							}
+							.unit {
+								font-size: 17px;
+								color: #9D9D9D;
+							}
+							margin-top: 0px;
+						}
+					}
+					.others{
+						box-sizing:border-box;
+						width: 100%;
+						height: 100%;
+						.image{
+							display: flex;
+							flex-direction: row;
+							justify-content: flex-start;
+							align-items: flex-start;
+							align-content: flex-start;
+							box-sizing:border-box;
+							.more-bt
+							{
+								box-sizing:border-box;
+								width: 50px;
+								height: 50px;
+							}
+							.share-bt
+							{
+								margin: 0 5% 0 0;
+								box-sizing:border-box;
+								width: 50px;
+								height: 50px;
+							}
+						}
+						
+						.buy {
+							margin: 3% 0 0 0;
+							box-sizing:border-box;
+							width: 50%;
+							height: 30%;
+							font-size: 50%;
+							line-height: 30px;
+							text-align: center;
+							background: #118bee;
+							border-radius: 30px;
+							color: #FFFFFF;	
+						}
+					}
+
+				}
+				
+			}
+			
+		}
 	}
 
 	.medicine-detail-enter-active,
@@ -190,96 +318,12 @@
 		transform: translateX(100%);
 	}
 
-	.medicine .medicine-wrapper .medicine-content .imgage-wrapper {
-		position: relative;
-		width: 100%;
-		height: 0;
-		/* 高度如何撑开？
-		在定位中，使用padding-top或padding-bottom设置为100%，其实盒子高度会根据盒子的宽度进行计算
-		*/
-		padding-top: 100%;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .image-wrapper .medicine-image {
-		position: absolute;
-		left: 0;
-		top: 100rpx;
-		width: 100%;
-		height: 50%;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .image-wrapper .share-bt,
-	.medicine .medicine-wrapper .medicine-content .image-wrapper .more-bt {
-		width: 30px;
-		height: 30px;
-		position: absolute;
-		top: 720rpx;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .image-wrapper .share-bt {
-		right: 50px;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .image-wrapper .more-bt {
-		right: 10px;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper {
-		padding: 750rpx 0 16px 16px;
-		position: relative;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .name {
-		font-size: 20px;
-		color: #333333;
-		line-height: 20rpx;
-		font-weight: bold;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .reverse {
-		font-size: 15px;
-		color: #9d9d9d;
-		margin-bottom: 6px;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .product {
-		height: 15px;
-		margin-bottom: 15px;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .price {
-		font-size: 0;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .price .text {
-		font-size: 17px;
-		color: #FB4E44;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .content-wrapper .price .unit {
-		font-size: 17px;
-		color: #9D9D9D;
-	}
-
-	.medicine .medicine-wrapper .medicine-content .buy {
-		width: 64px;
-		height: 30px;
-		font-size: 12px;
-		line-height: 30px;
-		text-align: center;
-		background: #118bee;
-		border-radius: 30px;
-		position: absolute;
-		right: 12px;
-		top: 800rpx;
-	}
-
 	.scroll-Y {
 		height: 100%;
 	}
 
 	.medicine .medicine-wrapper .description-content {
-		padding: 16px 0 16px 16px;
+		padding: 16px 5% 16px 5%;
 		position: relative;
 	}
 
