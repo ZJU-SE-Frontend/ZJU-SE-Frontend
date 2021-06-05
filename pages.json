@@ -143,6 +143,46 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/registration/register",
+			"style": {
+				"navigationBarTitleText": "挂号预约界面"
+			}
+		},
+		{
+			"path": "pages/registration/patient",
+			"style": {
+				"navigationBarTitleText": "bing"
+			}
+		},
+		{
+			"path": "pages/registration/info",
+			"style": {
+				"navigationBarTitleText": "测试界面"
+			}
+		},
+		{
+			"path": "pages/registration/doctor_ver2",
+			"style": {
+				"navigationBarTitleText": "医生界面"
+			}
+		}
+		,{
+		    "path" : "pages/registration/choose",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择医院"
+		    }
+		    
+		}
+		,{
+		    "path" : "pages/registration/room",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择科室"
+				
+		    }  
 		}
 	],
 	"globalStyle": {
