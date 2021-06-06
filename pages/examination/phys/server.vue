@@ -1,6 +1,7 @@
 <template>
 	<view class="page">
 		<view class="content">
+		{{curHospital}}
 		<view class=myitem>
 		    <view class="title">默认容量</view>
 			<view style="display: flex; flex-direction: row; align-content: flex-end;">
@@ -203,7 +204,7 @@
 		align-items: flex-start;
 		width: 85%;
 		height: fit-content;
-		margin-top: 100px;
+		margin-top: 80px;
 	}
 	
 	.myitem {
