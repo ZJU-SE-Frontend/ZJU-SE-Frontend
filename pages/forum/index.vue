@@ -49,12 +49,12 @@
 
 			<view  v-if="currentClassIfy==2" class="profile">
 				<view @tap="handleGetUserPost()" class="block" >					
-						<text>主题帖：{{this.postCnt}}</text>
+						<text>发帖：{{this.postCnt}}</text>
 				</view>
-				<view class="block">
+				<view @tap="handleGetUserQuestion()" class="block">
 					<text>提问:{{this.questionCnt}}</text>
 				</view>
-				<view class="block">
+				<view @tap="handleGetUserAnswer()" class="block">
 					<text>回答:{{this.answerCnt}}</text>
 				</view>				
 			</view>
@@ -99,7 +99,8 @@
 				userPhone:18888888888,
 				postCnt: 0,
 				questionCnt:0,
-				answerCnt:0
+				answerCnt:0,
+				profileTab:0
 			}
 		},
 		methods: {
@@ -133,8 +134,8 @@
 				}
 			},
 			
-			async handleGetUserPost(params){
-				
+			async handleGetUserPost(params){	
+				this.profileTab = "发帖"
 				if(params == null){
 					params = {
 						tab:this.handleGetTab(),
@@ -160,6 +161,63 @@
 				}
 			},
 			
+			async handleGetUserQuestion(params){
+				this.profileTab = "提问"
+				if(params == null){
+					params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:this.limit,
+						pageNo:this.page
+					}
+				}
+								
+				if(params.tab == '个人中心'){					
+					var posts = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo)
+					
+					if (posts.data.questions.length > 0) {
+						this.topicList = posts.data.questions;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			},
+			
+			async handleGetUserAnswer(params){
+				this.profileTab = "回答"
+				
+				if(params == null){
+					params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:this.limit,
+						pageNo:this.page
+					}
+				}
+								
+				if(params.tab == '个人中心'){					
+					var posts = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo)
+					
+					if (posts.data.qas.length > 0) {
+						this.topicList = posts.data.qas;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			},
+			
+			
+			
 			
 			async handleGetProfile(){
 				
@@ -175,25 +233,24 @@
 					console.log('个人中心')
 										
 					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
-					// var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
-					// var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
+					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
+					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
 					
 					console.log("查询成功")
 					if(posts.data.total){
 						this.postCnt = posts.data.total
-						
 						console.log(posts.data.total)
 					}
 					
-					// if(questions.data.total){
-						// this.questionCnt = questions.data.total
-					// 	console.log(questions.data.total)
-					// }
+					if(questions.data.total){
+						this.questionCnt = questions.data.total
+						console.log(questions.data.total)
+					}
 					
-					// if(answers.data.total){
-						// this.answerCnt = answers.data.total
-					// 	console.log(answers.data.total)
-					// }
+					if(answers.data.total){
+						this.answerCnt = answers.data.total
+						console.log(answers.data.total)
+					}
 					
 										
 				}
@@ -205,8 +262,6 @@
 				}else if( classIfyId == 2){
 					console.log("切换到个人中心")
 					this.currentClassIfy = classIfyId
-					
-					
 					
 					this.topicList=[]
 					this.handleGetProfile()
@@ -242,7 +297,18 @@
 								pageNo:--this.page
 							}
 							// Request
-							this.handleGetUserPost(params)
+							
+							if(this.profileTab == "发帖") {
+								console.log("发帖换页")
+								this.handleGetUserPost(params)
+							}else if(this.profileTab == "提问"){
+								console.log("提问换页")
+								this.handleGetUserQuestion(params)
+							}else if(this.profileTab == "回答"){
+								console.log("回答换页")
+								this.handleGetUserAnswer(params)
+							}
+							
 						}
 					}else if(action === 'next'){
 						const params = {
@@ -252,7 +318,18 @@
 							pageNo:this.page+1
 						}
 						// Request
-						var result = await this.handleGetUserPost(params)
+						var result 
+						if(this.profileTab == "发帖") {
+							console.log("发帖换页")
+							result = await this.handleGetUserPost(params)
+						}else if(this.profileTab == "提问"){
+							console.log("提问换页")
+							result = await this.handleGetUserQuestion(params)
+						}else if(this.profileTab == "回答"){
+							console.log("回答换页")
+							result = await this.handleGetUserAnswer(params)
+						}
+						 
 						if(result) {
 							this.page++;
 						}
