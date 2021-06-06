@@ -126,14 +126,14 @@
 		{
 			"path": "pages/examination/phys/server",
 			"style": {
-				"navigationBarTitleText": "医院管理员入口",
+				"navigationBarTitleText": "体检余量修改",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/examination/covid/server",
 			"style": {
-				"navigationBarTitleText": "医院管理员入口",
+				"navigationBarTitleText": "核酸余量修改",
 				"enablePullDownRefresh": false
 			}
 		},

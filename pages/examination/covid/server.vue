@@ -68,7 +68,9 @@
 			}
 		},
 		
-		onLoad() {
+		onLoad(e) {
+			this.curHospital = e.hospital;
+			console.log(this.curHospital);
 
 			fetchGet('/api/exam/covid/remainder/',{
 				hospital: this.curHospital,
