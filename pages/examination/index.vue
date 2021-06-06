@@ -33,6 +33,7 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
@@ -44,14 +45,28 @@
 		},
 		methods: {
 			gotoPhy() {
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else
 				uni.navigateTo({
-					url:"phys/phys"
+					url:"phys/phys?username=" + store.state.uerInfo.userName + "&userphone=" + store.state.uerInfo.userPhone
 				})
 			},
 			
 			gotoCov() {
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else
 				uni.navigateTo({
-					url:"covid/covid"
+					url:"covid/covid?username=" + store.state.uerInfo.userName + "&userphone=" + store.state.uerInfo.userPhone
 				})
 			},
 			
