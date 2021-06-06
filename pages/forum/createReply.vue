@@ -1,45 +1,46 @@
 <template>
 	<view class="content">
+		<!-- <view class="input"> -->
+			<!-- <textarea class="title-text" placeholder="请输入主题贴标题" auto-height="true" v-model="title"/> -->
+		<!-- </view> -->
 		<view class="input">
-			<textarea class="title-text" placeholder="请输入主题贴标题" maxlength="40" auto-height="true" v-model="title"/>
+			<textarea class="content-text" placeholder="请输入回复内容" maxlength="-1" auto-height="true" v-model="content"/>
 		</view>
-		<view class="input">
-			<textarea class="content-text" placeholder="请输入主题贴内容" maxlength="-1" v-model="content"/>
-		</view>
-		<button class="load-button" @tap="submitPost()">提交</button>
+		<button class="load-button" @tap="submitReply()">提交</button>
 	</view>
 </template>
 
 <script>
-	import {publicPost} from '../../fetch/api.js'
+	import {publicReply} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
-				title : '',
-				content : ''
+				content : '',
+				topicId : null
 			}
 		},
 		methods: {
-			async submitPost() {
-				if (this.title.length > 0 && this.content.length > 0) {
+			async submitReply() {
+				if (this.content.length > 0) {
 					const params = {
-						"session" : "交流空间",
-						"title" : this.title,
-						"authorName" : "卢本伟",
-						"authorPhone" : "18888888888",
+						"userPhone" : "18888888888",
 						"content" : this.content
 					};
-					await publicPost(params);
+					await publicReply(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					beforePage.refresh();
+					console.log(beforePage)
+					beforePage.getReplies();
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'
 					})
 				}
 			},
-			onLoad() {
+			onLoad(id) {
+				if(id) {
+					this.topicId = id.id
+				}
 			}
 		}
 	}

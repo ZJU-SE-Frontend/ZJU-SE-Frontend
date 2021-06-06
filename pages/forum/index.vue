@@ -18,7 +18,7 @@
 			<view v-if="topicList.length" class="topic-list">
 				<!-- 话题项 -->
 				<block v-for="topic of topicList">
-					<view @tap="navigator('./content?id=' + topic.topicId)" class="topic">
+					<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
 						<!-- <view class="topic-author-avatar"> -->
 							<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 						<!-- </view> -->

@@ -46,17 +46,25 @@
 		    }
 		},
 		{
-			"path": "pages/forum/content",
+			"path": "pages/forum/contentPost",
 			"style": {
 				"navigationBarTitleText": "健康论坛",
 				"app-plus": {
 					"titleNView": {
 					"buttons": [{
-					"type":"menu",
+					"text" : "+",
 					"float": "right"
 					}]}
 				}
 			}
+		},
+		{
+		    "path" : "pages/forum/createReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
 		},
 		{
 			"path": "pages/center/index",

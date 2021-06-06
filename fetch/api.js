@@ -330,3 +330,15 @@ export function getUserAnswer(userPhone,pageSize,pageNo){
 	}
 	return fetchGet("/api/forum/qa/answer/user/"+userPhone,params)
 }
+
+export function getTopicReplies(topicId, params) {
+	return fetchGet("/api/forum/post/reply/" + topicId, params)
+}
+
+export function publicReply(topicId, params) {
+	return fetchPost("/api/forum/post/reply/" + topicId, params)
+}
+
+export function deleteReply(replyId) {
+	return fetchDelete("/api/forum/post/reply/" + replyId)
+}

@@ -32,18 +32,21 @@
 				<!-- 话题回复 -->
 				<view class="detail-reply">
 					<!-- 回复标题 -->
-					<view class="reply-title">{{ topic.reply_count }}回复</view>
+					<!-- <view class="reply-title">{{ topic.replyCnt }}回复</view> -->
 					<!-- 回复列表 -->
 					<view class="reply-list">
-						<block v-for="(reply, replyIndex) of topic.replies" :key="reply.id">
+						<block v-for="(reply, replyIndex) of replies">
 							<view class="reply">
 								<view class="reply-header">
-									<view class="reply-author-avatar">
-										<image :src="reply.author.avatar_url"></image>
-									</view>
+									<!-- <view class="reply-author-avatar"> -->
+										<!-- <image :src="reply.author.avatar_url"></image> -->
+									<!-- </view> -->
 									<view class="reply-info">
-										<text class="reply-author">{{ reply.author.loginname}}</text>
-										<text class="reply-time">{{ replyIndex + 1 }}楼•{{ reply.create_at }}</text>
+										<text class="reply-author">{{ reply.userName}}</text>
+										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
+									</view>
+									<view class="reply-delete" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.replyId)">
+										<text class="delete-text">删除</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -56,7 +59,7 @@
 			</view>
 			
 			<!-- No data -->
-			<ssx-no-data v-if="!topic.id"></ssx-no-data>
+			<!-- <ssx-no-data v-if="!topic.id"></ssx-no-data> -->
 		</view>
 		
 		<!-- 返回按钮 -->
@@ -70,7 +73,8 @@ import uParse from '../../common/gaoyia-parse/parse'
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
-import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, addToFavorite, removeFromFavorite} from '../../fetch/api.js'
+import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, 
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -89,10 +93,18 @@ export default {
 			favoriteState: null,
 			hasLiked: null,
 			hasDisLiked: null,
-			userPhone: "18888888888"
+			userPhone: "18888888888",
+			pageSize : 10,
+			pageNo : 1,
+			replies : []
 		}
 	},
 	methods: {
+		onNavigationBarButtonTap(e) {
+			uni.navigateTo({
+				'url': './createReply?id=' + this.topicId
+			})
+		},
 		// 获取话题详情
 		async handleGetTopicDetail(id) {
 			var topic = await getPost(id);
@@ -180,6 +192,27 @@ export default {
 			else
 				await removeFromFavorite(this.topicId, params)
 			this.LoadFavoriteInfo()
+		},
+		async getReplies() {
+			const params = {
+				"pageSize" : this.pageSize,
+				"pageNo" : this.pageNo
+			}
+			var replies = await getTopicReplies(this.topicId, params)
+			this.replies = replies.data.postReplys
+			console.log(this.replies)
+			replies = []
+			for(var r in this.replies) {
+				if(this.replies[r].content != "") {
+					this.replies[r].lastEditTime = moment(this.replies[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+					replies.push(this.replies[r])
+				}
+			}
+			this.replies = replies
+		},
+		async removeReply(replyId) {
+			await deleteReply(replyId)
+			this.getReplies()
 		}
 	},
 	async onLoad(params) {
@@ -187,6 +220,7 @@ export default {
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
 			await addViewCnt(this.topicId)
+			await this.getReplies()
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.handleGetTopicDetail(this.topicId)
@@ -227,7 +261,7 @@ export default {
 	.detail-like {
 		display: flex;
 		flex-direction: row;
-		width: 440rpx;
+		width: 560rpx;
 		height: 40rpx;
 		padding: 20rpx;
 		// margin-left: auto;
@@ -235,7 +269,7 @@ export default {
 		
 		.info-cnt {
 			height: 40rpx;
-			width: 50rpx;
+			width: 80rpx;
 			font-size: 30rpx;
 			vertical-align: middle;
 			line-height: 40rpx;
@@ -290,6 +324,16 @@ export default {
 						.reply-time {
 							font-size: 11px;
 							color: #08c;
+						}
+					}
+					.reply-delete {
+						margin-left: 20rpx;
+						.delete-text {
+							padding: 3rpx 20rpx 3rpx 20rpx;
+							font-size: 11px;
+							// color: #ffffff;
+							// background-color: #ff0000;
+							color: #ff0000;
 						}
 					}
 				}
