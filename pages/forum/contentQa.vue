@@ -132,8 +132,9 @@ export default {
 			this.answers = answers.data.qas
 			answers = []
 			for(var r in this.answers) {
-				console.log(this.answers[r].questionId)
+				
 				var content = await getAnswerContent(this.answers[r].answerId)
+				console.log(content.data)
 				content = content.data.content
 				if(content != "") {
 					this.answers[r].lastEditTime = moment(this.answers[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')

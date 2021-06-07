@@ -43,11 +43,11 @@
 									<!-- </view> -->
 									<view class="reply-info">
 										<text class="reply-author">{{ reply.userName}}</text>
-										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
+										<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 									</view>
 									<view class="reply-delete" v-if="userPhone==reply.userPhone">
 										<text class="delete-text" @tap="removeReply(reply.replyId)">删除</text>
-										<text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text>
+										<!-- <text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text> -->
 									</view>
 								</view>
 								<view class="reply-content">
@@ -74,9 +74,9 @@ import uParse from '../../common/gaoyia-parse/parse'
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
-import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, 
+import {getPost, addViewCnt, getQaLikeInfo, postLike, deleteLike, getFavoriteInfo, 
 			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
-import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent} from '../../fetch/api.js'
+import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -139,8 +139,9 @@ export default {
 			const params = {
 				"userPhone" : this.userPhone,
 			};
-			var likeState = await getLikeInfo(this.topicId, params)
+			var likeState = await getQaLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
+			console.log(likeState)
 			this.hasLiked = (this.likeState == true)
 			this.hasDisLiked = (this.likeState == false)
 		},
@@ -214,7 +215,8 @@ export default {
 			this.replies = replies
 		},
 		async removeReply(replyId) {
-			await deleteReply(replyId)
+			console.log("218 " + replyId)
+			await deleteQaReply(replyId)
 			this.getReplies()
 		},
 		editReply(replyId, content) {
@@ -243,7 +245,7 @@ export default {
 			await this.getReplies()
 			console.log('33333333')
 			//this.LoadFavoriteInfo()
-			//this.loadLikeInfo()
+			this.loadLikeInfo()
 			this.handleGetTopicDetail(this.topicId)
 		}
 	}

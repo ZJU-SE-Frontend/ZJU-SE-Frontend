@@ -419,3 +419,7 @@ export function publicQaReply(topicId, params) {
 	console.log('asdasdasdasd' + params.userPhone)
 	return fetchPost("/api/forum/qa/answer/reply/" + topicId, params)
 }
+
+export function deleteQaReply(topicId) {
+	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
+}
