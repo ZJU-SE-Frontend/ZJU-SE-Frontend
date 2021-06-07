@@ -119,6 +119,7 @@ export default {
 			console.log(id)
 			var topic = await getQuestion(id);
 			this.topic = topic.data;
+			console.log(this.topic)
 			this.topic.lastEditTime = moment(this.topic.lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		async handleGetAnswer() {
@@ -140,7 +141,6 @@ export default {
 					answers.push(this.answers[r])
 				}
 			}
-			console.log(answers)
 			this.answers = answers
 		},
 		// 话题详情数据过滤

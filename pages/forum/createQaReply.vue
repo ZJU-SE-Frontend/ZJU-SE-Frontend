@@ -11,13 +11,13 @@
 </template>
 
 <script>
-	import {publicReply, getCurrentUserPhone} from '../../fetch/api.js'
+	import {publicQaReply, getCurrentUserPhone} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
 				content : '',
 				topicId : null,
-				userPhone : null
+				userPhone : '18888888888'
 			}
 		},
 		methods: {
@@ -27,7 +27,7 @@
 						"userPhone" : this.userPhone,
 						"content" : this.content
 					};
-					await publicReply(this.topicId, params);
+					await publicQaReply(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
 					console.log(beforePage)

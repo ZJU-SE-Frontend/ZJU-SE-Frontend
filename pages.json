@@ -73,7 +73,7 @@
 				"app-plus": {
 					"titleNView": {
 					"buttons": [{
-					"type":"menu",
+					"text" : "+",
 					"float": "right"
 					}]}
 				}
@@ -86,7 +86,7 @@
 				"app-plus": {
 					"titleNView": {
 					"buttons": [{
-					"type":"menu",
+					"text" : "+",
 					"float": "right"
 					}]}
 				}

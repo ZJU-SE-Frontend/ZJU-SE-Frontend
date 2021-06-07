@@ -10,7 +10,7 @@
 				<!-- 话题头部 -->
 				<view class="detail-header">
 					<!-- <view class="topic-title">{{ topic.title }}</view> -->
-					<view class="topic-header-info">•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</view>
+					<view class="topic-header-info">•修改于{{ topic.updateTime }}•作者 {{ topic.userName }}</view>
 				</view>
 				<!-- 话题内容 -->
 				<view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /></view>
@@ -104,7 +104,7 @@ export default {
 	methods: {
 		onNavigationBarButtonTap(e) {
 			uni.navigateTo({
-				'url': './createReply?id=' + this.topicId
+				'url': './createQaReply?id=' + this.topicId
 			})
 		},
 		// 获取话题详情

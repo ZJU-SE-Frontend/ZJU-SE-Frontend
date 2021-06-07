@@ -414,3 +414,8 @@ export function addAnswerViewCnt(questionId) {
 export function getQaTopicReplies(topicId, params) {
 	return fetchGet("/api/forum/qa/answer/reply/" + topicId, params)
 }
+
+export function publicQaReply(topicId, params) {
+	console.log('asdasdasdasd' + params.userPhone)
+	return fetchPost("/api/forum/qa/answer/reply/" + topicId, params)
+}
