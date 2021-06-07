@@ -52,6 +52,9 @@
 								<view class="reply-content">
 									<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 								</view>
+								<view class="reply-finfo">
+									{{ reply.replyCnt }}回复• {{ reply.likeCnt }}点赞
+								</view>
 							</view>
 						</block>
 					</view>
@@ -351,6 +354,10 @@ export default {
 					}
 				}
 				.reply-content {
+				}
+				.reply-finfo {
+					font-size: 12px;
+					color: #838383;
 				}
 			}
 		}
