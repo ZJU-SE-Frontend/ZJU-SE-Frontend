@@ -25,6 +25,12 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/order",
+			"style": {
+				"navigationBarTitleText": "订单结算"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"

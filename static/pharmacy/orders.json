@@ -1,0 +1,52 @@
+{
+	"list": [{
+			"id": 1,
+			"name": "阿司匹林",
+			"type": "全部",
+			"description": "对血小板的聚集有抑制作用",
+			"price": 14.99
+		},
+		{
+			"id": 2,
+			"name": "阿莫西林",
+			"type": "待付款",
+			"description": "治疗伤寒、其他沙门菌感染",
+			"price": 15.99
+		},
+		{
+			"id": 3,
+			"name": "感冒灵胶囊",
+			"type": "待付款",
+			"description": "解热镇痛",
+			"price": 24.99
+		},
+		{
+			"id": 4,
+			"name": "黄连上清片",
+			"type": "待发货",
+			"description": "滋阴养胃",
+			"price": 13.99
+		},
+		{
+			"id": 5,
+			"name": "养胃舒颗粒 ",
+			"type": "待收货",
+			"description": "散风清热，泻火止痛",
+			"price": 23.99
+		},
+		{
+			"id": 6,
+			"name": "健胃消食片",
+			"type": "评价",
+			"description": "健胃消食",
+			"price": 6.99
+		},
+		{
+			"id": 7,
+			"name": "咽炎片",
+			"type": "呼吸用药 ",
+			"description": "养阴润肺，清热解毒",
+			"price": 34.99
+		}
+	]
+}

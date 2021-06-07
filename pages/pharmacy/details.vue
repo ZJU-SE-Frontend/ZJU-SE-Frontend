@@ -1,126 +1,51 @@
 <template>
-	<transition name="medicine-detail">
-		<!--<view class="medicine" ref="medicineView" v-show="showFlag">-->
-		<view class="medicine">
-			<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
-			 @scroll="scroll">
-				<view class="medicine-wrapper">
-					<view class="medicine-content">
-						<view class="image-wrapper">
-							<swiper class="swiper-box" :style="{height: swpier_height}" autoplay="true" circular="true" indicatorDots="true" indicator-active-color="#fcf6f3">
-								<swiper-item  class="swiper-item" v-for="(item, index) in medicine_picture_path_list" :key="index">  
-									<view class="swiper-item-view">  
-										<image class="swiper-item-image":src="item" mode="aspectFit"/>  
-									</view>  
-								</swiper-item>
-							</swiper> 
-						</view>
-						<view class="content-wrapper">
-							<view class="information">
-								<h2 class="name">
-									<!--medicine name-->
-									{{medicine_name}}
-								</h2>
-								<p class="reverse">
-									库存{{medicine_reverses}}
-								</p>
-								<p class="price">
-									<text class="text">￥{{medicine_price}}</text>
-									<text class="unit">/{{medicine_unit}}</text>
-								</p>
-							</view>
-							<view class="others">
-								<view class="image">
-									<image class="share-bt" src="../../static/pharmacy/image/share.png" mode="aspectFill"/>
-									<image class="more-bt" src="../../static/pharmacy/image/more.png" mode="aspectFill"/>
-								</view>
-								<view class="buy">
-									加入购物车
-								</view>
-							</view>
-						</view>
-					</view>
-					<view class="split-line"></view>
-					<view class="description-content">
-						<view class="medicine-name">
-							<h2 class="description">
-								药品说明
-							</h2>
-						</view>
-						<view class="medicine-component ">
-							<h3 class="component">
-								药品成份
-							</h3>
-							<view v-html="medicine_content">
-							</view>
-						</view>
-						<view>
-							<h3 class="specification">
-								规格
-							</h3>
-							<view v-html="medicine_specification">
-							</view>
-						</view>
-						<view>
-							<h3 class="character">
-								性状
-							</h3>
-							<view v-html="medicine_character">
-							</view>
-						</view>
-						<view>
-							<h3 class="symptom">
-								适应症
-							</h3>
-							<view v-html="medicine_symptom">
-							</view>
-						</view>
-						<view>
-							<h3 class="usage">
-								用法用量
-							</h3>
-							<view v-html="medicine_usage">
-							</view>
-						</view>
-						<view>
-							<h3 class="reaction">
-								不良反应
-							</h3>
-							<view v-html="medicine_reaction">
-							</view>
-						</view>
-						<view>
-							<h3 class="storage">
-								存放环境
-							</h3>
-							<view v-html="medicine_storage">
-							</view>
-						</view>
-						<view>
-							<h3 class="number">
-								批准文号
-							</h3>
-							<view v-html="medicine_number">
-							</view>
-						</view>
-						<view>
-							<h3 class="factory">
-								生产企业
-							</h3>
-							<view v-html="medicine_factory">
-							</view>
-						</view>
-					</view>
-				</view>
-			</scroll-view>
+	<view class="">
+		<view class="image-wrapper">
+			<swiper class="swiper-box" :style="{height: swpier_height}" autoplay="true" circular="true" indicatorDots="true" indicator-active-color="#fcf6f3">
+				<swiper-item  class="swiper-item" v-for="(item, index) in medicine_picture_path_list" :key="index">  
+					<view class="swiper-item-view">  
+						<image class="swiper-item-image":src="item" mode="aspectFit"/>  
+					</view>  
+				</swiper-item>
+			</swiper> 
 		</view>
-	</transition>
+		<unisection title="商品介绍" type="line"></unisection>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"名称："+name}}</view>
+		<view v-if="wxstatus=='已通过'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"原价：￥"+price}}</view>
+		<view v-if="wxstatus=='已通过'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"现价：￥"+discount}}</view>
+		<!-- <view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"存库："+item.quantity}}</view> -->
+		<rich-text :nodes="content"></rich-text>
+		<unisection title="商品规格" type="line"></unisection>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"状态："+status}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"规格："+type}}</view>
+		<view v-if="pos!='用户'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"库存："+quantity}}</view>
+		<view style="margin-left: 20rpx;">
+		<uni-number-box  :min="1" :max="999" :value="quan" @change="myquan($event)"></uni-number-box>
+		</view>
+		<unisection title="商品详情" type="line"></unisection>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"内容："+ content}}</view>
+	
+		<unisection title="商品详情图" type="line"></unisection>
+		<image style="width: 100%;margin-top: 20rpx;height: 350px;" src="../../static/pharmacy/indexad.jpg"></image>
+
+		<view class="isbottom">
+		</view>
+		<view>
+		<uniGoodsNav class="isbutto" :fill="true" :options="options" :buttonGroup="buttonGroup" @click="onClick" @buttonClick="buttonClick" />
+	</view>
+	</view>
 </template>
 
 <script>
+	//引入
+	import uniNumberBox from "../../components/uni-number-box/uni-number-box.vue"
+	import uniGoodsNav from '../../components/uni-goods-nav/uni-goods-nav.vue'
+	import unisection from '../../components/goo-section/goo-section.vue'
 	import {
-		getStatic
-	} from "../../fetch/api.js"
+		uniList,
+		uniListItem,
+		uniListChat
+	} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -140,23 +65,38 @@
 				medicine_number: '',
 				medicine_factory: '',
 				medicine_character: '',
-				medicine_picture_path_list: []
+				medicine_picture_path_list: [
+					"https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/1.jpg",
+					"https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/1.jpg"],
+				name:' 巧克力',
+				price:'20',
+				discount:'15',
+				status:'上架',
+				type:'250kg',
+				quantity:'200',
+				content:'好吃的巧克力', //商品信息
+				quan: 1, //初始数量
+				quan1: 0, //最终数量
+				options: [{
+					icon: 'headphones',
+					text: '客服'
+				}, {
+					icon: 'cart',
+					text: '购物车',
+					//info: 2
+				}],
+				buttonGroup: [{
+						text: '加入购物车',
+						backgroundColor: '#ff0000',
+						color: '#fff'
+					},
+					{
+						text: '立即购买',
+						backgroundColor: '#ffa200',
+						color: '#fff'
+					}
+				],
 			}
-		},
-		mounted() {
-			this.screenWidth = document.body.clientWidth;
-			this.screenHeight = document.body.clientHeight;
-			this.swpier_height = (this.screenWidth*3/4) + 'rpx'
-			window.onresize = () => {
-				return (() => {
-					this.screenWidth = document.body.clientWidth;
-					this.screenHeight = document.body.clientHeight;
-					this.swpier_height = (this.screenWidth*3/4) + 'rpx'
-				})()
-			};
-		},
-		computed:{
-
 		},
 		onLoad: function(option) {
 			getStatic("/pharmacy/details.json").then((res) => {
@@ -177,167 +117,282 @@
 				this.medicine_character = res.data.list[option.id].character.replace(/\n/g, '<br>')
 			})
 		},
-		methods: {
-			upper: function(e) {
-				console.log(e)
-			},
-			lower: function(e) {
-				console.log(e)
-			},
-			scroll: function(e) {
-				console.log(e)
-				this.old.scrollTop = e.detail.scrollTop
-			},
-			getInformation() {
-
-			}
+		components: {
+			uniGoodsNav,
+			uniNumberBox,
+			unisection
 		},
-
+		onLoad() {
+		},
+		methods: {
+			//存取數量
+			myquan(e) {
+				this.quan1 = e
+			},
+			//左侧
+			onClick(e) {
+				switch (e.index) {
+					case 0:
+						//客服
+						break
+					case 1:
+						//购物车
+						break
+				}
+			},
+			//右侧
+			buttonClick(e) {
+				switch (e.index) {
+					case 0:
+						this.mycat();
+						break
+					case 1:
+						this.orno();
+						break
+				}
+			},
+			//确认下单
+			orno() {
+				var thit = this
+				uni.showModal({
+					title: '提示',
+					content: '确认下单',
+					success: function(res) {
+						if (res.confirm) {
+							thit.getwxid();
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			//下单
+			getwxid() {
+				uni.showToast({
+					title: '下单成功',
+					duration: 2000
+				});
+			},
+			mycat(){
+				uni.showToast({
+					title: '加入购物车成功',
+					duration: 2000
+				});
+			}
+		
+		}
 	}
 </script>
 
 <style lang="scss">
-	.medicine {
-		font-size: 150%;
-		margin-top: 30rpx;
-		.medicine-wrapper{
-			.medicine-content{
-				.image-wrapper{
+	.image-wrapper{
+		width: 100%;
+		height: 100%;
+		.swiper-box
+		{
+			left: 0;
+			width: 100%;
+			.swiper-item{
+				height:100%;
+				.swiper-item-view{
 					width: 100%;
 					height: 100%;
-					.swiper-box
-					{
-						left: 0;
-						width: 100%;
-						.swiper-item{
-							height:100%;
-							.swiper-item-view{
-								width: 100%;
-								height: 100%;
-								.swiper-item-image{
-									width: 100%;
-									height: 100%;
-								}
-							}
-						}
-					}
-				}
-				.content-wrapper
-				{
-					display: flex;
-					flex-direction: row;
-					justify-content: flex-start;
-					align-items: flex-start;
-					align-content: flex-start;
-					position: relative;
-					width: 100%;
-					height:100%;
-					padding: 0 5% 0;
-					.information{
+					.swiper-item-image{
 						width: 100%;
 						height: 100%;
-						box-sizing:border-box;
-						.name{
-							font-size: 30px;
-							color: #333333;
-							line-height: 100%;
-							font-weight: bold;
-						}
-						.reverse {
-							font-size: 17px;
-							color: #9d9d9d;
-							margin-bottom: 5px;
-						}
-						.price {
-							font-size: 0;
-							.text {
-								font-size: 17px;
-								color: #FB4E44;
-							}
-							.unit {
-								font-size: 17px;
-								color: #9D9D9D;
-							}
-							margin-top: 0px;
-						}
 					}
-					.others{
-						box-sizing:border-box;
-						width: 100%;
-						height: 100%;
-						.image{
-							display: flex;
-							flex-direction: row;
-							justify-content: flex-start;
-							align-items: flex-start;
-							align-content: flex-start;
-							box-sizing:border-box;
-							.more-bt
-							{
-								box-sizing:border-box;
-								width: 50px;
-								height: 50px;
-							}
-							.share-bt
-							{
-								margin: 0 5% 0 0;
-								box-sizing:border-box;
-								width: 50px;
-								height: 50px;
-							}
-						}
-						
-						.buy {
-							margin: 3% 0 0 0;
-							box-sizing:border-box;
-							width: 50%;
-							height: 30%;
-							font-size: 50%;
-							line-height: 30px;
-							text-align: center;
-							background: #118bee;
-							border-radius: 30px;
-							color: #FFFFFF;	
-						}
-					}
-
 				}
-				
 			}
-			
+		}
+	}
+	.top {
+		image {
+			width: 100%;
+			height: 100%;
 		}
 	}
 
-	.medicine-detail-enter-active,
-	.medicine-detail-leave-active {
-		transition: 1.0s
+	.body_list {
+		border-bottom: 1rpx none #3B4144;
+		margin-bottom: 40rpx;
+		margin-top: 40rpx;
 	}
 
-	.medicine-detail-leave-to,
-	.medicine-detail-leave-to {
-		transform: translateX(100%);
+	.body_list_1 {
+		margin-left: 40rpx;
+		margin-bottom: 40rpx;
+		font-size: 35rpx;
 	}
 
-	.scroll-Y {
-		height: 100%;
+	.hot_goods {
+		background: #eee;
+		overflow: hidden;
+
+		.tit {
+			height: 50px;
+			line-height: 50px;
+			color: #b50e03;
+			text-align: center;
+			letter-spacing: 20px;
+			background: #fff;
+			margin: 10rpx 0;
+		}
 	}
 
-	.medicine .medicine-wrapper .description-content {
-		padding: 16px 5% 16px 5%;
-		position: relative;
+	.datetime {
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 10rpx;
+
+		.datetime1 {
+			border: 1rpx solid #3B4144;
+			width: 30%;
+			height: 130rpx;
+			margin: 10rpx;
+			text-align: center;
+			border-radius: 15rpx;
+			background-color: #FFFFFF;
+
+			.datetime11 {
+				text-align: center;
+				font-size: 25rpx;
+				position: relative;
+
+			}
+		}
+
+		.ismycolor {
+			border: 3rpx solid #AAAAAA;
+			width: 30%;
+			height: 130rpx;
+			margin: 10rpx;
+			text-align: center;
+			border-radius: 15rpx;
+			background-color: #E5E5E5;
+
+			.datetime11 {
+				font-size: 25rpx;
+				position: relative;
+				text-align: center;
+
+				color: #AAAAAA;
+			}
+		}
+
+		.mycolor {
+			border: 3rpx solid #E64340;
+			width: 30%;
+			height: 130rpx;
+			margin: 10rpx;
+			text-align: center;
+			border-radius: 15rpx;
+			background-color: #FFFFFF;
+
+			.datetime11 {
+				font-size: 25rpx;
+				position: relative;
+				text-align: center;
+
+				color: #E64340;
+			}
+		}
 	}
 
-	.medicine .medicine-wrapper .description-content .medicine-name {
-		line-height: 30px;
-	}
-
-	.medicine .medicine-wrapper .description-content .medicine-component {
-		line-height: 30px;
-	}
-
-	.split-line {
+	.time {
+		border-top: 1rpx none #3B4144;
 		width: 100%;
-		height: 10px;
-		background: #d4d4d4;
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 10rpx;
+
+		.timenoon {
+			border: 1rpx solid #3B4144;
+			width: 45%;
+			height: 200rpx;
+			margin-left: 20rpx;
+			margin-top: 20rpx;
+			border-radius: 15px;
+			background-color: #FFFFFF;
+
+			.timenoon1 {
+				text-align: center;
+				position: relative;
+				top: 50rpx;
+				margin-bottom: 20rpx;
+				font-size: 40rpx;
+			}
+		}
+
+		.mycolor {
+			border: 1rpx solid #E64340;
+			width: 45%;
+			height: 200rpx;
+			margin-left: 20rpx;
+			margin-top: 20rpx;
+			border-radius: 15px;
+			background-color: #FFFFFF;
+
+			.timenoon1 {
+				text-align: center;
+				position: relative;
+				top: 50rpx;
+				margin-bottom: 20rpx;
+				font-size: 40rpx;
+				color: #E64340;
+			}
+		}
+
+		.ismycolor {
+			border: 1rpx solid #AAAAAA;
+			width: 45%;
+			height: 200rpx;
+			margin-left: 20rpx;
+			margin-top: 20rpx;
+			border-radius: 15px;
+			background-color: #E5E5E5;
+
+			.timenoon1 {
+				text-align: center;
+				position: relative;
+				top: 50rpx;
+				margin-bottom: 20rpx;
+				font-size: 40rpx;
+				color: #AAAAAA;
+			}
+		}
+	}
+
+	.buttionyes {
+		width: 80%;
+		height: 80%;
+		margin: 10rpx;
+		margin-left: 10%;
+	}
+
+	.isbuttionyes {
+		background-color: #FFFFFF;
+		text-align: center;
+		width: 100%;
+		position: fixed;
+		bottom: 1rpx;
+	}
+
+	.isbottom {
+		text-align: center;
+		width: 450rpx;
+		height: 100rpx;
+		display: flex;
+		flex-wrap: wrap;
+		position: relative;
+		left: 200rpx;
+	}
+
+	.list-text1 {
+		width: 100%;
+		height: 50upx;
+		line-height: 90upx;
+		font-size: 25upx;
+		color: #555;
+		flex: 1;
 	}
 </style>

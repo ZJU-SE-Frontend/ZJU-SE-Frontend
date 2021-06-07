@@ -1,7 +1,7 @@
 <template>
 	<view class="shopcart">
 		<!-- @click="toggleList" -->
-		<view class="cartBottom" @click="toggleList">
+		<view class="cartBottom" @click="toggleList()">
 			<view class="carIcon">
 				<view class="iconBox" :class="getAllCount ? 'active' : '' ">
 					<text class="allcount" v-if="getAllCount">{{getAllCount}}</text>
@@ -12,8 +12,8 @@
 				<text class="price" :class="getAllCount ?　'active': ''">￥{{getAllPrice}}</text>
 				<text class="deliveryPrice" style="font-size: 12px;">免配送费|支持自取</text>
 			</view>
-			<view class="BtnRight">
-				<text></text>
+			<view class="BtnRight" @click="test">
+				立即付款
 			</view>
 		</view>
 		<!-- 选择的商品 -->
@@ -112,10 +112,11 @@
 
 				return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
 			},
+
 		
 
 			toggleList() {
-				console.log('tog')
+				console.log('tog');
 				if (this.getList.length) {
 					this.isShowList = !this.isShowList;
 				}
@@ -128,6 +129,9 @@
 			},
 			decreaseCart(item) {
 				this.$emit('dec', item)
+			},
+			test(item){
+				this.$emit('test')
 			}
 
 		},
@@ -205,7 +209,16 @@
 	}
 
 	.BtnRight {
-		flex: 1;
+		border: solid 1upx;
+		padding: 0 24upx;
+		height: 80upx;
+		margin:auto;
+		align-items: center;
+		border-radius: 24upx;
+		font-size: $font-sm;
+		display: flex;
+		justify-content: center;
+		background-color: #ff00ff;
 	}
 
 	.cartList {
