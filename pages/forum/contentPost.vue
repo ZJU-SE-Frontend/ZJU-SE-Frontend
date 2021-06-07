@@ -275,11 +275,12 @@ export default {
 	.detail-like {
 		display: flex;
 		flex-direction: row;
-		width: 560rpx;
+		width: 690rpx;
 		height: 40rpx;
 		padding: 20rpx;
 		// margin-left: auto;
 		margin-right: auto;
+		border-bottom: #e5e5e5 solid 2rpx;
 		
 		.info-cnt {
 			height: 40rpx;
@@ -311,9 +312,9 @@ export default {
 		// 回复列表
 		.reply-list {
 			width: 690rpx;
-			padding: 20rpx;
+			padding: 0 20rpx 0 20rpx;
 			.reply {
-				padding: 25rpx 0 0;
+				padding: 15rpx 0 15rpx 0;
 				border-bottom: #f0f0f0 solid 2rpx;
 				.reply-header {
 					height: 88rpx;
