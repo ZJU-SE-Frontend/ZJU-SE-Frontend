@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<view class="content">
-		{{curHospital}}
+		<text style="color:#FFFFFF">{{curHospital}}</text>
 		<view class=myitem>
 		    <view class="title">默认容量</view>
 			<view style="display: flex; flex-direction: row; align-content: flex-end;">
@@ -41,6 +41,13 @@
 <script>
 	import {fetchGet, fetchPut} from "@/fetch/api.js";
 	import MxDatePicker from "../../../components/mx-datepicker/mx-datepicker.vue";
+	
+	function sleep(time){
+		return new Promise(function(resolve){
+			setTimeout(resolve, time);
+		});
+	}
+	
 	export default {
 		components: {
 		            MxDatePicker
@@ -171,18 +178,23 @@
 						defaultCapacity: this.defaultval,
 					}).then(res => {
 						console.log(res)
-						this.updata = true;
-						this.$forceUpdate();
 						uni.showToast({
 							title: '更新成功'
 						})
 					})
-									
+					
+					sleep(800).then(()=>{
+						fetchGet('/api/exam/covid/remainder/',{
+							hospital: this.curHospital,
+							appointDate: new Date(this.date).getTime() / 1000,
+						}).then(res => {
+							this.remainder = res.data.sections;	
+							this.updata = true;
+							this.$forceUpdate();
+						})
+					})				
 				}
-			
-			
 			}
-
 		}
 	}
 </script>
@@ -204,7 +216,7 @@
 		align-items: flex-start;
 		width: 85%;
 		height: fit-content;
-		margin-top: 80px;
+		margin-top: 100px;
 	}
 	
 	.myitem {

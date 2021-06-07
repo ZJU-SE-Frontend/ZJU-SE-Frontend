@@ -32,7 +32,6 @@
 
 <script>
 	import MxDatePicker from "@/components/mx-datepicker/mx-datepicker.vue";
-	import {fake_fetchGet, fake_fetchPost} from "../fake_backend.js";
 	import {getHospitalList_Cov, fetchGet} from "../../../fetch/api.js";
 	export default {
 		components: {
