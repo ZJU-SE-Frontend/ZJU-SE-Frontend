@@ -102,19 +102,19 @@
 				<view v-if="topicList.length" class ="topic-list">
 				<!-- 话题项 -->
 					<block v-for="topic of topicList">
-						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+						<view @tap="navigator('./contentQa?id=' + topic.data.questionId)" class="topic">
 							<!-- <view class="topic-author-avatar"> -->
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
 							<view class="topic-type">回答</view>
 							<view class="topic-info">
-								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-title">{{ topic.data.content }}</view>
 								<view class="topic-other">
 									<view class="topic-view">
-										<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+										<text>{{ topic.data.replyCnt }}回复·{{ topic.data.viewCnt }}浏览</text>
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-									<view class="topic-time">{{ topic.lastEditTime }}</view>
+									
 								</view>
 							</view>
 						</view>
@@ -155,7 +155,7 @@
 	const moment = require('moment')
 	import SsxNoData from './ssx-no-data'
 	import SsxHeader from './ssx-header'
-	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getQuestionList,getCurrentUserPhone} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getQuestionList,getCurrentUserPhone,getAnswerContent} from '../../fetch/api.js'
 	export default {
 		components: {
 			SsxNoData,
@@ -187,7 +187,7 @@
 				profileAnswerPage : 1,
 				// 条数
 				limit: 10,
-				userPhone: null,
+				userPhone: 18888888888,
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
@@ -314,18 +314,23 @@
 				}
 								
 				if(params.tab == '个人中心'){					
-					var posts = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo)
-					
-					if (posts.data.qas.length > 0) {
-						this.topicList = posts.data.qas;
-						for(var i = 0; i < this.topicList.length; i++) {
-							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+					var info = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo)
+					var answerList = []
+					if (info.data.qas.length > 0) { 
+						console.log(info.data.qas.length)
+						for(var i = 0; i < info.data.qas.length; i++) {
+							console.log(info.data.qas[i].answerId)
+							var data = await getAnswerContent(info.data.qas[i].answerId)
+							answerList[i]=data
 						}
+						
+						this.topicList = answerList;
 						return true;
 					}
-					else {
+					else{
 						return false;
 					}
+					
 				}
 			},
 			
