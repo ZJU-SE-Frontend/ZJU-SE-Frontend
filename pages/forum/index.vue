@@ -15,38 +15,72 @@
 			</view>
 
 			<!-- 列表 -->
-			<view v-if="topicList.length" class="topic-list">
-				<!-- 话题项 -->
-				<block v-for="topic of topicList">
-					<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
-						<!-- <view class="topic-author-avatar"> -->
-							<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-						<!-- </view> -->
-						<view class="topic-type">讨论</view>
-						<view class="topic-info">
-							<view class="topic-title">{{ topic.title }}</view>
-							<view class="topic-other">
-								<view class="topic-view">
-									<text>{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
+			<view  v-if="currentClassIfy==0" class="profile">
+				<view v-if="topicList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">讨论</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text>{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
 								</view>
-								<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-								<view class="topic-time">{{ topic.lastEditTime }}</view>
 							</view>
 						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">当前是第{{ page }}页</view>
 					</view>
-				</block>
-				<!-- 分页器 -->
-				<view class="pagination">
-					<view class="pagination-action">
-						<view @tap="handlePageChange('prev')" class="prev">prev</view>
-						<view @tap="handlePageChange('next')" class="next">next</view>
-					</view>
-					<view class="current-page">当前是第{{ page }}页</view>
 				</view>
 			</view>
 			<!-- No data -->
 			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
-
+			
+			<view  v-if="currentClassIfy==1" class="profile">
+				<view v-if="topicList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">问答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">当前是第{{ page }}页</view>
+					</view>
+				</view>
+			</view>
+			
 			<view  v-if="currentClassIfy==2" class="profile">
 				<view @tap="handleGetUserPost()" class="block" >					
 						<text>发帖：{{this.postCnt}}</text>
@@ -67,7 +101,7 @@
 	const moment = require('moment')
 	import SsxNoData from './ssx-no-data'
 	import SsxHeader from './ssx-header'
-	import {getPostList,getUserPost,getUserAnswer,getUserQuestion} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getQuestionList} from '../../fetch/api.js'
 	export default {
 		components: {
 			SsxNoData,
@@ -111,6 +145,9 @@
 					})
 				}
 				else if (this.handleGetTab() == '问答') {
+					uni.navigateTo({
+						'url': './createQuestion'
+					})
 					console.log('新建问答')
 				}
 			},
@@ -130,6 +167,17 @@
 					}
 				}
 				else if (params.tab == '问答') {
+					var questions = await getQuestionList(params.limit, params.page);
+					if (questions.data.questions.length > 0) {
+						this.topicList = questions.data.questions;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
 					console.log('问答页')
 				}
 			},

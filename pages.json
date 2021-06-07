@@ -37,8 +37,16 @@
 				}
 			}
 		},
-		{
+{
 		    "path" : "pages/forum/createPost",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createQuestion",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
@@ -59,7 +67,28 @@
 			}
 		},
 		{
+			"path": "pages/forum/contentQa",
+			"style": {
+				"navigationBarTitleText": "健康论坛",
+				"app-plus": {
+					"titleNView": {
+					"buttons": [{
+					"type":"menu",
+					"float": "right"
+					}]}
+				}
+			}
+		},
+		{
 		    "path" : "pages/forum/createReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createAnswer",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",

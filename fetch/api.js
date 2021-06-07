@@ -342,3 +342,63 @@ export function publicReply(topicId, params) {
 export function deleteReply(replyId) {
 	return fetchDelete("/api/forum/post/reply/" + replyId)
 }
+
+export function getQuestionList(pageSize, pageNo) {
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/question", params)
+}
+
+export function getQuestion(questionId) {
+	return fetchGet("/api/forum/qa/question/" + questionId)
+}
+
+export function publicQuestion(params) {
+	return fetchPost("/api/forum/qa/question", params)
+}
+
+export function addQaViewCnt(topicId) {
+	return fetchPut('/api/forum/qa/question/addViewCnt/' + topicId)
+}
+
+export function getQaLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/answer/like/' + topicId, params)
+}
+
+export function postQaLike(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/like/" + topicId, params)
+}
+
+export function deleteQaLike(topicId, params) {
+	return fetchDelete("/api/forum/qa/answer/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function getQaFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/answer/favorite/' + topicId, params)
+}
+
+export function addToQaFavorite(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/favorite/" + topicId, params)
+}
+
+export function removeFromQaFavorite(topicId, params) {
+	return fetchDelete("/api/forum/qa/answer/favorite/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function getAnswer(answerId, params) {
+	return fetchGet("/api/forum/qa/answer/" + answerId, params)
+}
+
+export function getAnswerContent(questionId) {
+	return fetchGet("/api/forum/qa/answer/content/" + questionId)
+}
+
+export function deleteAnswer(questionId) {
+	return fetchDelete("/api/forum/qa/answer/" + questionId)
+}
+
+export function publicAnswer(questionId, params) {
+	return fetchPost("/api/forum/qa/answer/" + questionId, params)
+}
