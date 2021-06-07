@@ -339,6 +339,10 @@ export function publicReply(topicId, params) {
 	return fetchPost("/api/forum/post/reply/" + topicId, params)
 }
 
+export function editReply(replyId, params) {
+	return fetchPut("/api/forum/post/reply/" + replyId, params)
+}
+
 export function deleteReply(replyId) {
 	return fetchDelete("/api/forum/post/reply/" + replyId)
 }

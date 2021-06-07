@@ -45,8 +45,9 @@
 										<text class="reply-author">{{ reply.userName}}</text>
 										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
-									<view class="reply-delete" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.replyId)">
-										<text class="delete-text">删除</text>
+									<view class="reply-delete" v-if="userPhone==reply.userPhone">
+										<text class="delete-text" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -94,7 +95,7 @@ export default {
 			hasLiked: null,
 			hasDisLiked: null,
 			userPhone: null,
-			pageSize : 10,
+			pageSize : 20,
 			pageNo : 1,
 			replies : []
 		}
@@ -213,6 +214,11 @@ export default {
 		async removeReply(replyId) {
 			await deleteReply(replyId)
 			this.getReplies()
+		},
+		editReply(replyId, content) {
+			uni.navigateTo({
+				'url': './editReply?id=' + replyId
+			})
 		},
 		async getCurrentUser() {
 			var userInfo = await getCurrentUserPhone()
@@ -337,11 +343,18 @@ export default {
 					.reply-delete {
 						margin-left: 20rpx;
 						.delete-text {
-							padding: 3rpx 20rpx 3rpx 20rpx;
+							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
 							// color: #ffffff;
 							// background-color: #ff0000;
 							color: #ff0000;
+						}
+						.edit-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							// color: #ffffff;
+							// background-color: #ff0000;
+							color: #ffaa00;
 						}
 					}
 				}

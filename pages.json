@@ -37,7 +37,7 @@
 				}
 			}
 		},
-{
+		{
 		    "path" : "pages/forum/createPost",
 		    "style" :                                                                                    
 		    {
@@ -81,6 +81,14 @@
 		},
 		{
 		    "path" : "pages/forum/createReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/editReply",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
