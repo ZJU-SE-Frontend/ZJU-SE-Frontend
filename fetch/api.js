@@ -266,7 +266,7 @@ export function publicPost(params) {
 export function addViewCnt(topicId) {
 	return fetchPut('/api/forum/post/addViewCnt/' + topicId)
 }
-
+ 
 export function getLikeInfo(topicId, params) {
 	return fetchGet('/api/forum/post/like/' + topicId, params)
 }
@@ -307,6 +307,15 @@ export function removeFromFavorite(topicId, params) {
 }
 
 //只考虑个人页面中的信息显示，封装了参数
+
+export function getUserFavorite(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/post/favorite/user/"+userPhone,params)
+}
+
 export function getUserPost(userPhone,pageSize,pageNo){
 	const params = {		
 		'pageSize' : pageSize,
