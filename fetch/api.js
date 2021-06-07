@@ -406,3 +406,11 @@ export function deleteAnswer(questionId) {
 export function publicAnswer(questionId, params) {
 	return fetchPost("/api/forum/qa/answer/" + questionId, params)
 }
+
+export function addAnswerViewCnt(questionId) {
+	return fetchPut('/api/forum/qa/answer/addViewCnt/' + questionId)
+}
+
+export function getQaTopicReplies(topicId, params) {
+	return fetchGet("/api/forum/qa/answer/reply/" + topicId, params)
+}

@@ -80,6 +80,19 @@
 			}
 		},
 		{
+			"path": "pages/forum/contentQaReply",
+			"style": {
+				"navigationBarTitleText": "健康论坛",
+				"app-plus": {
+					"titleNView": {
+					"buttons": [{
+					"type":"menu",
+					"float": "right"
+					}]}
+				}
+			}
+		},
+		{
 		    "path" : "pages/forum/createReply",
 		    "style" :                                                                                    
 		    {
@@ -97,6 +110,14 @@
 		},
 		{
 		    "path" : "pages/forum/createAnswer",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createQaReply",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",

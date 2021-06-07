@@ -9,44 +9,45 @@
 			<view>
 				<!-- 话题头部 -->
 				<view class="detail-header">
-					<view class="topic-title">{{ topic.title }}</view>
-					<view class="topic-header-info">•修改于{{ topic.lastEditTime }}•作者 {{ topic.userName }}</view>
+					<!-- <view class="topic-title">{{ topic.title }}</view> -->
+					<view class="topic-header-info">•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</view>
 				</view>
 				<!-- 话题内容 -->
-				<!--view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /--><!--/view-->
+				<view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /></view>
 				<!-- 点赞/踩 -->
 				<view class="detail-like">
-					<!-- <image v-if="hasLiked" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
+					<image v-if="hasLiked" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
 					<text class="info-cnt">{{ topic.likeCnt }}</text>
 					<image v-if='hasDisLiked' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
-					<text class="info-cnt">{{ topic.dislikeCnt }}</text> -->
+					<text class="info-cnt">{{ topic.dislikeCnt }}</text>
 					<image class="info-icon" src="../../static/forum/阅读 可见.svg"></image>
 					<text class="info-cnt">{{ topic.viewCnt }}</text>
 					<image class="info-icon" src="../../static/forum/评论.svg"></image>
-					<text class="info-cnt">{{ topic.answerCnt }}</text>
+					<text class="info-cnt">{{ topic.replyCnt }}</text>
 					<image v-if="favoriteState" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星 面性.svg"></image>
 					<image v-else class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星.svg"></image>
 				</view>
 				<!-- 话题回复 -->
 				<view class="detail-reply">
 					<!-- 回复标题 -->
-					<view class="reply-title">{{this.answers.length}}回答</view>
+					<!-- <view class="reply-title">{{ topic.replyCnt }}回复</view> -->
 					<!-- 回复列表 -->
 					<view class="reply-list">
-						<block v-for="(reply, replyIndex) of answers">
-							<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply">
+						<block v-for="(reply, replyIndex) of replies">
+							<view class="reply">
 								<view class="reply-header">
-									<!-- <view class="reply-author-avatar">
-										<image :src="reply.author.avatar_url"></image>
-									</view> -->
+									<!-- <view class="reply-author-avatar"> -->
+										<!-- <image :src="reply.author.avatar_url"></image> -->
+									<!-- </view> -->
 									<view class="reply-info">
-										<text class="reply-author">{{ reply.userName }}</text>
-										<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
+										<text class="reply-author">{{ reply.userName}}</text>
+										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
-									<view class="reply-delete" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">
-										<text class="delete-text">删除</text>
+									<view class="reply-delete" v-if="userPhone==reply.userPhone">
+										<text class="delete-text" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -73,8 +74,9 @@ import uParse from '../../common/gaoyia-parse/parse'
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
-import {getQuestion, addQaViewCnt, getQaLikeInfo, postLike, deleteLike, getQaFavoriteInfo, addToFavorite, removeFromFavorite} from '../../fetch/api.js'
-import {getAnswer, getAnswerContent, deleteAnswer} from '../../fetch/api.js'
+import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, 
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
+import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -93,52 +95,23 @@ export default {
 			favoriteState: null,
 			hasLiked: null,
 			hasDisLiked: null,
-			userPhone: "18888888888",
-			// 回复
-			page: 1,
-			limit: 10,
-			answers: []
+			userPhone: null,
+			pageSize : 20,
+			pageNo : 1,
+			replies : []
 		}
 	},
 	methods: {
 		onNavigationBarButtonTap(e) {
 			uni.navigateTo({
-				'url': './createAnswer?id=' + this.topicId
+				'url': './createReply?id=' + this.topicId
 			})
 		},
-		navigator(url) {
-			uni.navigateTo({
-				url
-			});
-		},
 		// 获取话题详情
-		async handleGetQaDetail(id) {
-			console.log(id)
-			var topic = await getQuestion(id);
+		async handleGetTopicDetail(id) {
+			var topic = await getAnswerContent(id);
 			this.topic = topic.data;
-			this.topic.lastEditTime = moment(this.topic.lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
-		},
-		async handleGetAnswer() {
-			const params = {
-				'pageSize' : this.limit,
-				'pageNo' : this.page
-			}
-			//console.log(id,params)
-			var answers = await getAnswer(this.topicId, params)
-			this.answers = answers.data.qas
-			answers = []
-			for(var r in this.answers) {
-				console.log(this.answers[r].questionId)
-				var content = await getAnswerContent(this.answers[r].answerId)
-				content = content.data.content
-				if(content != "") {
-					this.answers[r].lastEditTime = moment(this.answers[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
-					this.answers[r].content = content
-					answers.push(this.answers[r])
-				}
-			}
-			console.log(answers)
-			this.answers = answers
+			this.topic.updateTime = moment(this.topic.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		// 话题详情数据过滤
 		handleTopicDetailFilter(topic) {
@@ -164,79 +137,114 @@ export default {
 		},
 		async loadLikeInfo() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
-			var likeState = await getQaLikeInfo(this.topicId, params)
+			var likeState = await getLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
 			this.hasLiked = (this.likeState == true)
 			this.hasDisLiked = (this.likeState == false)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
-			var favoriteState = await getQaFavoriteInfo(this.topicId, params)
+			var favoriteState = await getFavoriteInfo(this.topicId, params)
 			this.favoriteState = favoriteState.data
 		},
 		async signalLike() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 				"like" : 1
 			};
-			await postQaLike(this.topicId, params)
+			await postLike(this.topicId, params)
 		},
 		async signalDislike() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 				"like" : 0
 			};
-			await postQaLike(this.topicId, params)
+			await postLike(this.topicId, params)
 		},		
 		async signalClear() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
-			await deleteQaLike(this.topicId, params)
+			await deleteLike(this.topicId, params)
 		},
 		async tapLike() {
 			await this.signalClear()
 			if (this.likeState != true)
 				await this.signalLike()
 			this.loadLikeInfo()
-			this.handleGetQaDetail(this.topicId)
+			this.handleGetTopicDetail(this.topicId)
 		},
 		async tapDislike() {
 			await this.signalClear()
 			if (this.likeState != false)
 				await this.signalDislike()
 			this.loadLikeInfo()
-			this.handleGetQaDetail(this.topicId)
+			this.handleGetTopicDetail(this.topicId)
 		},
 		async changeFavoriteState() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
 			if (!this.favoriteState)
 				await addToFavorite(this.topicId, params)
 			else
 				await removeFromFavorite(this.topicId, params)
-			this.LoadQaFavoriteInfo()
+			this.LoadFavoriteInfo()
 		},
-		async removeReply(answerId) {
-			await deleteAnswer(answerId)
-			this.handleGetAnswer()
+		async getReplies() {
+			const params = {
+				"pageSize" : this.pageSize,
+				"pageNo" : this.pageNo
+			}
+			var replies = await getQaTopicReplies(this.topicId, params)
+			console.log(replies.data.qaReplys)
+			this.replies = replies.data.qaReplys
+			console.log(this.replies)
+			replies = []
+			for(var r in this.replies) {
+				if(this.replies[r].content != "") {
+					this.replies[r].lastEditTime = moment(this.replies[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+					replies.push(this.replies[r])
+				}
+			}
+			this.replies = replies
+		},
+		async removeReply(replyId) {
+			await deleteReply(replyId)
+			this.getReplies()
+		},
+		editReply(replyId, content) {
+			uni.navigateTo({
+				'url': './editReply?id=' + replyId
+			})
+		},
+		async getCurrentUser() {
+			var userInfo = await getCurrentUserPhone()
+			console.log("user INFO: ")
+			console.log(userInfo)
+			this.userPhone = userInfo.user_phone
+			console.log(this.userPhone)
 		}
 	},
 	async onLoad(params) {
-		console.log(params)
 		if (params.id) {
+			//console.log(params.id)
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
-			await addQaViewCnt(this.topicId)
-			await this.handleGetAnswer()
-			this.LoadFavoriteInfo()
-			this.loadLikeInfo()
-			this.handleGetQaDetail(this.topicId)
+			this.userPhone = "18888888888"
+			//await this.getCurrentUser()
+			console.log('11111111')
+			await addAnswerViewCnt(this.topicId)
+			console.log('22222222')
+			await this.getReplies()
+			console.log('33333333')
+			//this.LoadFavoriteInfo()
+			//this.loadLikeInfo()
+			this.handleGetTopicDetail(this.topicId)
 		}
 	}
 }
@@ -274,15 +282,16 @@ export default {
 	.detail-like {
 		display: flex;
 		flex-direction: row;
-		width: 440rpx;
+		width: 690rpx;
 		height: 40rpx;
 		padding: 20rpx;
 		// margin-left: auto;
 		margin-right: auto;
+		border-bottom: #e5e5e5 solid 2rpx;
 		
 		.info-cnt {
 			height: 40rpx;
-			width: 50rpx;
+			width: 80rpx;
 			font-size: 30rpx;
 			vertical-align: middle;
 			line-height: 40rpx;
@@ -310,9 +319,9 @@ export default {
 		// 回复列表
 		.reply-list {
 			width: 690rpx;
-			padding: 20rpx;
+			padding: 0 20rpx 0 20rpx;
 			.reply {
-				padding: 25rpx 0 0;
+				padding: 15rpx 0 15rpx 0;
 				border-bottom: #f0f0f0 solid 2rpx;
 				.reply-header {
 					height: 88rpx;
@@ -342,11 +351,18 @@ export default {
 					.reply-delete {
 						margin-left: 20rpx;
 						.delete-text {
-							padding: 3rpx 20rpx 3rpx 20rpx;
+							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
 							// color: #ffffff;
 							// background-color: #ff0000;
 							color: #ff0000;
+						}
+						.edit-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							// color: #ffffff;
+							// background-color: #ff0000;
+							color: #ffaa00;
 						}
 					}
 				}
