@@ -74,7 +74,7 @@ import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, 
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply} from '../../fetch/api.js'
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -93,7 +93,7 @@ export default {
 			favoriteState: null,
 			hasLiked: null,
 			hasDisLiked: null,
-			userPhone: "18888888888",
+			userPhone: null,
 			pageSize : 10,
 			pageNo : 1,
 			replies : []
@@ -135,7 +135,7 @@ export default {
 		},
 		async loadLikeInfo() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
 			var likeState = await getLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
@@ -144,28 +144,28 @@ export default {
 		},
 		async LoadFavoriteInfo() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
 			var favoriteState = await getFavoriteInfo(this.topicId, params)
 			this.favoriteState = favoriteState.data
 		},
 		async signalLike() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 				"like" : 1
 			};
 			await postLike(this.topicId, params)
 		},
 		async signalDislike() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 				"like" : 0
 			};
 			await postLike(this.topicId, params)
 		},		
 		async signalClear() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
 			await deleteLike(this.topicId, params)
 		},
@@ -185,7 +185,7 @@ export default {
 		},
 		async changeFavoriteState() {
 			const params = {
-				"userPhone" : this.userPhone.toString(),
+				"userPhone" : this.userPhone,
 			};
 			if (!this.favoriteState)
 				await addToFavorite(this.topicId, params)
@@ -213,12 +213,20 @@ export default {
 		async removeReply(replyId) {
 			await deleteReply(replyId)
 			this.getReplies()
+		},
+		async getCurrentUser() {
+			var userInfo = await getCurrentUserPhone()
+			console.log("user INFO: ")
+			console.log(userInfo)
+			this.userPhone = userInfo.user_phone
+			console.log(this.userPhone)
 		}
 	},
 	async onLoad(params) {
 		if (params.id) {
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
+			await this.getCurrentUser()
 			await addViewCnt(this.topicId)
 			await this.getReplies()
 			this.LoadFavoriteInfo()

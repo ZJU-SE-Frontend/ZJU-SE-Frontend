@@ -101,7 +101,7 @@
 	const moment = require('moment')
 	import SsxNoData from './ssx-no-data'
 	import SsxHeader from './ssx-header'
-	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getQuestionList} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getQuestionList,getCurrentUserPhone} from '../../fetch/api.js'
 	export default {
 		components: {
 			SsxNoData,
@@ -130,7 +130,7 @@
 				page: 1,
 				// 条数
 				limit: 10,
-				userPhone:18888888888,
+				userPhone: null,
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
@@ -157,6 +157,7 @@
 					var posts = await getPostList(params.limit, params.page);
 					if (posts.data.posts.length > 0) {
 						this.topicList = posts.data.posts;
+						// this.topicList.sort(function(topic){return topic.lastEditTime}).reverse()
 						for(var i = 0; i < this.topicList.length; i++) {
 							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
 						}
@@ -444,8 +445,14 @@
 			refresh() {
 				this.page = 1;
 				this.load()
+			},
+			async getCurrentUser() {
+				var userInfo = await getCurrentUserPhone()
+				console.log("user INFO: ")
+				console.log(userInfo)
+				this.userPhone = userInfo.user_phone
+				console.log(this.userPhone)
 			}
-			
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
@@ -453,6 +460,7 @@
 		},
 		// 页面加载
 		onLoad() {
+			this.getCurrentUser()
 			this.load()
 		}
 	}

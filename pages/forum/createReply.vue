@@ -11,19 +11,20 @@
 </template>
 
 <script>
-	import {publicReply} from '../../fetch/api.js'
+	import {publicReply, getCurrentUserPhone} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
 				content : '',
-				topicId : null
+				topicId : null,
+				userPhone : null
 			}
 		},
 		methods: {
 			async submitReply() {
 				if (this.content.length > 0) {
 					const params = {
-						"userPhone" : "18888888888",
+						"userPhone" : this.userPhone,
 						"content" : this.content
 					};
 					await publicReply(this.topicId, params);
@@ -37,9 +38,17 @@
 					})
 				}
 			},
+			async getCurrentUser() {
+				var userInfo = await getCurrentUserPhone()
+				console.log("user INFO: ")
+				console.log(userInfo)
+				this.userPhone = userInfo.user_phone
+				console.log(this.userPhone)
+			},
 			onLoad(id) {
 				if(id) {
 					this.topicId = id.id
+					this.getCurrentUser()
 				}
 			}
 		}

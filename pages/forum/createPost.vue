@@ -11,22 +11,21 @@
 </template>
 
 <script>
-	import {publicPost} from '../../fetch/api.js'
+	import {publicPost, getCurrentUserPhone} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
 				title : '',
-				content : ''
+				content : '',
+				userPhone : null
 			}
 		},
 		methods: {
 			async submitPost() {
 				if (this.title.length > 0 && this.content.length > 0) {
 					const params = {
-						"session" : "交流空间",
 						"title" : this.title,
-						"authorName" : "卢本伟",
-						"authorPhone" : "18888888888",
+						"authorPhone" : this.userPhone,
 						"content" : this.content
 					};
 					await publicPost(params);
@@ -39,7 +38,15 @@
 					})
 				}
 			},
+			async getCurrentUser() {
+				var userInfo = await getCurrentUserPhone()
+				console.log("user INFO: ")
+				console.log(userInfo)
+				this.userPhone = userInfo.user_phone
+				console.log(this.userPhone)
+			},
 			onLoad() {
+				this.getCurrentUser()
 			}
 		}
 	}
