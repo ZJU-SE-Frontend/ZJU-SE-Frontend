@@ -30,15 +30,15 @@
 							{{item.name}}
 						</view>
 						<view class="food" v-for="(food, index) in item.items" :key="index" >
-							<image :src="food.img" mode="" style="width: 75px;height: 75px;margin-top: 6px;"@tap="onItemClicked(index, index)"></image>
+							<image :src="food.img" mode="" style="width: 75px;height: 75px;margin-top: 6px;"@tap="onItemClicked(i, index)"></image>
 							<view class="food-info" >
-								<text style="font-size: 15px;margin-top: 2px;" @tap="onItemClicked(index, index)">{{food.name}}</text>
-								<text style="font-size: 13px;margin: 2px 0;" @tap="onItemClicked(index, index)">{{food.description}}</text>
-								<text style="font-size: 13px;margin: 2px 0 4px;" @tap="onItemClicked(index, index)">月售{{food.sellCount}}</text>
+								<text style="font-size: 15px;margin-top: 2px;" @tap="onItemClicked(i, index)">{{food.name}}</text>
+								<text style="font-size: 13px;margin: 2px 0;" @tap="onItemClicked(i, index)">{{food.description}}</text>
+								<text style="font-size: 13px;margin: 2px 0 4px;" @tap="onItemClicked(i, index)">月售{{food.sellCount}}</text>
 		
 								<!-- 加减 -->
 								<view class="food-btm">
-									<text class="food-price" @tap="onItemClicked(index, index)">￥{{food.price}}</text>
+									<text class="food-price" @tap="onItemClicked(i, index)">￥{{food.price}}</text>
 									<cartcontrol :food="food" @add="addCart" @dec="decreaseCart" ></cartcontrol>
 									
 								</view>
@@ -168,18 +168,22 @@
 				// 根据名称遍历药品找到对应的index
 				var index = 0;
 				var dict ={
-					"阿司匹林":0,
-					"阿莫西林":1,
-					"感冒灵胶囊":2,
-					"黄连上清片":3,
-					"养胃舒颗粒":4,
-					"健胃消食片":5,
-					"咽炎片":6,
-					"通宣理肺颗粒":7
+					"防疫口罩":0,
+					"体温计":1,
+					"医用手套":2,
+					"医用酒精":3,
+					"阿司匹林":4,
+					"阿莫西林":5,
+					"感冒灵胶囊":6,
+					"黄连上清片":7,
+					"养胃舒颗粒":8,
+					"健胃消食片":9,
+					"咽炎片":10,
+					"通宣理肺颗粒":11
 				}
 				index = dict[res.value];
 				this.$nextTick(function() {
-					this.itemsTop =  Math.floor(index * 120) ;
+					this.itemsTop =  Math.floor(index * 110) ;
 					console.log(this.itemsTop);
 				})
 				this.$forceUpdate();
@@ -190,9 +194,7 @@
 				var that = this;
 				let height = 0;
 				var query = uni.createSelectorQuery();
-				// console.log('query',query);
 				let items = query.selectAll('.items');
-				// console.log('items', items);
 
 				this.$nextTick(function() {
 					items.fields({
@@ -269,8 +271,13 @@
 				uni.navigateTo({url: 'order?data='+jsonObj});
 			},
 			onItemClicked(index, index2) {
+				let id=0;
+				if(index==0)
+					id = index2+1;
+				else
+					id = (10+index*2+index2-1)
 				uni.navigateTo({
-					url: 'details?id='+index2
+					url: 'details?id='+id
 				})
 			}
 		}
@@ -290,9 +297,6 @@
 		bottom: 15px;
 		width: 100%;
 		overflow: hidden;
-	}
-	.content2 .items-wrapper{
-		bottom: 40px;
 	}
 
 	.current {

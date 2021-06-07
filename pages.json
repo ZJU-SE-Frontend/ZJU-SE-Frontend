@@ -31,6 +31,12 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/orders",
+			"style": {
+				"navigationBarTitleText": "订单列表"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"
@@ -194,7 +200,7 @@
 				"text": ""
 			},
 			{
-				"pagePath": "pages/forum/index",
+				"pagePath": "pages/pharmacy/orders",
 				"iconPath": "static/健康论坛.png",
 				"selectedIconPath": "static/健康论坛.png",
 				"text": ""

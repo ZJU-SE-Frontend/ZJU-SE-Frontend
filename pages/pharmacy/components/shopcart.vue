@@ -218,7 +218,7 @@
 		font-size: $font-sm;
 		display: flex;
 		justify-content: center;
-		background-color: #ff00ff;
+		background-color: #007aff;
 	}
 
 	.cartList {

@@ -181,6 +181,12 @@ export function getPharBoothDetail(id){
 	return fetchGet(`/api/phar/booth/detail/`+id)
 }
 
+export function getPharOrderList(userPhone){
+	return fetchGet(`/api/phar/order/list/` + userPhone)
+ }
+export function getPharOrderDetail(id){
+	return fetchGet(`/api/phar/order/detail/` + id)
+ }
 
 /* 健康检测模块API */
 

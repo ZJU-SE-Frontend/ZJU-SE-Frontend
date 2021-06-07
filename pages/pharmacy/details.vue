@@ -10,23 +10,25 @@
 			</swiper> 
 		</view>
 		<unisection title="商品介绍" type="line"></unisection>
-		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"名称："+name}}</view>
-		<view v-if="wxstatus=='已通过'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"原价：￥"+price}}</view>
-		<view v-if="wxstatus=='已通过'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"现价：￥"+discount}}</view>
-		<!-- <view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"存库："+item.quantity}}</view> -->
-		<rich-text :nodes="content"></rich-text>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"名称："+medicine_name}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"原价：￥"+medicine_price}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"现价：￥"+medicine_price}}</view>
+
 		<unisection title="商品规格" type="line"></unisection>
-		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"状态："+status}}</view>
-		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"规格："+type}}</view>
-		<view v-if="pos!='用户'" style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"库存："+quantity}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"状态："+"库存中"}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"类型："+medicine_type}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"库存："+quantity}}</view>
 		<view style="margin-left: 20rpx;">
 		<uni-number-box  :min="1" :max="999" :value="quan" @change="myquan($event)"></uni-number-box>
 		</view>
 		<unisection title="商品详情" type="line"></unisection>
-		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"内容："+ content}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"适用症："+ medicine_indication}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"用法用量："+ medicine_usageAndDosage}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"不良反应："+ medicine_adr}}</view>
+		<view style="color: #999999;margin: 20rpx;font-size: 30rpx;">{{"禁忌症："+ medicine_contraindications}}</view>
 	
-		<unisection title="商品详情图" type="line"></unisection>
-		<image style="width: 100%;margin-top: 20rpx;height: 350px;" src="../../static/pharmacy/indexad.jpg"></image>
+		<!--unisection title="商品详情图" type="line"></unisection>
+		<image style="width: 100%;margin-top: 20rpx;height: 350px;" src="../../static/pharmacy/indexad.jpg"></image-->
 
 		<view class="isbottom">
 		</view>
@@ -41,6 +43,7 @@
 	import uniNumberBox from "../../components/uni-number-box/uni-number-box.vue"
 	import uniGoodsNav from '../../components/uni-goods-nav/uni-goods-nav.vue'
 	import unisection from '../../components/goo-section/goo-section.vue'
+	import {getPharBoothDetail} from '../../fetch/api.js' 
 	import {
 		uniList,
 		uniListItem,
@@ -52,29 +55,15 @@
 				swpier_height: 0,
 				title: '药品详情',
 				showFlag: false,
-				medicine_name: '',
-				medicine_reverses: '',
-				medicine_price: '',
-				medicine_unit: '',
-				medicine_content: '',
-				medicine_specification: '',
-				medicine_sympton: '',
-				medicine_usage: '',
-				medicine_reaction: '',
-				medicine_storage: '',
-				medicine_number: '',
-				medicine_factory: '',
-				medicine_character: '',
-				medicine_picture_path_list: [
-					"https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/1.jpg",
-					"https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/1.jpg"],
-				name:' 巧克力',
-				price:'20',
-				discount:'15',
-				status:'上架',
-				type:'250kg',
-				quantity:'200',
-				content:'好吃的巧克力', //商品信息
+				medicine_picture_path_list: [],
+				medicine_name :'',
+				medicine_type :'',
+				medicine_price :'',
+				medicine_indication :'',
+				medicine_usageAndDosage :'',
+				medicine_adr :'',
+				medicine_contraindication :'',
+				quantity: Math.floor(Math.random()*2000),
 				quan: 1, //初始数量
 				quan1: 0, //最终数量
 				options: [{
@@ -99,22 +88,18 @@
 			}
 		},
 		onLoad: function(option) {
-			getStatic("/pharmacy/details.json").then((res) => {
+			console.log(option.id)
+			getPharBoothDetail(option.id).then((res) => {
+				console.log(res)
 				for(var i = 0; i<3;++i)
-					this.medicine_picture_path_list.push(res.data.list[option.id].path)
-				this.medicine_name = res.data.list[option.id].name
-				this.medicine_price = res.data.list[option.id].price
-				this.medicine_reverses = res.data.list[option.id].reverses
-				this.medicine_unit = res.data.list[option.id].unit
-				this.medicine_content = res.data.list[option.id].content.replace(/\n/g, '<br>')
-				this.medicine_specification = res.data.list[option.id].specification.replace(/\n/g, '<br>')
-				this.medicine_symptom = res.data.list[option.id].symptom.replace(/\n/g, '<br>')
-				this.medicine_usage = res.data.list[option.id].usage.replace(/\n/g, '<br>')
-				this.medicine_reaction = res.data.list[option.id].reaction.replace(/\n/g, '<br>')
-				this.medicine_storage = res.data.list[option.id].storage.replace(/\n/g, '<br>')
-				this.medicine_number = res.data.list[option.id].number.replace(/\n/g, '<br>')
-				this.medicine_factory = res.data.list[option.id].factory.replace(/\n/g, '<br>')
-				this.medicine_character = res.data.list[option.id].character.replace(/\n/g, '<br>')
+					this.medicine_picture_path_list.push(res.data.picPath)
+				this.medicine_name = res.data.name
+				this.medicine_type = res.data.type
+				this.medicine_price = res.data.price
+				this.medicine_indication = res.data.lIndication
+				this.medicine_usageAndDosage = res.data.usageAndDosage
+				this.medicine_adr = res.data.adr
+				this.medicine_contraindications = res.data.contraindications
 			})
 		},
 		components: {
@@ -122,7 +107,17 @@
 			uniNumberBox,
 			unisection
 		},
-		onLoad() {
+		mounted() {
+			this.screenWidth = document.body.clientWidth;
+			this.screenHeight = document.body.clientHeight;
+			this.swpier_height = (this.screenWidth*3/4) + 'rpx'
+			window.onresize = () => {
+				return (() => {
+					this.screenWidth = document.body.clientWidth;
+					this.screenHeight = document.body.clientHeight;
+					this.swpier_height = (this.screenWidth*3/4) + 'rpx'
+				})()
+			};
 		},
 		methods: {
 			//存取數量
@@ -144,6 +139,7 @@
 			buttonClick(e) {
 				switch (e.index) {
 					case 0:
+						console.log("加入购物车")
 						this.mycat();
 						break
 					case 1:
@@ -205,13 +201,7 @@
 			}
 		}
 	}
-	.top {
-		image {
-			width: 100%;
-			height: 100%;
-		}
-	}
-
+	
 	.body_list {
 		border-bottom: 1rpx none #3B4144;
 		margin-bottom: 40rpx;
