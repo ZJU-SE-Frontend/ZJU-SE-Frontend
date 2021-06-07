@@ -15,7 +15,7 @@
 			</view>
 
 			<!-- 列表 -->
-			<view  v-if="currentClassIfy==0" class="profile">
+			<view  v-if="currentClassIfy==0 || (currentClassIfy==2 && profileTab==0)" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -49,7 +49,7 @@
 			<!-- No data -->
 			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
 			
-			<view  v-if="currentClassIfy==1" class="profile">
+			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && (profileTab==1 || profileTab==2) )" class="qa">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -183,7 +183,7 @@
 			},
 			
 			async handleGetUserPost(params){	
-				this.profileTab = "发帖"
+				this.profileTab = 0
 				if(params == null){
 					params = {
 						tab:this.handleGetTab(),
@@ -193,9 +193,11 @@
 					}
 				}
 								
-				if(params.tab == '个人中心'){					
-					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+				if(params.tab == '个人中心'){
 					
+					
+					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+					console.log("查询用户帖子")
 					if (posts.data.posts.length > 0) {
 						this.topicList = posts.data.posts;
 						for(var i = 0; i < this.topicList.length; i++) {
@@ -210,7 +212,7 @@
 			},
 			
 			async handleGetUserQuestion(params){
-				this.profileTab = "提问"
+				this.profileTab = 1
 				if(params == null){
 					params = {
 						tab:this.handleGetTab(),
@@ -237,7 +239,7 @@
 			},
 			
 			async handleGetUserAnswer(params){
-				this.profileTab = "回答"
+				this.profileTab = 2
 				
 				if(params == null){
 					params = {
@@ -346,13 +348,13 @@
 							}
 							// Request
 							
-							if(this.profileTab == "发帖") {
+							if(this.profileTab == 0) {
 								console.log("发帖换页")
 								this.handleGetUserPost(params)
-							}else if(this.profileTab == "提问"){
+							}else if(this.profileTab == 1){
 								console.log("提问换页")
 								this.handleGetUserQuestion(params)
-							}else if(this.profileTab == "回答"){
+							}else if(this.profileTab == 2){
 								console.log("回答换页")
 								this.handleGetUserAnswer(params)
 							}
@@ -367,13 +369,13 @@
 						}
 						// Request
 						var result 
-						if(this.profileTab == "发帖") {
+						if(this.profileTab == 0) {
 							console.log("发帖换页")
 							result = await this.handleGetUserPost(params)
-						}else if(this.profileTab == "提问"){
+						}else if(this.profileTab == 1){
 							console.log("提问换页")
 							result = await this.handleGetUserQuestion(params)
-						}else if(this.profileTab == "回答"){
+						}else if(this.profileTab == 2){
 							console.log("回答换页")
 							result = await this.handleGetUserAnswer(params)
 						}
