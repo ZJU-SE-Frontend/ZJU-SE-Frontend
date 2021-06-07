@@ -42,14 +42,22 @@
 							<view @tap="handlePageChange('prev')" class="prev">prev</view>
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
-						<view class="current-page">当前是第{{ page }}页</view>
+						<view class="current-page">
+							<block v-if="currentClassIfy==2 && profileTab==0">
+								当前是第{{ profilePostPage }}页
+							</block>
+							
+							<block v-if="currentClassIfy==0">
+								当前是第{{ page }}页
+							</block>
+						</view>
 					</view>
 				</view>
 			</view>
 			<!-- No data -->
 			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
 			
-			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && (profileTab==1 || profileTab==2) )" class="qa">
+			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && profileTab==1 )" class="qa">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -76,7 +84,53 @@
 							<view @tap="handlePageChange('prev')" class="prev">prev</view>
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
-						<view class="current-page">当前是第{{ page }}页</view>
+						<view class="current-page">
+							<block v-if="currentClassIfy==2 && profileTab==1">
+								当前是第{{ profileQuestionPage }}页
+							</block>
+							
+							<block v-if="currentClassIfy==1">
+								当前是第{{ page }}页
+							</block>
+							
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view v-if="currentClassIfy ==2 && profileTab == 2" class = "qa">
+				<view v-if="topicList.length" class ="topic-list">
+				<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">回答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+							<block v-if="currentClassIfy==2 && profileTab==2">
+								当前是第{{ profileAnswerPage }}页
+							</block>
+							
+							
+						</view>
 					</view>
 				</view>
 			</view>
@@ -128,6 +182,9 @@
 				],
 				// 页码
 				page: 1,
+				profilePostPage : 1,
+				profileQuestionPage : 1,
+				profileAnswerPage : 1,
 				// 条数
 				limit: 10,
 				userPhone: null,
@@ -190,12 +247,17 @@
 						tab:this.handleGetTab(),
 						userPhone:this.userPhone,
 						pageSize:this.limit,
-						pageNo:this.page
+						pageNo:1
 					}
 				}
 								
 				if(params.tab == '个人中心'){
-					
+					console.log("None page")
+					if(params.pageNo){
+						console.log(params.pageNo)
+					}else{
+						console.log("None page")
+					}
 					
 					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
 					console.log("查询用户帖子")
@@ -219,7 +281,7 @@
 						tab:this.handleGetTab(),
 						userPhone:this.userPhone,
 						pageSize:this.limit,
-						pageNo:this.page
+						pageNo:this.profileQuestionPage
 					}
 				}
 								
@@ -247,7 +309,7 @@
 						tab:this.handleGetTab(),
 						userPhone:this.userPhone,
 						pageSize:this.limit,
-						pageNo:this.page
+						pageNo:this.profileAnswerPage
 					}
 				}
 								
@@ -338,51 +400,95 @@
 			async handlePageChange(action) {
 				if(this.currentClassIfy == 2){
 					if(action === 'prev'){
-						if (this.page === 1) {
-							this.$util.toast('这是第一页鸭')
-						} else {
+						
+						if(this.profileTab == 0){
+							if (this.profilePostPage === 1) {
+								this.$util.toast('这是第一页鸭')
+							}else{
+								console.log("发帖换页")
+								const params = {
+									tab:this.handleGetTab(),
+									userPhone:this.userPhone,
+									pageSize:this.limit,
+									pageNo:--this.profilePostPage
+								}
+								this.handleGetUserPost(params)
+							}
+							
+						}else if(this.profileTab == 1){
+							if (this.profileQuestionPage === 1) {
+								this.$util.toast('这是第一页鸭')
+							}
+								
+							else{
+								const params = {
+									tab:this.handleGetTab(),
+									userPhone:this.userPhone,
+									pageSize:this.limit,
+									pageNo:--this.profileQuestionPage
+								}
+								console.log("提问换页")
+								this.handleGetUserQuestion(params)
+							}
+						}else if(this.profileTab == 2){
+							if (this.profileAnswerPage === 1) {
+								this.$util.toast('这是第一页鸭')
+							}else{
+								const params = {
+									tab:this.handleGetTab(),
+									userPhone:this.userPhone,
+									pageSize:this.limit,
+									pageNo:--this.profileAnswerPage
+								}
+								console.log("回答换页")
+								this.handleGetUserAnswer(params)
+							}
+						}
+						
+						
+							
+
+					}else if(action === 'next'){
+						
+						// Request
+						var result 
+						if(this.profileTab == 0) {
 							const params = {
 								tab:this.handleGetTab(),
 								userPhone:this.userPhone,
 								pageSize:this.limit,
-								pageNo:--this.page
+								pageNo:this.profilePostPage+1
 							}
-							// Request
-							
-							if(this.profileTab == 0) {
-								console.log("发帖换页")
-								this.handleGetUserPost(params)
-							}else if(this.profileTab == 1){
-								console.log("提问换页")
-								this.handleGetUserQuestion(params)
-							}else if(this.profileTab == 2){
-								console.log("回答换页")
-								this.handleGetUserAnswer(params)
-							}
-							
-						}
-					}else if(action === 'next'){
-						const params = {
-							tab:this.handleGetTab(),
-							userPhone:this.userPhone,
-							pageSize:this.limit,
-							pageNo:this.page+1
-						}
-						// Request
-						var result 
-						if(this.profileTab == 0) {
 							console.log("发帖换页")
 							result = await this.handleGetUserPost(params)
 						}else if(this.profileTab == 1){
+							const params = {
+								tab:this.handleGetTab(),
+								userPhone:this.userPhone,
+								pageSize:this.limit,
+								pageNo:this.profileQuestionPage+1
+							}
 							console.log("提问换页")
 							result = await this.handleGetUserQuestion(params)
 						}else if(this.profileTab == 2){
+							const params = {
+								tab:this.handleGetTab(),
+								userPhone:this.userPhone,
+								pageSize:this.limit,
+								pageNo:this.profileAnswerPage+1
+							}
 							console.log("回答换页")
 							result = await this.handleGetUserAnswer(params)
 						}
 						 
 						if(result) {
-							this.page++;
+							if(this.profileTab == 0){
+								this.profilePostPage++
+							}else if(this.profileTab == 1){
+								this.profileQuestionPage++
+							}else if(this.profileTab == 2){
+								this.profileAnswerPage++
+							}
 						}
 						else {
 							this.$util.toast('没有更多贴子啦')
