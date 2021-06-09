@@ -1,8 +1,5 @@
 <template>
 	<view>
-		<!-- 头部 -->
-		<!-- <ssx-header></ssx-header> -->
-
 		<!-- 话题详情 -->
 		<view class="topic-detail">
 			<!-- 话题详情 -->
@@ -13,13 +10,15 @@
 					<view class="topic-header-info">•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</view>
 				</view>
 				<!-- 话题内容 -->
-				<view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /></view>
+				<view class="detail-content">
+					<text>{{ topic.content }}</text>
+				</view>
 				<!-- 点赞/踩 -->
 				<view class="detail-like">
-					<image v-if="hasLiked" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
+					<image v-if="likeState==true" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
 					<text class="info-cnt">{{ topic.likeCnt }}</text>
-					<image v-if='hasDisLiked' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
+					<image v-if='likeState==false' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
 					<text class="info-cnt">{{ topic.dislikeCnt }}</text>
 					<image class="info-icon" src="../../static/forum/阅读 可见.svg"></image>
@@ -49,38 +48,23 @@
 									</view>
 								</view>
 								<view class="reply-content">
-									<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
+									<text>{{ reply.content }}</text>
 								</view>
 							</view>
 						</block>
 					</view>
 				</view>
 			</view>
-			
-			<!-- No data -->
-			<!-- <ssx-no-data v-if="!topic.id"></ssx-no-data> -->
 		</view>
 		
-		<!-- 返回按钮 -->
-		<!-- <ssx-fix-button></ssx-fix-button> -->
 	</view>
 </template>
 
 <script>
 const moment = require('moment')
-import uParse from '../../common/gaoyia-parse/parse'
-import SsxHeader from './ssx-header'
-import SsxNoData from './ssx-no-data'
-import SsxFixButton from './ssx-fix-button'
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply,
 			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
 export default {
-	components: {
-		uParse,
-		SsxHeader,
-		SsxNoData,
-		SsxFixButton,
-	},
 	data() {
 		return {
 			// 加载层
@@ -90,8 +74,6 @@ export default {
 			topic: null,
 			likeState: null,
 			favoriteState: null,
-			hasLiked: null,
-			hasDisLiked: null,
 			userPhone: null,
 			pageSize : 20,
 			pageNo : 1,
@@ -138,8 +120,6 @@ export default {
 			};
 			var likeState = await getLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
-			this.hasLiked = (this.likeState == true)
-			this.hasDisLiked = (this.likeState == false)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
