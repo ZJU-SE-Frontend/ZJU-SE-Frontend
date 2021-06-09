@@ -10,6 +10,21 @@
 					</view>
 				</block>
 			</view>
+			
+			<view  v-if="currentClassIfy==2" class="profile-tab">
+				<view @tap="handleGetUserPost()" class="block" :class="{'selected': profileTab === 0}">					
+						<text>发帖：{{this.postCnt}}</text>
+				</view>
+				<view @tap="handleGetUserQuestion()" class="block" :class="{'selected': profileTab === 1}">
+					<text>提问:{{this.questionCnt}}</text>
+				</view>
+				<view @tap="handleGetUserAnswer()" class="block" :class="{'selected': profileTab === 2}">
+					<text>回答:{{this.answerCnt}}</text>
+				</view>			
+				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
+					<text>收藏:{{this.favoriteCnt}}</text>
+				</view>
+			</view>
 
 			<!-- 列表 -->
 			<view  v-if="currentClassIfy==0" class="post">
@@ -88,7 +103,7 @@
 				</view>
 			</view>
 			
-			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && profileTab==1 )" class="qa">
+			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && profileTab==1 )" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -129,7 +144,7 @@
 				</view>
 			</view>
 			
-			<view v-if="currentClassIfy ==2 && profileTab == 2" class = "qa">
+			<view v-if="currentClassIfy ==2 && profileTab == 2" class = "post">
 				<view v-if="topicList.length" class ="topic-list">
 				<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -145,7 +160,7 @@
 										<text>{{ topic.data.replyCnt }}回复·{{ topic.data.viewCnt }}浏览</text>
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-									
+								<view class="topic-time">{{ topic.lastEditTime }}</view>
 								</view>
 							</view>
 						</view>
@@ -175,7 +190,11 @@
 							<view class="topic-type">讨论</view>
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
 							</view>
+						
 						</view>
 					</block>
 					<!-- 分页器 -->
@@ -188,29 +207,12 @@
 							<block v-if="currentClassIfy==2 && profileTab==3">
 								当前是第{{ profileFavoritePage }}页
 							</block>
-							
-							<block v-if="currentClassIfy==0">
-								当前是第{{ page }}页
-							</block>
 						</view>
 					</view>
 				</view>
 			</view>
 			
-			<view  v-if="currentClassIfy==2" class="profile">
-				<view @tap="handleGetUserPost()" class="block" >					
-						<text>发帖：{{this.postCnt}}</text>
-				</view>
-				<view @tap="handleGetUserQuestion()" class="block">
-					<text>提问:{{this.questionCnt}}</text>
-				</view>
-				<view @tap="handleGetUserAnswer()" class="block">
-					<text>回答:{{this.answerCnt}}</text>
-				</view>			
-				<view @tap="handleGetUserFavorite()" class="block">
-					<text>收藏:{{this.favoriteCnt}}</text>
-				</view>
-			</view>
+
 		</view>
 		
 	</view>
@@ -251,7 +253,7 @@
 				questionCnt:0,
 				answerCnt:0,
 				favoriteCnt:0,
-				profileTab:0
+				profileTab:null
 			}
 		},
 		methods: {
@@ -386,9 +388,15 @@
 							console.log(info.data.qas[i].answerId)
 							var data = await getAnswerContent(info.data.qas[i].answerId)
 							answerList[i]=data
+							answerList[i].lastEditTime = info.data.qas[i].lastEditTime
 						}
 						
 						this.topicList = answerList;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+							console.log(this.topicList[i].lastEditTime)
+						}
+						
 						return true;
 					}
 					else{
@@ -422,7 +430,7 @@
 					if (posts.data.favorites.length > 0) {
 						this.topicList = posts.data.favorites;
 						for(var i = 0; i < this.topicList.length; i++) {
-							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+							this.topicList[i].lastEditTime = moment(this.topicList[i].favoriteTime*1000).format('YYYY-MM-DD HH:mm:ss')
 						}
 						return true;
 					}
@@ -752,6 +760,31 @@
 				background-color: #007AFF;
 			}
 		}
+		
+		.profile-tab {
+			width: 710rpx;
+			padding: 20rpx;
+			background-color: #F6F6F6;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-around;
+			align-items: center;
+			border-radius: 6rpx;
+		
+			.block {
+				width: 132rpx;
+				text-align: center;
+				color: #92c3ff;
+				font-size: 14px;
+				border-radius: 6rpx;
+				transition: .15s;
+			}
+		
+			.selected {
+				color: #fff;
+				background-color: #007AFF;
+			}
+		}
 
 		// 列表
 		.topic-list {
@@ -884,19 +917,6 @@
 			}
 		}
 	}
-	.profile{
-		width: 750rpx;
-		margin: 0 0rpx 25rpx;
-		background-color: #fff;
-		border-radius: 6rpx;
-		
-		.block{
-			width: 200 rpx;
-			color: #333;
-			line-height: 80rpx;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-	}
+
+	
 </style>
