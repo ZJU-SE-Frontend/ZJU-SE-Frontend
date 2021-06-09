@@ -1,8 +1,5 @@
 <template>
 	<view>
-		<!-- 头部 -->
-		<!-- <ssx-header></ssx-header> -->
-
 		<!-- 话题 -->
 		<view class="topic-wrap">
 			<!-- 分类 -->
@@ -54,8 +51,6 @@
 					</view>
 				</view>
 			</view>
-			<!-- No data -->
-			<!-- <ssx-no-data v-if="!topicList.length"></ssx-no-data> -->
 			
 			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && profileTab==1 )" class="qa">
 				<view v-if="topicList.length" class="topic-list">
@@ -187,14 +182,8 @@
 
 <script>
 	const moment = require('moment')
-	import SsxNoData from './ssx-no-data'
-	import SsxHeader from './ssx-header'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavorite,getQuestionList,getCurrentUserPhone,getAnswerContent} from '../../fetch/api.js'
 	export default {
-		components: {
-			SsxNoData,
-			SsxHeader,
-		},
 		data() {
 			return {
 				// 当前帖子分类
@@ -679,6 +668,8 @@
 <style lang="scss" scoped>
 	// 话题
 	.topic-wrap {
+		display: flex;
+		flex-direction: column;
 		width: 750rpx;
 		margin: 0 0rpx 25rpx;
 		background-color: #fff;

@@ -306,6 +306,10 @@ export function removeFromFavorite(topicId, params) {
 	return fetchDelete("/api/forum/post/favorite/" + topicId +'?userPhone=' + params.userPhone)
 }
 
+export function reportPostReply(replyId) {
+	return fetchPost('/api/forum/report/post/reply/' + replyId)
+}
+
 //只考虑个人页面中的信息显示，封装了参数
 
 export function getUserFavorite(userPhone,pageSize,pageNo){

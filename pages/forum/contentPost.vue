@@ -38,16 +38,14 @@
 						<block v-for="(reply, replyIndex) of replies">
 							<view class="reply">
 								<view class="reply-header">
-									<!-- <view class="reply-author-avatar"> -->
-										<!-- <image :src="reply.author.avatar_url"></image> -->
-									<!-- </view> -->
 									<view class="reply-info">
 										<text class="reply-author">{{ reply.userName}}</text>
 										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
-									<view class="reply-delete" v-if="userPhone==reply.userPhone">
-										<text class="delete-text" @tap="removeReply(reply.replyId)">删除</text>
-										<text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text>
+									<view class="reply-delete">
+										<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="edit-text" v-if="userPhone==reply.userPhone" @tap="editReply(reply.replyId, reply.content)">编辑</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -74,7 +72,7 @@ import uParse from '../../common/gaoyia-parse/parse'
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
-import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, 
+import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply,
 			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
 export default {
 	components: {
@@ -226,6 +224,9 @@ export default {
 			console.log(userInfo)
 			this.userPhone = userInfo.user_phone
 			console.log(this.userPhone)
+		},
+		async reportReply(replyId) {
+			await reportPostReply(replyId)
 		}
 	},
 	async onLoad(params) {
@@ -346,16 +347,17 @@ export default {
 						.delete-text {
 							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
-							// color: #ffffff;
-							// background-color: #ff0000;
 							color: #ff0000;
 						}
 						.edit-text {
 							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
-							// color: #ffffff;
-							// background-color: #ff0000;
 							color: #ffaa00;
+						}
+						.report-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							color: #b4b4b4;
 						}
 					}
 				}
