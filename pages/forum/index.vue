@@ -245,7 +245,7 @@
 				profileAnswerPage : 1,
 				profileFavoritePage : 1,
 				// 条数
-				limit: 10,
+				limit: 7,
 				userPhone: null,
 				postCnt: 0,
 				questionCnt:0,

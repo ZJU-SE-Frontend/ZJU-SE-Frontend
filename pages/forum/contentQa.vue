@@ -130,19 +130,9 @@ export default {
 			//console.log(id,params)
 			var answers = await getAnswer(this.topicId, params)
 			this.answers = answers.data.qas
-			answers = []
 			for(var r in this.answers) {
-				
-				var content = await getAnswerContent(this.answers[r].answerId)
-				console.log(content.data)
-				content = content.data.content
-				if(content != "") {
-					this.answers[r].lastEditTime = moment(this.answers[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
-					this.answers[r].content = content
-					answers.push(this.answers[r])
-				}
+				this.answers[r].lastEditTime = moment(this.answers[r].lastEditTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 			}
-			this.answers = answers
 		},
 		// 话题详情数据过滤
 		handleTopicDetailFilter(topic) {

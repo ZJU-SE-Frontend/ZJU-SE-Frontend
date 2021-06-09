@@ -393,7 +393,7 @@ export function addQaViewCnt(topicId) {
 }
 
 export function getQaLikeInfo(topicId, params) {
-	return fetchGet('/api/forum/qa/answer/like/' + topicId, params)
+	return fetchGet('/api/forum/qa/answer/like/user/' + topicId, params)
 }
 
 export function postQaLike(topicId, params) {
