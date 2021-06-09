@@ -324,13 +324,31 @@ export function reportPostReply(replyId) {
 
 //只考虑个人页面中的信息显示，封装了参数
 
-export function getUserFavorite(userPhone,pageSize,pageNo){
+export function getUserFavoritePost(userPhone,pageSize,pageNo){
 	const params = {		
 		'pageSize' : pageSize,
 		'pageNo' : pageNo
 	}
 	return fetchGet("/api/forum/post/favorite/user/"+userPhone,params)
 }
+
+export function getUserFavoriteQuestion(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/question/favorite/user/"+userPhone,params)
+}
+
+export function getUserFavoriteAnswer(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/answer/favorite/user/"+userPhone,params)
+}
+
+
 
 export function getUserPost(userPhone,pageSize,pageNo){
 	const params = {		

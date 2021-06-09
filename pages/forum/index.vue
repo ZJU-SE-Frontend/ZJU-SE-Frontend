@@ -22,8 +22,21 @@
 					<text>回答:{{this.answerCnt}}</text>
 				</view>			
 				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
-					<text>收藏:{{this.favoriteCnt}}</text>
+					<text>收藏</text>
 				</view>
+			</view>
+			
+			<view  v-if="currentClassIfy==2 && profileTab==3" class="profile-tab">
+				<view @tap="handleGetUserFavoritePost()" class="block" :class="{'selected': favoriteTab === 0}">					
+						<text>发帖：{{this.favoritePostCnt}}</text>
+				</view>
+				<view @tap="handleGetUserFavoriteQuestion()" class="block" :class="{'selected': favoriteTab === 1}">
+						<text>提问：{{this.favoriteQuestionCnt}}</text>
+				</view>
+				<view @tap="handleGetUserFavoriteAnswer()" class="block" :class="{'selected': favoriteTab === 2}">
+						<text>回答：{{this.favoriteAnswerCnt}}</text>
+				</view>
+
 			</view>
 
 			<!-- 列表 -->
@@ -50,60 +63,14 @@
 							<view @tap="handlePageChange('prev')" class="prev">prev</view>
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
-						<view class="current-page">
-							<block v-if="currentClassIfy==2 && profileTab==0">
-								当前是第{{ profilePostPage }}页
-							</block>
-							
-							<block v-if="currentClassIfy==0">
-								当前是第{{ page }}页
-							</block>
+						<view class="current-page">														
+								当前是第{{ page }}页							
 						</view>
 					</view>
 				</view>
 			</view>
 			
-			<view  v-if="(currentClassIfy==2 && profileTab==0 )" class="post">
-				<view v-if="topicList.length" class="topic-list">
-					<!-- 话题项 -->
-					<block v-for="topic of topicList">
-						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
-							<!-- <view class="topic-author-avatar"> -->
-								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-							<!-- </view> -->
-							<view class="topic-type">讨论</view>
-							<view class="topic-info">
-								<view class="topic-title">{{ topic.title }}</view>
-								<view class="topic-other">
-									<view class="topic-view">
-										<text>{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
-									</view>
-									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-									<view class="topic-time">{{ topic.lastEditTime }}</view>
-								</view>
-							</view>
-						</view>
-					</block>
-					<!-- 分页器 -->
-					<view class="pagination">
-						<view class="pagination-action">
-							<view @tap="handlePageChange('prev')" class="prev">prev</view>
-							<view @tap="handlePageChange('next')" class="next">next</view>
-						</view>
-						<view class="current-page">
-							<block v-if="currentClassIfy==2 && profileTab==0">
-								当前是第{{ profilePostPage }}页
-							</block>
-							
-							<block v-if="currentClassIfy==0">
-								当前是第{{ page }}页
-							</block>
-						</view>
-					</view>
-				</view>
-			</view>
-			
-			<view  v-if="currentClassIfy==1 || (currentClassIfy==2 && profileTab==1 )" class="post">
+			<view  v-if="currentClassIfy==1" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -130,21 +97,82 @@
 							<view @tap="handlePageChange('prev')" class="prev">prev</view>
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
-						<view class="current-page">
-							<block v-if="currentClassIfy==2 && profileTab==1">
-								当前是第{{ profileQuestionPage }}页
-							</block>
-							
-							<block v-if="currentClassIfy==1">
-								当前是第{{ page }}页
-							</block>
-							
+						<view class="current-page">											
+								当前是第{{ qaPage }}页
 						</view>
 					</view>
 				</view>
 			</view>
 			
-			<view v-if="currentClassIfy ==2 && profileTab == 2" class = "post">
+			<view  v-if="currentClassIfy==2 && profileTab==0" class="post">
+				<view v-if="topicList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">讨论</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text v-if="profileTab == 0">{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ profilePostPage }}页
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view  v-if="currentClassIfy==2 && profileTab==1  " class="post">
+				<view v-if="topicList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">问答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text v-if="profileTab == 1">{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ profileQuestionPage }}页						
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view v-if="currentClassIfy ==2 && profileTab==2 " class = "post">
 				<view v-if="topicList.length" class ="topic-list">
 				<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -157,7 +185,7 @@
 								<view class="topic-title">{{ topic.data.content }}</view>
 								<view class="topic-other">
 									<view class="topic-view">
-										<text>{{ topic.data.replyCnt }}回复·{{ topic.data.viewCnt }}浏览</text>
+										<text v-if="profileTab == 2">{{ topic.data.replyCnt }}回复·{{ topic.data.viewCnt }}浏览</text>
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
 								<view class="topic-time">{{ topic.lastEditTime }}</view>
@@ -171,15 +199,15 @@
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
 						<view class="current-page">
-							<block v-if="currentClassIfy==2 && profileTab==2">
 								当前是第{{ profileAnswerPage }}页
-							</block>
 						</view>
 					</view>
 				</view>
 			</view>
 			
-			<view  v-if="currentClassIfy==2 && profileTab==3 " class="post">
+			
+			
+			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==0" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -191,10 +219,10 @@
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
 								<view class="topic-other">
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
 									<view class="topic-time">{{ topic.lastEditTime }}</view>
 								</view>
 							</view>
-						
 						</view>
 					</block>
 					<!-- 分页器 -->
@@ -204,14 +232,76 @@
 							<view @tap="handlePageChange('next')" class="next">next</view>
 						</view>
 						<view class="current-page">
-							<block v-if="currentClassIfy==2 && profileTab==3">
-								当前是第{{ profileFavoritePage }}页
-							</block>
+								当前是第{{ profileFavoritePostPage }}页
 						</view>
 					</view>
 				</view>
 			</view>
 			
+			
+			
+			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==1 " class="post">
+				<view v-if="topicList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">问答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ profileFavortieQuestionPage }}页							
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			
+			
+			<view v-if="currentClassIfy ==2 && profileTab==3 && favoriteTab==2" class = "post">
+				<view v-if="topicList.length" class ="topic-list">
+				<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQaReply?id=' + topic.answerId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">回答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.content }}</view>
+								<view class="topic-other">
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+								<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ profileFavortieAnswerPage }}页
+						</view>
+					</view>
+				</view>
+			</view>
 
 		</view>
 		
@@ -220,7 +310,7 @@
 
 <script>
 	const moment = require('moment')
-	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavorite,getQuestionList,getCurrentUserPhone,getAnswerContent} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
@@ -242,18 +332,24 @@
 				postList: [],
 				// 页码
 				page: 1,
+				qaPage: 1,
 				profilePostPage : 1,
 				profileQuestionPage : 1,
 				profileAnswerPage : 1,
-				profileFavoritePage : 1,
+				profileFavoritePostPage : 1,
+				profileFavortieQuestionPage:1,
+				profileFavortieAnswerPage:1,
 				// 条数
 				limit: 7,
 				userPhone: null,
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
-				favoriteCnt:0,
-				profileTab:null
+				favoritePostCnt:0,
+				favoriteQuestionCnt:0,
+				favoriteAnswerCnt:0,
+				profileTab:null,
+				favoriteTab:0
 			}
 		},
 		methods: {
@@ -406,14 +502,53 @@
 				}
 			},
 			
-			async handleGetUserFavorite(params){
+			async handleGetUserFavorite(){
 				this.profileTab = 3
+				
+				const params = {
+					tab:this.handleGetTab(),
+					userPhone:this.userPhone,
+					pageSize:2147483647,
+					pageNo:1
+				}
+				
+				
+				if (params.tab == '个人中心'){
+					console.log('个人中心')
+										
+					var posts = await getUserFavoritePost(params.userPhone,params.pageSize,params.pageNo)
+					var questions = await getUserFavoriteQuestion(params.userPhone,params.pageSize,params.pageNo);
+					var answers = await getUserFavoriteAnswer(params.userPhone,params.pageSize,params.pageNo);
+					
+					
+					console.log("查询成功")
+					if(posts.data.total){
+						this.favoritePostCnt = posts.data.total
+						console.log(posts.data.total)
+					}
+					
+					if(questions.data.total){
+						this.favoriteQuestionCnt = questions.data.total
+						console.log(questions.data.total)
+					}
+					
+					if(answers.data.total){
+						this.favoriteAnswerCnt = answers.data.total
+						console.log(answers.data.total)
+					}
+										
+				}
+				
+			},
+			
+			async handleGetUserFavoritePost(params){
+				this.favoriteTab = 0
 				if(params == null){
 					params = {
 						tab:this.handleGetTab(),
 						userPhone:this.userPhone,
 						pageSize:this.limit,
-						pageNo:this.profileFavoritePage
+						pageNo:this.profileFavoritePostPage
 					}
 				}
 								
@@ -425,7 +560,75 @@
 						console.log("None page")
 					}
 					
-					var posts = await getUserFavorite(params.userPhone,params.pageSize,params.pageNo)
+					var posts = await getUserFavoritePost(params.userPhone,params.pageSize,params.pageNo)
+					console.log("查询用户收藏")
+					if (posts.data.favorites.length > 0) {
+						this.topicList = posts.data.favorites;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].favoriteTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			},
+			
+			async handleGetUserFavoriteQuestion(params){
+				this.favoriteTab = 1
+				if(params == null){
+					params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:this.limit,
+						pageNo:this.profileFavortieQuestionPage
+					}
+				}
+								
+				if(params.tab == '个人中心'){
+					console.log("None page")
+					if(params.pageNo){
+						console.log(params.pageNo)
+					}else{
+						console.log("None page")
+					}
+					
+					var posts = await getUserFavoriteQuestion(params.userPhone,params.pageSize,params.pageNo)
+					console.log("查询用户收藏")
+					if (posts.data.favorites.length > 0) {
+						this.topicList = posts.data.favorites;
+						for(var i = 0; i < this.topicList.length; i++) {
+							this.topicList[i].lastEditTime = moment(this.topicList[i].favoriteTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			},
+			
+			async handleGetUserFavoriteAnswer(params){
+				this.favoriteTab = 2
+				if(params == null){
+					params = {
+						tab:this.handleGetTab(),
+						userPhone:this.userPhone,
+						pageSize:this.limit,
+						pageNo:this.profileFavortieAnswerPage
+					}
+				}
+								
+				if(params.tab == '个人中心'){
+					console.log("None page")
+					if(params.pageNo){
+						console.log(params.pageNo)
+					}else{
+						console.log("None page")
+					}
+					
+					var posts = await getUserFavoriteAnswer(params.userPhone,params.pageSize,params.pageNo)
 					console.log("查询用户收藏")
 					if (posts.data.favorites.length > 0) {
 						this.topicList = posts.data.favorites;
@@ -456,7 +659,7 @@
 					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
 					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
 					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
-					var favorites = await getUserFavorite(params.userPhone,params.pageSize,params.pageNo);
+					
 					
 					console.log("查询成功")
 					if(posts.data.total){
@@ -473,11 +676,6 @@
 						this.answerCnt = answers.data.total
 						console.log(answers.data.total)
 					}
-					if(favorites.data.total){
-						this.favoriteCnt = favorites.data.total
-						console.log(favorites.data.total)
-					}
-					
 										
 				}
 			},
@@ -513,7 +711,7 @@
 			async handlePageChange(action) {
 				if(this.currentClassIfy == 2){
 					if(action === 'prev'){
-						
+		
 						if(this.profileTab == 0){
 							if (this.profilePostPage === 1) {
 								this.$util.toast('这是第一页鸭')
@@ -527,7 +725,6 @@
 								}
 								this.handleGetUserPost(params)
 							}
-							
 						}else if(this.profileTab == 1){
 							if (this.profileQuestionPage === 1) {
 								this.$util.toast('这是第一页鸭')
@@ -557,23 +754,51 @@
 								this.handleGetUserAnswer(params)
 							}
 						}else if(this.profileTab == 3){
-							if (this.profileFavoritePage === 1) {
-								this.$util.toast('这是第一页鸭')
-							}else{
-								const params = {
-									tab:this.handleGetTab(),
-									userPhone:this.userPhone,
-									pageSize:this.limit,
-									pageNo:--this.profileFavoritePage
+							if(this.favoriteTab == 0){
+								
+								if (this.profileFavoritePostPage === 1) {
+									this.$util.toast('这是第一页鸭')
+								}else{
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:--this.profileFavoritePostPage
+									}
+									console.log("回答换页")
+									this.handleGetUserFavoritePost(params)
 								}
-								console.log("回答换页")
-								this.handleGetUserFavorite(params)
+								
+							}else if(this.favoriteTab == 1){
+								if (this.profileFavortieQuestionPage === 1) {
+									this.$util.toast('这是第一页鸭')
+								}else{
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:--this.profileFavortieQuestionPage
+									}
+									console.log("回答换页")
+									this.handleGetUserFavoriteQuestion(params)
+								}
+							}else if(this.favoriteTab == 2){
+								if (this.profileFavoriteAnswerPage === 1) {
+									this.$util.toast('这是第一页鸭')
+								}else{
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:--this.profileFavoriteAnswerPage
+									}
+									console.log("回答换页")
+									this.handleGetUserFavoriteAnswer(params)
+								}
 							}
+							
 						}
 						
-						
-							
-
 					}else if(action === 'next'){
 						
 						// Request
@@ -606,14 +831,40 @@
 							console.log("回答换页")
 							result = await this.handleGetUserAnswer(params)
 						}else if(this.profileTab == 3){
-							const params = {
-								tab:this.handleGetTab(),
-								userPhone:this.userPhone,
-								pageSize:this.limit,
-								pageNo:this.profileFavoritePage+1
+							if(this.favoriteTab == 0){
+							
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:this.profileFavoritePostPage+1
+									}
+									console.log("回答换页")
+									result = this.handleGetUserFavoritePost(params)
+								
+							}else if(this.favoriteTab == 1){
+
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:this.profileFavoriteQuestionPage+1
+									}
+									console.log("回答换页")
+									result = this.handleGetUserFavoriteQuestion(params)
+								
+							}else if(this.favoriteTab == 2){
+
+									const params = {
+										tab:this.handleGetTab(),
+										userPhone:this.userPhone,
+										pageSize:this.limit,
+										pageNo:this.profileFavoriteAnswerPage+1
+									}
+									console.log("回答换页")
+									result = this.handleGetUserFavoriteAnswer(params)
+								
 							}
-							console.log("回答换页")
-							result = await this.handleGetUserFavorite(params)
 						}
 						 
 						if(result) {
@@ -624,7 +875,14 @@
 							}else if(this.profileTab == 2){
 								this.profileAnswerPage++
 							}else if(this.profileTab == 3){
-								this.profileFavoritePage++
+								if(this.favoriteTab == 0){
+									this.profileFavoritePostPage++
+								}else if(this.favoriteTab == 1){
+									this.profileFavortieQuestionPage++
+								}else if(this.favoriteTab == 2){
+									this.profileFavortieAnswerPage++
+								}
+								
 							}
 						}
 						else {
