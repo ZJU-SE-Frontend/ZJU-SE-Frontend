@@ -91,7 +91,16 @@ export default {
 			loading: false,
 			// 话题ID
 			topicId: null,
-			topic: null,
+			topic: {
+				"title": "",
+				"userPhone": "",
+				"userName": "",
+				"answerCnt": 0,
+				"viewCnt": 0,
+				"lastEditTime": 0,
+				"content": "",
+				"session": 0
+			},
 			likeState: null,
 			favoriteState: null,
 			hasLiked: null,
@@ -227,10 +236,10 @@ export default {
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
 			await addQaViewCnt(this.topicId)
+			await this.handleGetQaDetail(this.topicId)
 			await this.handleGetAnswer()
-			this.LoadFavoriteInfo()
-			this.loadLikeInfo()
-			this.handleGetQaDetail(this.topicId)
+			await this.loadLikeInfo()
+			await this.LoadFavoriteInfo()
 		}
 	}
 }
