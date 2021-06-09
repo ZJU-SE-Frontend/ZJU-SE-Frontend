@@ -7,7 +7,12 @@
 				<!-- 话题头部 -->
 				<view class="detail-header">
 					<view class="topic-title">{{ topic.title }}</view>
-					<view class="topic-header-info">•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</view>
+					<view class="topic-header-info">
+						<text class='time-info'>•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</text>
+						<text v-if="topic.authorPhone==userPhone" class="delete-text" @tap="deleteTopic">删除</text>
+						<text v-if="topic.authorPhone==userPhone" class="edit-text" @tap="editTopic">编辑</text>
+						<!-- <text v-if="topic.authorPhone!=userPhone" class="report-text" @tap="">举报</text> -->
+					</view>
 				</view>
 				<!-- 话题内容 -->
 				<view class="detail-content">
@@ -47,9 +52,6 @@
 								<view class="reply-content">
 									<text>{{ reply.content }}</text>
 								</view>
-								<view class="like-info">
-									
-								</view>
 							</view>
 						</block>
 					</view>
@@ -63,7 +65,7 @@
 <script>
 const moment = require('moment')
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost} from '../../fetch/api.js'
 export default {
 	data() {
 		return {
@@ -87,9 +89,10 @@ export default {
 			})
 		},
 		// 获取话题详情
-		async handleGetTopicDetail(id) {
-			var topic = await getPost(id);
+		async handleGetTopicDetail() {
+			var topic = await getPost(this.topicId);
 			this.topic = topic.data;
+			console.log(this.topic)
 			this.topic.updateTime = moment(this.topic.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		// 话题详情数据过滤
@@ -163,14 +166,14 @@ export default {
 			if (this.likeState != true)
 				await this.signalLike()
 			this.loadLikeInfo()
-			this.handleGetTopicDetail(this.topicId)
+			this.handleGetTopicDetail()
 		},
 		async tapDislike() {
 			await this.signalClear()
 			if (this.likeState != false)
 				await this.signalDislike()
 			this.loadLikeInfo()
-			this.handleGetTopicDetail(this.topicId)
+			this.handleGetTopicDetail()
 		},
 		async changeFavoriteState() {
 			const params = {
@@ -205,7 +208,7 @@ export default {
 		},
 		editReply(replyId, content) {
 			uni.navigateTo({
-				'url': './editReply?id=' + replyId
+				'url': './editReply?id=' + replyId + '&content=' + content
 			})
 		},
 		async getCurrentUser() {
@@ -218,6 +221,21 @@ export default {
 		async reportReply(replyId) {
 			await reportPostReply(replyId)
 			this.$util.toast('举报成功')
+		},
+		async deleteTopic() {
+			await deletePost(this.topicId)
+			var pages = getCurrentPages();
+			var beforePage = pages[pages.length - 2];
+			beforePage.refresh();
+			uni.navigateBack({
+				animationDuration: 500,
+				animationType: 'pop-out'
+			})
+		},
+		async editTopic() {
+			uni.navigateTo({
+				'url': './editPost?id=' + this.topicId + '&title=' + this.topic.title + '&content=' + this.topic.content
+			})
 		}
 	},
 	async onLoad(params) {
@@ -230,7 +248,7 @@ export default {
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.loadReplyLikeInfo()
-			this.handleGetTopicDetail(this.topicId)
+			this.handleGetTopicDetail()
 		}
 	}
 }
@@ -256,6 +274,21 @@ export default {
 		.topic-header-info {
 			font-size: 12px;
 			color: #838383;
+			.time-info {
+				padding: 0rpx 10rpx 0rpx 0rpx;
+			}
+			.delete-text {
+				padding: 0rpx 10rpx 0rpx 10rpx;
+				color: #ff0000;
+			}
+			.edit-text {
+				padding: 0rpx 10rpx 0rpx 10rpx;
+				color: #ffaa00;
+			}
+			.report-text {
+				padding: 0rpx 10rpx 0rpx 10rpx;
+				color: #b4b4b4;
+			}
 		}
 	}
 	// 话题内容

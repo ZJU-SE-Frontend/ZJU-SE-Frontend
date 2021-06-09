@@ -1,54 +1,47 @@
 <template>
 	<view class="content">
-		<!-- <view class="input"> -->
-			<!-- <textarea class="title-text" placeholder="请输入主题贴标题" auto-height="true" v-model="title"/> -->
-		<!-- </view> -->
 		<view class="input">
-			<textarea class="content-text" placeholder="请输入回复内容" maxlength="-1" auto-height="true" v-model="content"/>
+			<textarea class="title-text" placeholder="请输入主题贴标题" maxlength="40" auto-height="true" v-model="title"/>
 		</view>
-		<button class="load-button" @tap="submitReply()">提交</button>
+		<view class="input">
+			<textarea class="content-text" placeholder="请输入主题贴内容" maxlength="-1" v-model="content"/>
+		</view>
+		<button class="load-button" @tap="submitPost()">提交</button>
 	</view>
 </template>
 
 <script>
-	import {editReply, getCurrentUserPhone} from '../../fetch/api.js'
+	import {modifyPost} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
+				title : '',
 				content : '',
-				replyId : null,
-				userPhone : null
+				topicId : null
 			}
 		},
 		methods: {
-			async submitReply() {
-				if (this.content.length > 0) {
+			async submitPost() {
+				if (this.title.length > 0 && this.content.length > 0) {
 					const params = {
+						"title" : this.title,
 						"content" : this.content
 					};
-					await editReply(this.replyId, params);
+					await modifyPost(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					console.log(beforePage)
-					beforePage.getReplies();
+					beforePage.handleGetTopicDetail();
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'
 					})
 				}
 			},
-			async getCurrentUser() {
-				var userInfo = await getCurrentUserPhone()
-				console.log("user INFO: ")
-				console.log(userInfo)
-				this.userPhone = userInfo.user_phone
-				console.log(this.userPhone)
-			},
 			onLoad(params) {
 				if(params) {
-					this.replyId = params.id
+					this.topicId = params.id
+					this.title = params.title
 					this.content = params.content
-					this.getCurrentUser()
 				}
 			}
 		}

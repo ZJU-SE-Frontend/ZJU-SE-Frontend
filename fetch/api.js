@@ -290,6 +290,18 @@ export function fetchDelete(url, data) {
 	})
 }
 
+export function deletePost(topicId) {
+	const params = {
+		"title" : "",
+		"content" : ""
+	}
+	return fetchPut('/api/forum/post/' + topicId, params)
+}
+
+export function modifyPost(topicId, params) {
+	return fetchPut('/api/forum/post/' + topicId, params)
+}
+
 export function deleteLike(topicId, params) {
 	return fetchDelete("/api/forum/post/like/" + topicId +'?userPhone=' + params.userPhone)
 }

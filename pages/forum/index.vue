@@ -277,10 +277,14 @@
 					}
 					var posts = await getPostList(params);
 					if (posts.data.posts.length > 0) {
-						this.postList = posts.data.posts;
-						this.postList.sort(function(a,b){return a.lastEditTime - b.lastEditTime}).reverse()
-						for(var i = 0; i < this.postList.length; i++) {
-							this.postList[i].lastEditTime = moment(this.postList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						var list = posts.data.posts;
+						list.sort(function(a,b){return a.lastEditTime - b.lastEditTime}).reverse()
+						this.postList = []
+						for(var i = 0; i < list.length; i++) {
+							if(list[i].title != "") {
+								list[i].lastEditTime = moment(list[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+								this.postList.push(list[i])
+							}
 						}
 					}
 				}

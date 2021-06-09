@@ -46,6 +46,14 @@
 		    }
 		},
 		{
+		    "path" : "pages/forum/editPost",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
 		    "path" : "pages/forum/createQuestion",
 		    "style" :                                                                                    
 		    {
