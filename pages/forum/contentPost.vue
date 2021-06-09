@@ -30,9 +30,6 @@
 				</view>
 				<!-- 话题回复 -->
 				<view class="detail-reply">
-					<!-- 回复标题 -->
-					<!-- <view class="reply-title">{{ topic.replyCnt }}回复</view> -->
-					<!-- 回复列表 -->
 					<view class="reply-list">
 						<block v-for="(reply, replyIndex) of replies">
 							<view class="reply">
@@ -50,6 +47,9 @@
 								<view class="reply-content">
 									<text>{{ reply.content }}</text>
 								</view>
+								<view class="like-info">
+									
+								</view>
 							</view>
 						</block>
 					</view>
@@ -62,7 +62,7 @@
 
 <script>
 const moment = require('moment')
-import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply,
+import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
 			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
 export default {
 	data() {
@@ -120,6 +120,16 @@ export default {
 			};
 			var likeState = await getLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
+		},
+		async loadReplyLikeInfo() {
+			const params = {
+				"userPhone" : this.userPhone,
+				"pageSize" : 2147483647,
+				"pageNo" : 1
+			}
+			console.log(params)
+			var replyLikeInfo = await getReplyLikeInfo(this.topicId, params)
+			console.log(replyLikeInfo)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
@@ -207,6 +217,7 @@ export default {
 		},
 		async reportReply(replyId) {
 			await reportPostReply(replyId)
+			this.$util.toast('举报成功')
 		}
 	},
 	async onLoad(params) {
@@ -218,6 +229,7 @@ export default {
 			await this.getReplies()
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
+			this.loadReplyLikeInfo()
 			this.handleGetTopicDetail(this.topicId)
 		}
 	}

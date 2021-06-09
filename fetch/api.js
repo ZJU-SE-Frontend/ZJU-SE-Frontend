@@ -247,11 +247,7 @@ export function getReport_Cov(appoint_id) {
 
 /* 健康论坛模块API */
 
-export function getPostList(pageSize, pageNo) {
-	const params = {
-		'pageSize' : pageSize,
-		'pageNo' : pageNo
-	}
+export function getPostList(params) {
 	return fetchGet("/api/forum/post", params)
 }
 
@@ -269,6 +265,10 @@ export function addViewCnt(topicId) {
  
 export function getLikeInfo(topicId, params) {
 	return fetchGet('/api/forum/post/like/' + topicId, params)
+}
+
+export function getReplyLikeInfo(replyId, params) {
+	return fetchGet('/api/forum/post/reply/like/' + replyId, params)
 }
 
 export function postLike(topicId, params) {

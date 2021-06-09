@@ -12,7 +12,43 @@
 			</view>
 
 			<!-- 列表 -->
-			<view  v-if="currentClassIfy==0 || (currentClassIfy==2 && profileTab==0 )" class="post">
+			<view  v-if="currentClassIfy==0" class="post">
+				<view v-if="postList.length" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of postList.slice((page - 1)*limit, page*limit)">
+						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
+							<view class="topic-type">讨论</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text>{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
+									</view>
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+							<block v-if="currentClassIfy==2 && profileTab==0">
+								当前是第{{ profilePostPage }}页
+							</block>
+							
+							<block v-if="currentClassIfy==0">
+								当前是第{{ page }}页
+							</block>
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view  v-if="(currentClassIfy==2 && profileTab==0 )" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
@@ -200,9 +236,8 @@
 					name: '个人中心'
 				}, ],
 				// 帖子列表
-				topicList: [
-				
-				],
+				topicList: [],
+				postList: [],
 				// 页码
 				page: 1,
 				profilePostPage : 1,
@@ -236,17 +271,17 @@
 			// 获取数据
 			async handleGetTopicList(params) {
 				if (params.tab == '讨论贴') {
-					var posts = await getPostList(params.limit, params.page);
-					if (posts.data.posts.length > 0) {
-						this.topicList = posts.data.posts;
-						// this.topicList.sort(function(topic){return topic.lastEditTime}).reverse()
-						for(var i = 0; i < this.topicList.length; i++) {
-							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
-						}
-						return true;
+					const params = {
+						'pageSize' : 2147483647,
+						'pageNo' : 1
 					}
-					else {
-						return false;
+					var posts = await getPostList(params);
+					if (posts.data.posts.length > 0) {
+						this.postList = posts.data.posts;
+						this.postList.sort(function(a,b){return a.lastEditTime - b.lastEditTime}).reverse()
+						for(var i = 0; i < this.postList.length; i++) {
+							this.postList[i].lastEditTime = moment(this.postList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						}
 					}
 				}
 				else if (params.tab == '问答') {
@@ -392,9 +427,6 @@
 					}
 				}
 			},
-			
-			
-			
 			
 			async handleGetProfile(){
 				
@@ -587,7 +619,23 @@
 							this.$util.toast('没有更多贴子啦')
 						}
 					}
-				}else{
+				} else if(this.currentClassIfy == 0) {
+					if (action === 'prev') {
+						if (this.page === 1) {
+							this.$util.toast('这是第一页鸭')
+						} else {
+							this.page--;
+						}
+					} else if (action === 'next') {
+						if(this.postList.length / this.limit > this.page) {
+							this.page++;
+						}
+						else {
+							this.$util.toast('没有更多贴子啦')
+						}
+					}
+				}
+				else{
 					if (action === 'prev') {
 						if (this.page === 1) {
 							this.$util.toast('这是第一页鸭')
