@@ -9,7 +9,7 @@
 		{
 			"path": "pages/examination/index",
 			"style": {
-				"navigationBarTitleText": "健康检测"
+				"navigationBarTitleText": "体检中心"
 			}
 		},
 		{
@@ -83,8 +83,99 @@
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+			"path": "pages/test/index",
+			"style": {
+				"navigationBarTitleText": "测试页面"
+			}
+		},
+		{
+			"path": "pages/examination/phys/phys",
+			"style": {
+				"navigationBarTitleText": "体检预约",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/phys/timesel_phy",
+			"style": {
+				"navigationBarTitleText": "余量查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/phys/confirm_phy",
+			"style": {
+				"navigationBarTitleText": "确认预约信息",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/phys/history_phy",
+			"style": {
+				"navigationBarTitleText": "预约历史",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/covid/covid",
+			"style": {
+				"navigationBarTitleText": "核酸检测预约",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/covid/timesel_cov",
+			"style": {
+				"navigationBarTitleText": "余量查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/covid/confirm_cov",
+			"style": {
+				"navigationBarTitleText": "确认预约信息",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/covid/history_cov",
+			"style": {
+				"navigationBarTitleText": "预约历史",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/exam_server",
+			"style": {
+				"navigationBarTitleText": "医院管理员入口",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/phys/server",
+			"style": {
+				"navigationBarTitleText": "医院管理员入口",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/covid/server",
+			"style": {
+				"navigationBarTitleText": "医院管理员入口",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/examination/show_report",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		}
     ],
+	
 	"globalStyle": {
 		"pageOrientation": "portrait",
 		"navigationBarTitleText": "健康导航",
@@ -101,7 +192,6 @@
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#F1F1F1"
 		}
-
 	},
 	"tabBar": {
 		"color": "#7A7E83",
