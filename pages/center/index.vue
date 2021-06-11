@@ -7,7 +7,17 @@
 						<text class="go-login navigat-arrow" v-if="!hasLogin">&#xe65e;</text>
 					</view>
 			</view>
-			<view class="center-list">		
+			<view class="center-list">
+				<view class="center-list-item border-bottom" v-show="hasLogin" @click="cgpswd">
+					<text class="list-icon">&#xe65f;</text>
+					<text class="list-text">修改密码</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
+				<view class="center-list-item border-bottom" v-show="hasLogin" @click="cginfo">
+					<text class="list-icon">&#xe65f;</text>
+					<text class="list-text">修改信息</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
 				<view class="center-list-item">
 					<text class="list-icon">&#xe639;</text>
 					<text class="list-text">姓名</text>
@@ -40,7 +50,7 @@
 			<view class="center-list">
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
-					<text class="list-text">电话</text>
+					<text class="list-text">手机号</text>
 					<text class="list-text">{{hasLogin? uerInfo.userPhone: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
@@ -54,6 +64,17 @@
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">身份证号</text>
 					<text class="list-text">{{hasLogin? uerInfo.userIDNumber: ''}}</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
+				<view class="center-list-item border-bottom">
+					<text class="list-icon">&#xe65f;</text>
+					<text class="list-text">社保账号</text>
+					<text class="list-text">{{hasLogin? uerInfo.socnum: ''}}</text>
+					<text class="navigat-arrow">&#xe65e;</text>
+				</view>
+				<view class="center-list-item border-bottom" v-show="hasLogin" @click="healthcodeView">
+					<text class="list-icon">&#xe65f;</text>
+					<text class="list-text">健康码</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item" v-show="hasLogin" @click="patientView">
@@ -83,12 +104,22 @@
 		computed: mapState([ 'hasLogin','uerInfo']),
 		data() {
 			return {
+				//user_name:"王赵烨",
 				visitorUrl: "../../static/center/logo.png",
+				//hasLogin: false,
+				// patient_weight: '60kg',
+				// patient_height: '170cm',
+				// patient_age:    '21岁',
+				// patient_phone:  '18112345678',
+				// patient_id:     '330103200002131998',
 				history_title:  '',
 			}
 		},
 		
 		onLoad() {
+			// if(this.hasLogin){
+			// 	console.log("hahaha")
+			// }
 		},
 		methods: {
 			checkLogin(){
@@ -104,10 +135,26 @@
 					console.log("hahaha")
 				}
 			},
+			cgpswd(){
+				uni.navigateTo({
+					url:"./cgpswd?phone="+this.uerInfo.userPhone
+				})
+			},
+			cginfo(){
+				uni.navigateTo({
+					url:"./cginfo?phone="+this.uerInfo.userPhone
+				})
+			},
 			patientView(){
 				//console.log("hello")
 				uni.navigateTo({
 					url:"./patient?phone="+this.uerInfo.userPhone
+				})
+			},
+			healthcodeView(){
+				//console.log("hello")
+				uni.navigateTo({
+					url:"./healthcode?code="+(this.uerInfo.healthcode)
 				})
 			},
 			exit(){
