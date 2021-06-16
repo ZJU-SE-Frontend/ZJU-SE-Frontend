@@ -5,6 +5,10 @@ import util from './common/ssx_util' 			// Util Functions
 
 // Mounted Util Functions
 Vue.prototype.$util = util
+import './css/iconfont.css'
+import './css/ui-right/iconfont.css'
+import './css/ui-doctor/iconfont.css'
+import './css/ui-boxh/iconfont.css'
 
 Vue.config.productionTip = false
 

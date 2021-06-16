@@ -466,3 +466,22 @@ export function publicQaReply(topicId, params) {
 export function deleteQaReply(topicId) {
 	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
 }
+export function getdepart(hos){
+	return fetchGet("/api/appointment/patient/department/"+hos)
+}
+export function gethospital(){
+	return fetchGet("/api/appointment/patient/hospital")
+}
+export function getsubdep(dep,hosp){
+	const params = {
+		"hospital": hosp
+	}
+	return fetchGet("/api/appointment/patient/subdepart/" + dep,params)
+}
+export function getdoctor(hosp,dep){
+	const params = {
+		"hospital": hosp,
+		"department":dep
+	}
+	return fetchGet("/api/appointment/patient/doctorList",params)
+}

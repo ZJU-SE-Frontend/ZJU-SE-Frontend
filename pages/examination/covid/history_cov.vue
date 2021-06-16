@@ -8,7 +8,7 @@
 				</view>
 				<view style="display: flex;">
 					<image class="image" :src="img1url+val.reportStatus+'.png'" @click="onClick(val, key)"></image>
-					<image class="image" :src="img2url+val.reportStatus+'.png'" @click="onClickD(val, key)"></image>
+					<!-- <image class="image" :src="img2url+val.reportStatus+'.png'" @click="onClickD(val, key)"></image> -->
 				</view>
 					
 			</view>
