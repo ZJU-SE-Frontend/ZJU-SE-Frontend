@@ -32,7 +32,7 @@
 				<!-- 话题回复 -->
 				<view class="detail-reply">
 					<!-- 回复标题 -->
-					<view class="reply-title">{{this.answers.length}}回答</view>
+					<view class="reply-title">{{answers.length}}回答</view>
 					<!-- 回复列表 -->
 					<view class="reply-list">
 						<block v-for="(reply, replyIndex) of answers">
