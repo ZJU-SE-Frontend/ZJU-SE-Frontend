@@ -421,11 +421,7 @@ export function deleteReply(replyId) {
 	return fetchDelete("/api/forum/post/reply/" + replyId)
 }
 
-export function getQuestionList(pageSize, pageNo) {
-	const params = {
-		'pageSize' : pageSize,
-		'pageNo' : pageNo
-	}
+export function getQuestionList(params) {
 	return fetchGet("/api/forum/qa/question", params)
 }
 

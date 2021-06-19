@@ -113,28 +113,6 @@ export default {
 			this.topic = topic.data;
 			this.topic.updateTime = moment(this.topic.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
-		// 话题详情数据过滤
-		handleTopicDetailFilter(topic) {
-			// 过滤话题数据
-			switch (topic.tab) {
-				case 'share':
-					topic.tab = '分享'
-					break;
-				case 'ask':
-					topic.tab = '问答'
-					break;
-				case 'job':
-					topic.tab = '招聘'
-					break;
-				case 'good':
-					topic.tab = '精华'
-					break;
-				default:
-					break;
-			}
-			topic.create_at = moment(topic.create_at).format('YYYY-MM-DD HH:mm:ss')
-			return topic
-		},
 		async loadLikeInfo() {
 			const params = {
 				"userPhone" : this.userPhone,

@@ -447,12 +447,12 @@
 				}
 			},
 			// 获取数据
-			async handleGetTopicList(params) {
-				if (params.tab == '讨论贴') {
-					const params = {
-						'pageSize' : 2147483647,
-						'pageNo' : 1
-					}
+			async handleGetTopicList(args) {
+				const params = {
+					'pageSize' : 2147483647,
+					'pageNo' : 1
+				}
+				if (args.tab == '讨论贴') {
 					var posts = await getPostList(params);
 					if (posts.data.posts.length > 0) {
 						var list = posts.data.posts;
@@ -466,17 +466,18 @@
 						}
 					}
 				}
-				else if (params.tab == '问答') {
-					var questions = await getQuestionList(params.limit, params.page);
+				else if (args.tab == '问答') {
+					var questions = await getQuestionList(params);
 					if (questions.data.questions.length > 0) {
-						this.topicList = questions.data.questions;
-						for(var i = 0; i < this.topicList.length; i++) {
-							this.topicList[i].lastEditTime = moment(this.topicList[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						var list = questions.data.questions;
+						list.sort(function(a,b){return a.lastEditTime - b.lastEditTime}).reverse()
+						this.topicList = []
+						for(var i = 0; i < list.length; i++) {
+							if(list[i].title != "") {
+								list[i].lastEditTime = moment(list[i].lastEditTime*1000).format('YYYY-MM-DD HH:mm:ss')
+								this.topicList.push(list[i])
+							}
 						}
-						return true;
-					}
-					else {
-						return false;
 					}
 					console.log('问答页')
 				}
@@ -837,8 +838,6 @@
 
 					const params = {
 						tab: this.handleGetTab(),
-						limit: this.limit,
-						page: 1,
 					}
 					// Reset page
 					this.page = 1
@@ -1094,23 +1093,10 @@
 						if (this.page === 1) {
 							this.$util.toast('这是第一页鸭')
 						} else {
-							const params = {
-								page: --this.page,
-								limit: this.limit,
-								tab: this.handleGetTab(),
-							}
-							// Request
-							this.handleGetTopicList(params)
+							this.page--;
 						}
 					} else if (action === 'next') {
-						const params = {
-							tab: this.handleGetTab(),
-							page: this.page + 1,
-							limit: this.limit,
-						}
-						// Request
-						var result = await this.handleGetTopicList(params)
-						if(result) {
+						if(this.topicList.length / this.limit > this.page) {
 							this.page++;
 						}
 						else {
@@ -1139,8 +1125,6 @@
 			load() {
 				this.handleGetTopicList({
 					tab: this.handleGetTab(),
-					limit: this.limit,
-					page: this.page
 				})
 			},
 			refresh() {
