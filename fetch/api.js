@@ -421,6 +421,10 @@ export function deleteReply(replyId) {
 	return fetchDelete("/api/forum/post/reply/" + replyId)
 }
 
+export function getRecommendedAnswers(params) {
+	return fetchGet('/api/forum/qa/recommended', params)
+}
+
 export function getQuestionList(params) {
 	return fetchGet("/api/forum/qa/question", params)
 }

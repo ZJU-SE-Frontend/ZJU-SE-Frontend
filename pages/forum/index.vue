@@ -11,6 +11,14 @@
 				</block>
 			</view>
 			
+			<view v-if="currentClassIfy==1" class="topic-classify">
+				<block v-for="(type, i) in questionCategories">
+					<view @tap="changeCategory(type, i)" class="classift-item" :class="{'selected': questionSession === i}">
+						{{ type }}
+					</view>
+				</block>
+			</view>
+			
 			<view  v-if="currentClassIfy==2" class="profile-tab">
 				<view @tap="handleGetUserPost()" class="block" :class="{'selected': profileTab === 0}">					
 						<text>发帖：{{this.postCnt}}</text>
@@ -84,13 +92,10 @@
 			</view>
 			
 			<view  v-if="currentClassIfy==1" class="post">
-				<view v-if="topicList.length" class="topic-list">
+				<view v-show="displayData.length && questionSession != 0" class="topic-list">
 					<!-- 话题项 -->
-					<block v-for="topic of topicList.slice((qaPage - 1)*limit, qaPage*limit)">
-						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
-							<!-- <view class="topic-author-avatar"> -->
-								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-							<!-- </view> -->
+					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
+						<view @tap="navigator('./contentQa?id=' + topic.answerId)" class="topic">
 							<view class="topic-type">问答</view>
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
@@ -100,6 +105,30 @@
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
 									<view class="topic-time">{{ topic.lastEditTime }}</view>
+								</view>
+							</view>
+						</view>
+					</block>
+					<!-- 分页器 -->
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">											
+								当前是第{{ qaPage }}页
+						</view>
+					</view>
+				</view>
+				<view v-show="displayData.length && questionSession == 0" class="topic-list">
+					<!-- 话题项 -->
+					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<view class="topic-type">问答</view>
+							<view class="topic-info">
+								<view class="topic-question">{{ topic.title }}</view>
+								<view class="topic-answer">
+									{{ topic.content }}
 								</view>
 							</view>
 						</view>
@@ -218,10 +247,6 @@
 				</view>
 			</view>
 			
-			
-			
-			
-			
 			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==0" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
@@ -253,8 +278,6 @@
 				</view>
 			</view>
 			
-			
-			
 			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==1 " class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
@@ -285,8 +308,6 @@
 					</view>
 				</view>
 			</view>
-			
-			
 			
 			<view v-if="currentClassIfy ==2 && profileTab==3 && favoriteTab==2" class = "post">
 				<view v-if="topicList.length" class ="topic-list">
@@ -380,7 +401,7 @@
 <script>
 	const moment = require('moment')
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,
+	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
 	export default {
 		data() {
@@ -425,9 +446,10 @@
 				reportReplyCnt:0,
 				profileTab:null,
 				favoriteTab:0,
-				reportTab:null
-				
-				
+				reportTab:null,
+				questionCategories : ['推荐', '热门', '外科', '内科', '牙科', '科普'],
+				questionSession : 0,
+				displayData : []
 			}
 		},
 		methods: {
@@ -1173,6 +1195,35 @@
 				this.page = 1;
 				this.load()
 			},
+			async changeCategory(type, i) {
+				if(this.questionSession == i)
+					return 
+				this.questionSession = i
+				this.getSessionData(type)
+			},
+			async getSessionData(type, i) {
+				this.displayData = []
+				const params = {
+					'pageSize' : 2147483647,
+					'pageNo' : 1
+				}
+				if(type == '推荐') {
+					var recommendedAnswers = await getRecommendedAnswers(params)
+					this.displayData = recommendedAnswers.data.answers
+				}
+				else if(type == '热门') {
+					
+				}
+				else if(type == '外科') {
+					for(var ans in this.topicList) {
+						if(this.topicList[ans].session == 0) {
+							this.displayData.push(this.topicList[ans])
+						}
+					}
+				}
+				console.log(this.topicList)
+				console.log(this.displayData)
+			},
 			async getCurrentUser() {
 				var userInfo = await getCurrentUserPhone()
 				console.log("user INFO: ")
@@ -1189,6 +1240,7 @@
 		onLoad() {
 			this.getCurrentUser()
 			this.load()
+			this.getSessionData('推荐')
 		}
 	}
 </script>
@@ -1329,6 +1381,26 @@
 				.topic-info {
 					width: 648rpx;
 					
+					.topic-question {
+						width: 520rpx;
+						color: #aaaaaa;
+						line-height: 40rpx;
+						font-size: 20rpx;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+					}
+					
+					.topic-answer {
+						width: 628rpx;
+						display: flex;
+						flex-flow: row nowrap;
+						justify-content: space-between;
+						align-items: center;
+						line-height: 40rpx;
+						color: #000000;
+					}
+					
 					.topic-title {
 						width: 520rpx;
 						color: #333;
@@ -1337,9 +1409,6 @@
 						text-overflow: ellipsis;
 						white-space: nowrap;
 					}
-					
-					
-										
 
 					.topic-other {
 						width: 628rpx;
