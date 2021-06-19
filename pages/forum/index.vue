@@ -130,7 +130,7 @@
 								<view class="topic-title">{{ topic.title }}</view>
 								<view class="topic-other">
 									<view class="topic-view">
-										<text v-if="profileTab == 0">{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
+										<text>{{ topic.replyCnt }}回复·{{ topic.viewCnt }}浏览</text>
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
 									<view class="topic-time">{{ topic.lastEditTime }}</view>
@@ -322,14 +322,13 @@
 				<view v-if="topicList.length" class ="topic-list">
 				<!-- 话题项 -->
 					<block v-for="topic of topicList">
-						<view @tap="navigator('./contentQa?id=' + topic.id)" class="topic">
+						<view  class="topic">
 							<!-- <view class="topic-author-avatar"> -->
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
-							<view class="topic-type">回答</view>
-							<view class="topic-info">
-								<view class="topic-title">{{ topic.content }}</view>
-							</view>
+								<view class="topic-type">回答</view>							
+								<view @tap="navigator('./contentQa?id=' + topic.id)" class="topic-report-title">{{ topic.content }}</view>
+								<view  @tap="handleDeleteReportAnswer(topic.id)" class="topic-report-delete">删除</view>							
 						</view>
 					</block>
 					<view class="pagination">
@@ -349,14 +348,13 @@
 				<!-- 话题项 -->
 					<block v-for="topic of topicList"> 
 					<!-- 导出到content错误 -->
-						<view @tap="navigator('./contentQaReply?id=' + topic.id)" class="topic">
+						<view  class="topic">
 							<!-- <view class="topic-author-avatar"> -->
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
-							<view class="topic-type">回复</view>
-							<view class="topic-info">
-								<view class="topic-title">{{ topic.content }}</view>
-							</view>
+								<view class="topic-type">回复</view>							
+								<view @tap="navigator('./contentQaReply?id=' + topic.id)" class="topic-report-title">{{ topic.content }}</view>
+								<view @tap="handleDeleteReportReply(topic.id)"  class="topic-report-delete" >删除</view>							
 						</view>
 					</block>
 					<view class="pagination">
@@ -447,12 +445,15 @@
 				}
 			},
 			// 获取数据
-			async handleGetTopicList(args) {
-				const params = {
-					'pageSize' : 2147483647,
-					'pageNo' : 1
-				}
-				if (args.tab == '讨论贴') {
+			async handleGetTopicList(params) {
+				
+				this.topicList=null
+				
+				if (params.tab == '讨论贴') {
+					const params = {
+						'pageSize' : 2147483647,
+						'pageNo' : 1
+					}
 					var posts = await getPostList(params);
 					if (posts.data.posts.length > 0) {
 						var list = posts.data.posts;
@@ -483,7 +484,54 @@
 				}
 			},
 			
+			async handleGetProfile(){
+				
+				this.topicList=null
+				
+				const params = {
+					tab:this.handleGetTab(),
+					userPhone:this.userPhone,
+					pageSize:2147483647,
+					pageNo:1
+				}
+				
+				
+				if (params.tab == '个人中心'){
+					console.log('个人中心')
+										
+					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
+					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
+					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
+					
+					
+					console.log("查询成功")
+					if(posts.data.total){
+						this.postCnt = posts.data.total
+						console.log(posts.data.total)
+					}
+					
+					if(questions.data.total){
+						this.questionCnt = questions.data.total
+						console.log(questions.data.total)
+					}
+					
+					if(answers.data.total){
+						this.answerCnt = answers.data.total
+						console.log(answers.data.total)
+					}
+										
+				}
+				
+						
+				await this.handleGetUserPost()
+				
+				
+			},
+			
 			async handleGetUserPost(params){	
+				
+				this.topicList=null
+				
 				this.profileTab = 0
 				if(params == null){
 					params = {
@@ -518,6 +566,8 @@
 			},
 			
 			async handleGetUserQuestion(params){
+				this.topicList=null
+				
 				this.profileTab = 1
 				if(params == null){
 					params = {
@@ -545,6 +595,9 @@
 			},
 			
 			async handleGetUserAnswer(params){
+				
+				this.topicList=null
+				
 				this.profileTab = 2
 				
 				if(params == null){
@@ -574,6 +627,8 @@
 			},
 			
 			async handleGetUserFavorite(){
+				this.topicList=null
+				
 				this.profileTab = 3
 				
 				const params = {
@@ -611,11 +666,14 @@
 				}
 				
 				
-				await handleGetUserFavoritePost()
+				await this.handleGetUserFavoritePost()
 				
 			},
 			
 			async handleGetUserFavoritePost(params){
+				
+				this.topicList=null
+				
 				this.favoriteTab = 0
 				if(params == null){
 					params = {
@@ -650,6 +708,8 @@
 			},
 			
 			async handleGetUserFavoriteQuestion(params){
+				this.topicList=null
+				
 				this.favoriteTab = 1
 				if(params == null){
 					params = {
@@ -684,6 +744,8 @@
 			},
 			
 			async handleGetUserFavoriteAnswer(params){
+				this.topicList=null
+				
 				this.favoriteTab = 2
 				if(params == null){
 					params = {
@@ -717,48 +779,10 @@
 				}
 			},
 			
-			async handleGetProfile(){
-				
-				const params = {
-					tab:this.handleGetTab(),
-					userPhone:this.userPhone,
-					pageSize:2147483647,
-					pageNo:1
-				}
-				
-				
-				if (params.tab == '个人中心'){
-					console.log('个人中心')
-										
-					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
-					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
-					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
-					
-					
-					console.log("查询成功")
-					if(posts.data.total){
-						this.postCnt = posts.data.total
-						console.log(posts.data.total)
-					}
-					
-					if(questions.data.total){
-						this.questionCnt = questions.data.total
-						console.log(questions.data.total)
-					}
-					
-					if(answers.data.total){
-						this.answerCnt = answers.data.total
-						console.log(answers.data.total)
-					}
-										
-				}
-				
-				await handleGetUserPost()
-				
-				
-			},
+			
 			
 			async handleGetReport(){
+				this.topicList=null
 				
 				console.log("查看举报")
 				this.profileTab = 4
@@ -778,12 +802,13 @@
 				
 				console.log("改变数量")
 								
-				await handleGetReportAnswer()				
+				await this.handleGetReportAnswer()				
 			},
 			
 
 			
 			async handleGetReportAnswer(){
+				this.topicList=null
 				
 				console.log("查看举报回答")
 				
@@ -796,13 +821,23 @@
 				
 				var ans =await getReportQaAnswer(params)
 				
-				if (ans.data.reports.length > 0) {
-					this.topicList = ans.data.reports;
-					return true;
-				}
+				
+				this.topicList = ans.data.reports
+				this.reportAnswerCnt = ans.data.total
+				return true;
+				
+			},
+			
+			async handleDeleteReportAnswer(id){
+				
+				console.log("delete")
+				await deleteReportQaAnswer(id)
+				await this.handleGetReportAnswer()
 			},
 			
 			async handleGetReportReply(){
+				this.topicList=null
+				
 				console.log("查看举报回复")
 				
 				this.reportTab = 1
@@ -814,12 +849,20 @@
 				
 				var replys =await getReportQaReply(params)
 				
-				if (replys.data.reports.length > 0) {
-					this.topicList = replys.data.reports;
-					return true;
-				}
+				
+				this.topicList = replys.data.reports;
+				this.reportReplyCnt = replys.data.total
+				return true;
+				
 				
 			},
+			
+			async handleDeleteReportReply(id){
+				console.log("delete")
+				await deleteReportQaReply(id)
+				await this.handleGetReportReply()
+			},
+			
 			// 话题分类切换
 			handleClassIfyChange(classIfyId) {
 				if (this.currentClassIfy === classIfyId) {
@@ -1281,10 +1324,12 @@
 					color: #fff;
 					background-color: #007AFF;
 				}
+				
+				
 
 				.topic-info {
 					width: 648rpx;
-
+					
 					.topic-title {
 						width: 520rpx;
 						color: #333;
@@ -1293,6 +1338,9 @@
 						text-overflow: ellipsis;
 						white-space: nowrap;
 					}
+					
+					
+										
 
 					.topic-other {
 						width: 628rpx;
@@ -1315,8 +1363,34 @@
 							font-size: 12px;
 							color: #778087;
 						}
-					}
+					}									
 				}
+				
+				.topic-report-title {
+					width: 520rpx;
+					color: #333;
+					line-height: 40rpx;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+				
+				.topic-report-delete {
+					width: 80rpx;
+					height: 60rpx;
+					padding: 0 4rpx;
+					margin-right: 15rpx;
+					margin-left: 15rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					color: #ebe7ff;
+					font-size: 12px;
+					background-color: #fc002c;
+					border-radius: 6rpx;
+				}
+				
+				
 			}
 
 			// 无数据
