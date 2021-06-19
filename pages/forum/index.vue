@@ -471,6 +471,10 @@
 							{
 								'title': '热门发帖',
 								'value': 'hot'
+							},
+							{
+								'title': '最多回复',
+								'value': 'answer'
 							}
 						]
 					}
@@ -503,6 +507,15 @@
 					this.sortedTopicList.sort((a,b)=>{
 						var x = a.viewCnt
 						var y = b.viewCnt
+						if(x>y) return -1;
+						else if(x<y) return 1;
+						else return 0;
+					})
+				}
+				if(this.currentSortType == 'answer') {
+					this.sortedTopicList.sort((a,b)=>{
+						var x = a.answerCnt
+						var y = b.answerCnt
 						if(x>y) return -1;
 						else if(x<y) return 1;
 						else return 0;
