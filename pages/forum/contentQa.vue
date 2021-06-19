@@ -50,6 +50,7 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
+											<text class="recommend-text" v-if="role=='manager'" @tap="recommandReply(reply.answerId)">推荐</text>
 											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
 											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
@@ -125,7 +126,7 @@ import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import slFilter from './sl-filter.vue'
 import {getQuestion, addQaViewCnt, getQaLikeInfo, postLike, deleteLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
-import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer, getAuthInfo} from '../../fetch/api.js'
+import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer, getAuthInfo, recommendAnswer} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -344,6 +345,10 @@ export default {
 			var authInfo = await getAuthInfo()
 			this.role = authInfo
 		},
+		async recommandReply(answerId) {
+			await recommendAnswer(answerId)
+			this.$util.toast('推荐成功')
+		}
 	},
 	async onLoad(params) {
 		console.log(params)
@@ -493,6 +498,11 @@ export default {
 							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
 							color: #b4b4b4;
+						}
+						.recommend-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							color: #0000ff;
 						}
 					}
 				}
