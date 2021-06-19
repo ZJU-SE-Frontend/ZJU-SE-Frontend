@@ -246,6 +246,10 @@ export function getReport_Cov(appoint_id) {
 }
 
 /* 健康论坛模块API */
+export function getAuthInfo(){
+	let token = jwt_decode(uni.getStorageSync('jwt'))
+	return token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+}
 
 export function getPostList(params) {
 	return fetchGet("/api/forum/post", params)
