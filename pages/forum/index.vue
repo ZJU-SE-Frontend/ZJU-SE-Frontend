@@ -85,25 +85,48 @@
 			
 			<view  v-if="currentClassIfy==1" class="post">
 				<view v-if="topicList.length" class="topic-list">
+					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
-					<block v-for="topic of topicList.slice((qaPage - 1)*limit, qaPage*limit)">
-						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
-							<!-- <view class="topic-author-avatar"> -->
-								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-							<!-- </view> -->
-							<view class="topic-type">问答</view>
-							<view class="topic-info">
-								<view class="topic-title">{{ topic.title }}</view>
-								<view class="topic-other">
-									<view class="topic-view">
-										<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+					<view v-if="currentSortType=='default'">
+						<block v-for="topic of topicList.slice((qaPage - 1)*limit, qaPage*limit)">
+							<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+								<!-- <view class="topic-author-avatar"> -->
+									<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+								<!-- </view> -->
+								<view class="topic-type">问答</view>
+								<view class="topic-info">
+									<view class="topic-title">{{ topic.title }}</view>
+									<view class="topic-other">
+										<view class="topic-view">
+											<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+										</view>
+										<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+										<view class="topic-time">{{ topic.lastEditTime }}</view>
 									</view>
-									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-									<view class="topic-time">{{ topic.lastEditTime }}</view>
 								</view>
 							</view>
-						</view>
-					</block>
+						</block>
+					</view>
+					<view v-if="currentSortType=='hot'">
+						<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
+							<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+								<!-- <view class="topic-author-avatar"> -->
+									<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+								<!-- </view> -->
+								<view class="topic-type">问答</view>
+								<view class="topic-info">
+									<view class="topic-title">{{ topic.title }}</view>
+									<view class="topic-other">
+										<view class="topic-view">
+											<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
+										</view>
+										<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+										<view class="topic-time">{{ topic.lastEditTime }}</view>
+									</view>
+								</view>
+							</view>
+						</block>
+					</view>
 					<!-- 分页器 -->
 					<view class="pagination">
 						<view class="pagination-action">
@@ -381,10 +404,14 @@
 
 <script>
 	const moment = require('moment')
+	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
 	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
 	export default {
+		components: {
+			slFilter
+		},
 		data() {
 			return {
 				// 当前帖子分类
@@ -427,9 +454,29 @@
 				reportReplyCnt:0,
 				profileTab:null,
 				favoriteTab:0,
-				reportTab:null
-				
-				
+				reportTab:null,
+				// 排序
+				themeColor: '#000000',
+				titleColor: '#666666',
+				menuList: [
+					{
+						'title': '默认排序',
+						'key': 'sort',
+						'isSort': true,
+						'reflexTitle': true,
+						'detailList': [{
+								'title': '默认排序',
+								'value': 'default'
+							},
+							{
+								'title': '热门发帖',
+								'value': 'hot'
+							}
+						]
+					}
+				],
+				sortedTopicList: [],
+				currentSortType: 'default'
 			}
 		},
 		methods: {
@@ -444,6 +491,21 @@
 						'url': './createQuestion'
 					})
 					console.log('新建问答')
+				}
+			},
+			//排序
+			sortResult(value) {
+				this.currentSortType = value.sort
+				console.log(this.currentSortType)
+				if(this.currentSortType = 'hot') {
+					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
+					this.sortedTopicList.sort((a,b)=>{
+						var x = a.viewCnt
+						var y = b.viewCnt
+						if(x>y) return -1;
+						else if(x<y) return 1;
+						else return 0;
+					})
 				}
 			},
 			// 获取数据

@@ -302,12 +302,16 @@ export default {
 			await this.loadReplyLikeInfo()
 			await this.getReplies()
 		},
+		async getQid() {
+			var qidData = await getAnswerContent(this.topicId)
+			this.qid = qidData.data.questionId
+		}
 	},
 	async onLoad(params) {
 		if (params.id) {
 			//console.log(params.id)
 			this.topicId = params.id
-			this.qid = params.qid
+			await this.getQid()
 			console.log('Loading ' + this.topicId)
 			await this.getCurrentUser()
 			//await this.getCurrentUser()
