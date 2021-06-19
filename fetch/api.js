@@ -478,6 +478,10 @@ export function deleteQaReply(topicId) {
 	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
 }
 
+export function reportQaAnswer(topicId) {
+	return fetchPost("/api/forum/report/qa/answer/" + topicId)
+}
+
 export function getdepart(hos){
 	return fetchGet("/api/appointment/patient/department/"+hos)
 }
