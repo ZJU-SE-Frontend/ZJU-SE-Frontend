@@ -52,6 +52,14 @@
 								<view class="reply-content">
 									<text>{{ reply.content }}</text>
 								</view>
+								<view class="detail-like">
+									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
+									<text class="info-cnt">{{ reply.likeCnt }}</text>
+									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
+									<text class="info-cnt">{{ reply.dislikeCnt }}</text>
+								</view>
 							</view>
 						</block>
 					</view>
@@ -82,7 +90,8 @@ export default {
 			userPhone: null,
 			pageSize : 20,
 			pageNo : 1,
-			replies : []
+			replies : [],
+			replyLikeInfo: null
 		}
 	},
 	methods: {
@@ -140,7 +149,8 @@ export default {
 			}
 			console.log(params)
 			var replyLikeInfo = await getReplyLikeInfo(this.topicId, params)
-			console.log(replyLikeInfo)
+			this.replyLikeInfo = replyLikeInfo.data
+			console.log(this.replyLikeInfo)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
