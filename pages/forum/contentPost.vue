@@ -53,11 +53,11 @@
 									<text>{{ reply.content }}</text>
 								</view>
 								<view class="detail-like">
-									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
-									<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
+									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞.svg"></image>
 									<text class="info-cnt">{{ reply.likeCnt }}</text>
-									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
-									<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
+									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩.svg"></image>
 									<text class="info-cnt">{{ reply.dislikeCnt }}</text>
 								</view>
 							</view>
@@ -76,7 +76,8 @@
 <script>
 const moment = require('moment')
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost} from '../../fetch/api.js'
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost,
+			postReplyLike, deleteReplyLike} from '../../fetch/api.js'
 export default {
 	data() {
 		return {
@@ -192,6 +193,41 @@ export default {
 				await this.signalDislike()
 			this.loadLikeInfo()
 			this.handleGetTopicDetail()
+		},
+		async signalReplyLike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 1
+			};
+			await postReplyLike(replyId, params)
+		},
+		async signalReplyDislike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 0
+			};
+			await postReplyLike(replyId, params)
+		},		
+		async signalReplyClear(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+			};
+			await deleteReplyLike(replyId, params)
+		},
+		async tapReplyLike(replyId) {
+			console.log("Tap Reply Like: ", replyId)
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+				await this.signalReplyLike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
+		},
+		async tapReplyDislike(replyId) {
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+				await this.signalReplyDislike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
 		},
 		async changeFavoriteState() {
 			const params = {

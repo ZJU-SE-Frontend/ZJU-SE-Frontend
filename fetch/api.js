@@ -267,8 +267,12 @@ export function getLikeInfo(topicId, params) {
 	return fetchGet('/api/forum/post/like/' + topicId, params)
 }
 
-export function getReplyLikeInfo(replyId, params) {
-	return fetchGet('/api/forum/post/reply/like/' + replyId, params)
+export function getReplyLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/post/reply/like/' + topicId, params)
+}
+
+export function postReplyLike(replyId, params) {
+	return fetchPost('/api/forum/post/reply/like/' + replyId, params)
 }
 
 export function postLike(topicId, params) {
@@ -304,6 +308,10 @@ export function modifyPost(topicId, params) {
 
 export function deleteLike(topicId, params) {
 	return fetchDelete("/api/forum/post/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function deleteReplyLike(replyId, params) {
+	return fetchDelete('/api/forum/post/reply/like/' + replyId + '?userPhone=' + params.userPhone)
 }
 
 export function getFavoriteInfo(topicId, params) {
