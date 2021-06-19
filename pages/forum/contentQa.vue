@@ -40,7 +40,7 @@
 						<!-- 回复列表 -->
 						<view class="reply-list">
 							<block v-for="(reply, replyIndex) of answers">
-								<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply">
+								<view class="reply">
 									<view class="reply-header">
 										<!-- <view class="reply-author-avatar">
 											<image :src="reply.author.avatar_url"></image>
@@ -49,11 +49,12 @@
 											<text class="reply-author">{{ reply.userName }}</text>
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
-										<view class="reply-delete" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">
-											<text class="delete-text">删除</text>
+										<view class="reply-delete">
+											<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
-									<view class="reply-content">
+									<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply-content">
 										<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 									</view>
 									<view class="reply-finfo">
@@ -82,8 +83,9 @@
 											<text class="reply-author">{{ reply.userName }}</text>
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
-										<view class="reply-delete" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">
-											<text class="delete-text">删除</text>
+										<view class="reply-delete">
+											<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
 									<view class="reply-content">
@@ -115,7 +117,7 @@ import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import slFilter from './sl-filter.vue'
 import {getQuestion, addQaViewCnt, getQaLikeInfo, postLike, deleteLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
-import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone} from '../../fetch/api.js'
+import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -321,6 +323,11 @@ export default {
 		async removeReply(answerId) {
 			await deleteAnswer(answerId)
 			this.handleGetAnswer()
+		},
+		async reportReply(answerId) {
+			console.log(answerId)
+			await reportQaAnswer(answerId)
+			this.$util.toast('举报成功')
 		}
 	},
 	async onLoad(params) {
@@ -460,11 +467,16 @@ export default {
 					.reply-delete {
 						margin-left: 20rpx;
 						.delete-text {
-							padding: 3rpx 20rpx 3rpx 20rpx;
+							padding: 3rpx 10rpx 3rpx 20rpx;
 							font-size: 11px;
 							// color: #ffffff;
 							// background-color: #ff0000;
 							color: #ff0000;
+						}
+						.report-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							color: #b4b4b4;
 						}
 					}
 				}
