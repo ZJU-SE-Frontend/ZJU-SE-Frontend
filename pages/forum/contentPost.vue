@@ -9,7 +9,7 @@
 					<view class="topic-title">{{ topic.title }}</view>
 					<view class="topic-header-info">
 						<text class='time-info'>•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</text>
-						<text v-if="topic.authorPhone==userPhone" class="delete-text" @tap="deleteTopic">删除</text>
+						<text v-if="topic.authorPhone==userPhone || role=='manager'" class="delete-text" @tap="deleteTopic">删除</text>
 						<text v-if="topic.authorPhone==userPhone" class="edit-text" @tap="editTopic">编辑</text>
 						<!-- <text v-if="topic.authorPhone!=userPhone" class="report-text" @tap="">举报</text> -->
 					</view>
