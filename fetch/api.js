@@ -423,15 +423,27 @@ export function deleteQaLike(topicId, params) {
 }
 
 export function getQaFavoriteInfo(topicId, params) {
-	return fetchGet('/api/forum/qa/answer/favorite/' + topicId, params)
+	return fetchGet('/api/forum/qa/question/favorite/' + topicId, params)
 }
 
 export function addToQaFavorite(topicId, params) {
-	return fetchPost("/api/forum/qa/answer/favorite/" + topicId, params)
+	return fetchPost("/api/forum/qa/question/favorite/" + topicId, params)
 }
 
 export function removeFromQaFavorite(topicId, params) {
-	return fetchDelete("/api/forum/qa/answer/favorite/" + topicId +'?userPhone=' + params.userPhone)
+	return fetchDelete("/api/forum/qa/question/favorite/" + topicId + '?userPhone=' + params.userPhone)
+}
+
+export function addToQaAnswerFavorite(topicId, params) {
+	return fetchPost('/api/forum/qa/answer/favorite/' + topicId, params)
+}
+
+export function removeFromQaAnswerFavorite(topicId, params) {
+	return fetchDelete('/api/forum/qa/answer/favorite/' + topicId + '?userPhone=' + params.userPhone)
+}
+
+export function getQaAnswerFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/answer/favorite/' + topicId, params)
 }
 
 export function getAnswer(answerId, params) {
@@ -459,13 +471,13 @@ export function getQaTopicReplies(topicId, params) {
 }
 
 export function publicQaReply(topicId, params) {
-	console.log('asdasdasdasd' + params.userPhone)
 	return fetchPost("/api/forum/qa/answer/reply/" + topicId, params)
 }
 
 export function deleteQaReply(topicId) {
 	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
 }
+
 export function getdepart(hos){
 	return fetchGet("/api/appointment/patient/department/"+hos)
 }

@@ -16,10 +16,10 @@
 				<view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /></view>
 				<!-- 点赞/踩 -->
 				<view class="detail-like">
-					<image v-if="hasLiked" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
+					<image v-if="likeState==true" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
 					<text class="info-cnt">{{ topic.likeCnt }}</text>
-					<image v-if='hasDisLiked' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
+					<image v-if='likeState==false' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
 					<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
 					<text class="info-cnt">{{ topic.dislikeCnt }}</text>
 					<image class="info-icon" src="../../static/forum/阅读 可见.svg"></image>
@@ -63,8 +63,7 @@
 			<!-- <ssx-no-data v-if="!topic.id"></ssx-no-data> -->
 		</view>
 		
-		<!-- 返回按钮 -->
-		<!-- <ssx-fix-button></ssx-fix-button> -->
+		<view @tap="onFloatButton()" class="plus">回复</view>
 	</view>
 </template>
 
@@ -74,9 +73,9 @@ import uParse from '../../common/gaoyia-parse/parse'
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
-import {getPost, addViewCnt, getQaLikeInfo, postLike, deleteLike, getFavoriteInfo, 
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
-import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply} from '../../fetch/api.js'
+import {getPost, addViewCnt, getQaLikeInfo, postQaLike, deleteLike, getQaAnswerFavoriteInfo, 
+			addToQaAnswerFavorite, removeFromQaAnswerFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
+import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply, deleteQaLike} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -102,7 +101,7 @@ export default {
 		}
 	},
 	methods: {
-		onNavigationBarButtonTap(e) {
+		onFloatButton() {
 			uni.navigateTo({
 				'url': './createQaReply?id=' + this.topicId
 			})
@@ -135,6 +134,13 @@ export default {
 			topic.create_at = moment(topic.create_at).format('YYYY-MM-DD HH:mm:ss')
 			return topic
 		},
+		async getCurrentUser() {
+			var userInfo = await getCurrentUserPhone()
+			console.log("user INFO: ")
+			console.log(userInfo)
+			this.userPhone = userInfo.user_phone
+			console.log(this.userPhone)
+		},
 		async loadLikeInfo() {
 			const params = {
 				"userPhone" : this.userPhone,
@@ -142,35 +148,36 @@ export default {
 			var likeState = await getQaLikeInfo(this.topicId, params)
 			this.likeState = likeState.data
 			console.log(likeState)
-			this.hasLiked = (this.likeState == true)
-			this.hasDisLiked = (this.likeState == false)
+			// this.hasLiked = (this.likeState == true)
+			// this.hasDisLiked = (this.likeState == false)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
 				"userPhone" : this.userPhone,
 			};
-			var favoriteState = await getFavoriteInfo(this.topicId, params)
+			var favoriteState = await getQaAnswerFavoriteInfo(this.topicId, params)
 			this.favoriteState = favoriteState.data
+			console.log(this.favoriteState)
 		},
 		async signalLike() {
 			const params = {
 				"userPhone" : this.userPhone,
 				"like" : 1
 			};
-			await postLike(this.topicId, params)
+			await postQaLike(this.topicId, params)
 		},
 		async signalDislike() {
 			const params = {
 				"userPhone" : this.userPhone,
 				"like" : 0
 			};
-			await postLike(this.topicId, params)
+			await postQaLike(this.topicId, params)
 		},		
 		async signalClear() {
 			const params = {
 				"userPhone" : this.userPhone,
 			};
-			await deleteLike(this.topicId, params)
+			await deleteQaLike(this.topicId, params)
 		},
 		async tapLike() {
 			await this.signalClear()
@@ -190,10 +197,14 @@ export default {
 			const params = {
 				"userPhone" : this.userPhone,
 			};
-			if (!this.favoriteState)
-				await addToFavorite(this.topicId, params)
-			else
-				await removeFromFavorite(this.topicId, params)
+			if (!this.favoriteState){
+				console.log('add favorite')
+				await addToQaAnswerFavorite(this.topicId, params)
+			}
+			else {
+				console.log('remove favorite')
+				await removeFromQaAnswerFavorite(this.topicId, params)
+			}
 			this.LoadFavoriteInfo()
 		},
 		async getReplies() {
@@ -237,14 +248,14 @@ export default {
 			//console.log(params.id)
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
-			this.userPhone = "18888888888"
+			await this.getCurrentUser()
 			//await this.getCurrentUser()
 			console.log('11111111')
 			await addAnswerViewCnt(this.topicId)
 			console.log('22222222')
 			await this.getReplies()
 			console.log('33333333')
-			//this.LoadFavoriteInfo()
+			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.handleGetTopicDetail(this.topicId)
 		}
@@ -253,6 +264,27 @@ export default {
 </script>
 
 <style lang="scss">
+	.plus{
+		position: fixed;
+		right: 50rpx;
+		/* #ifdef H5 */
+		bottom: 80px;
+		/* #endif */
+		/* #ifndef H5 */
+		bottom: calc(var(--window-bottom) + 50rpx);
+		/* #endif */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100rpx;
+		height: 100rpx;
+		color: #333;
+		background-color: #fff;
+		box-shadow: 0 20rpx 60rpx 20rpx rgba(0, 0, 0, 0.2);
+		font-size: 30rpx;
+		border-radius: 50%;
+		z-index: 999;
+	}
 // 话题详情
 .topic-detail {
 	width: 730rpx;
