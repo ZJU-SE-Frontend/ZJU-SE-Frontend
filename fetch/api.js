@@ -246,6 +246,10 @@ export function getReport_Cov(appoint_id) {
 }
 
 /* 健康论坛模块API */
+export function getAuthInfo(){
+	let token = jwt_decode(uni.getStorageSync('jwt'))
+	return token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+}
 
 export function getPostList(params) {
 	return fetchGet("/api/forum/post", params)
@@ -267,8 +271,12 @@ export function getLikeInfo(topicId, params) {
 	return fetchGet('/api/forum/post/like/' + topicId, params)
 }
 
-export function getReplyLikeInfo(replyId, params) {
-	return fetchGet('/api/forum/post/reply/like/' + replyId, params)
+export function getReplyLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/post/reply/like/' + topicId, params)
+}
+
+export function postReplyLike(replyId, params) {
+	return fetchPost('/api/forum/post/reply/like/' + replyId, params)
 }
 
 export function postLike(topicId, params) {
@@ -304,6 +312,10 @@ export function modifyPost(topicId, params) {
 
 export function deleteLike(topicId, params) {
 	return fetchDelete("/api/forum/post/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function deleteReplyLike(replyId, params) {
+	return fetchDelete('/api/forum/post/reply/like/' + replyId + '?userPhone=' + params.userPhone)
 }
 
 export function getFavoriteInfo(topicId, params) {
@@ -476,6 +488,10 @@ export function publicQaReply(topicId, params) {
 
 export function deleteQaReply(topicId) {
 	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
+}
+
+export function reportQaAnswer(topicId) {
+	return fetchPost("/api/forum/report/qa/answer/" + topicId)
 }
 
 export function getdepart(hos){

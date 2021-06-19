@@ -9,7 +9,7 @@
 					<view class="topic-title">{{ topic.title }}</view>
 					<view class="topic-header-info">
 						<text class='time-info'>•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</text>
-						<text v-if="topic.authorPhone==userPhone" class="delete-text" @tap="deleteTopic">删除</text>
+						<text v-if="topic.authorPhone==userPhone || role=='manager'" class="delete-text" @tap="deleteTopic">删除</text>
 						<text v-if="topic.authorPhone==userPhone" class="edit-text" @tap="editTopic">编辑</text>
 						<!-- <text v-if="topic.authorPhone!=userPhone" class="report-text" @tap="">举报</text> -->
 					</view>
@@ -44,20 +44,20 @@
 										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
 									<view class="reply-delete">
-										<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.replyId)">删除</text>
 										<text class="edit-text" v-if="userPhone==reply.userPhone" @tap="editReply(reply.replyId, reply.content)">编辑</text>
-										<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.replyId)">举报</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
 									<text>{{ reply.content }}</text>
 								</view>
 								<view class="detail-like">
-									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
-									<image v-else class="info-icon" @tap="tapLike" src="../../static/forum/赞.svg"></image>
+									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞.svg"></image>
 									<text class="info-cnt">{{ reply.likeCnt }}</text>
-									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapDislike" src="../../static/forum/踩 面性.svg"></image>
-									<image v-else class="info-icon" @tap="tapDislike" src="../../static/forum/踩.svg"></image>
+									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩.svg"></image>
 									<text class="info-cnt">{{ reply.dislikeCnt }}</text>
 								</view>
 							</view>
@@ -76,7 +76,8 @@
 <script>
 const moment = require('moment')
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost} from '../../fetch/api.js'
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost,
+			postReplyLike, deleteReplyLike, getAuthInfo} from '../../fetch/api.js'
 export default {
 	data() {
 		return {
@@ -91,7 +92,8 @@ export default {
 			pageSize : 20,
 			pageNo : 1,
 			replies : [],
-			replyLikeInfo: null
+			replyLikeInfo: null,
+			role : ""
 		}
 	},
 	methods: {
@@ -109,7 +111,6 @@ export default {
 		async handleGetTopicDetail() {
 			var topic = await getPost(this.topicId);
 			this.topic = topic.data;
-			console.log(this.topic)
 			this.topic.updateTime = moment(this.topic.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		// 话题详情数据过滤
@@ -147,10 +148,8 @@ export default {
 				"pageSize" : 2147483647,
 				"pageNo" : 1
 			}
-			console.log(params)
 			var replyLikeInfo = await getReplyLikeInfo(this.topicId, params)
 			this.replyLikeInfo = replyLikeInfo.data
-			console.log(this.replyLikeInfo)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
@@ -193,6 +192,40 @@ export default {
 			this.loadLikeInfo()
 			this.handleGetTopicDetail()
 		},
+		async signalReplyLike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 1
+			};
+			await postReplyLike(replyId, params)
+		},
+		async signalReplyDislike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 0
+			};
+			await postReplyLike(replyId, params)
+		},		
+		async signalReplyClear(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+			};
+			await deleteReplyLike(replyId, params)
+		},
+		async tapReplyLike(replyId) {
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+				await this.signalReplyLike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
+		},
+		async tapReplyDislike(replyId) {
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+				await this.signalReplyDislike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
+		},
 		async changeFavoriteState() {
 			const params = {
 				"userPhone" : this.userPhone,
@@ -210,7 +243,6 @@ export default {
 			}
 			var replies = await getTopicReplies(this.topicId, params)
 			this.replies = replies.data.postReplys
-			console.log(this.replies)
 			replies = []
 			for(var r in this.replies) {
 				if(this.replies[r].content != "") {
@@ -231,10 +263,11 @@ export default {
 		},
 		async getCurrentUser() {
 			var userInfo = await getCurrentUserPhone()
-			console.log("user INFO: ")
-			console.log(userInfo)
 			this.userPhone = userInfo.user_phone
-			console.log(this.userPhone)
+		},
+		async loadAuthInfo() {
+			var authInfo = await getAuthInfo()
+			this.role = authInfo
 		},
 		async reportReply(replyId) {
 			await reportPostReply(replyId)
@@ -263,6 +296,7 @@ export default {
 			await this.getCurrentUser()
 			await addViewCnt(this.topicId)
 			await this.getReplies()
+			this.loadAuthInfo()
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.loadReplyLikeInfo()
