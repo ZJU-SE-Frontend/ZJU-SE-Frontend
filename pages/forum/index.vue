@@ -305,6 +305,9 @@
 
 		</view>
 		
+		<view v-if="currentClassIfy == 0" @tap="onFloatButton()" class="plus">发帖</view>
+		<view v-if="currentClassIfy == 1" @tap="onFloatButton()" class="plus">提问</view>
+		
 	</view>
 </template>
 
@@ -340,7 +343,7 @@
 				profileFavortieQuestionPage:1,
 				profileFavortieAnswerPage:1,
 				// 条数
-				limit: 7,
+				limit: 10,
 				userPhone: null,
 				postCnt: 0,
 				questionCnt:0,
@@ -353,7 +356,7 @@
 			}
 		},
 		methods: {
-			onNavigationBarButtonTap(e) {
+			onFloatButton() {
 				if (this.handleGetTab() == '讨论贴') {
 					uni.navigateTo({
 						'url': './createPost'
@@ -984,6 +987,27 @@
 </script>
 
 <style lang="scss" scoped>
+	.plus{
+		position: fixed;
+		right: 50rpx;
+		/* #ifdef H5 */
+		bottom: 80px;
+		/* #endif */
+		/* #ifndef H5 */
+		bottom: calc(var(--window-bottom) + 50rpx);
+		/* #endif */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100rpx;
+		height: 100rpx;
+		color: #333;
+		background-color: #fff;
+		box-shadow: 0 20rpx 60rpx 20rpx rgba(0, 0, 0, 0.2);
+		font-size: 30rpx;
+		border-radius: 50%;
+		z-index: 999;
+	}
 	// 话题
 	.topic-wrap {
 		display: flex;

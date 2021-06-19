@@ -63,8 +63,7 @@
 			<!-- <ssx-no-data v-if="!topic.id"></ssx-no-data> -->
 		</view>
 		
-		<!-- 返回按钮 -->
-		<!-- <ssx-fix-button></ssx-fix-button> -->
+		<view @tap="onFloatButton()" class="plus">回复</view>
 	</view>
 </template>
 
@@ -102,7 +101,7 @@ export default {
 		}
 	},
 	methods: {
-		onNavigationBarButtonTap(e) {
+		onFloatButton() {
 			uni.navigateTo({
 				'url': './createQaReply?id=' + this.topicId
 			})
@@ -265,6 +264,27 @@ export default {
 </script>
 
 <style lang="scss">
+	.plus{
+		position: fixed;
+		right: 50rpx;
+		/* #ifdef H5 */
+		bottom: 80px;
+		/* #endif */
+		/* #ifndef H5 */
+		bottom: calc(var(--window-bottom) + 50rpx);
+		/* #endif */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100rpx;
+		height: 100rpx;
+		color: #333;
+		background-color: #fff;
+		box-shadow: 0 20rpx 60rpx 20rpx rgba(0, 0, 0, 0.2);
+		font-size: 30rpx;
+		border-radius: 50%;
+		z-index: 999;
+	}
 // 话题详情
 .topic-detail {
 	width: 730rpx;

@@ -28,13 +28,7 @@
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛",
-				"app-plus": {
-					"titleNView": {
-					"buttons": [{
-					"text" : "+",
-					"float": "right"
-					}]}
-				}
+				 "enablePullDownRefresh": false
 			}
 		},
 		{
@@ -64,27 +58,15 @@
 		{
 			"path": "pages/forum/contentPost",
 			"style": {
-				"navigationBarTitleText": "健康论坛",
-				"app-plus": {
-					"titleNView": {
-					"buttons": [{
-					"text" : "+",
-					"float": "right"
-					}]}
-				}
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/forum/contentQa",
 			"style": {
-				"navigationBarTitleText": "健康论坛",
-				"app-plus": {
-					"titleNView": {
-					"buttons": [{
-					"text" : "+",
-					"float": "right"
-					}]}
-				}
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
