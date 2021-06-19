@@ -445,15 +445,14 @@
 				}
 			},
 			// 获取数据
-			async handleGetTopicList(params) {
+			async handleGetTopicList(args) {
 				
 				this.topicList=null
-				
-				if (params.tab == '讨论贴') {
-					const params = {
-						'pageSize' : 2147483647,
-						'pageNo' : 1
-					}
+				const params = {
+					'pageSize' : 2147483647,
+					'pageNo' : 1
+				}
+				if (args.tab == '讨论贴') {
 					var posts = await getPostList(params);
 					if (posts.data.posts.length > 0) {
 						var list = posts.data.posts;
