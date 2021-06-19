@@ -54,7 +54,7 @@
 											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
-									<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply-content">
+									<view @tap="navigator('./contentQaReply?id=' + reply.answerId + '&qid=' + topicId)" class="reply-content">
 										<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 									</view>
 									<view class="reply-finfo">
@@ -82,7 +82,7 @@
 						<!-- 回复列表 -->
 						<view class="reply-list">
 							<block v-for="(reply, replyIndex) of sortedAnswers">
-								<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply">
+								<view @tap="navigator('./contentQaReply?id=' + reply.answerId + '&qid=' + topicId)" class="reply">
 									<view class="reply-header">
 										<!-- <view class="reply-author-avatar">
 											<image :src="reply.author.avatar_url"></image>

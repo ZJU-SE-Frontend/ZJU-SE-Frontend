@@ -97,7 +97,8 @@ export default {
 			userPhone: null,
 			pageSize : 20,
 			pageNo : 1,
-			replies : []
+			replies : [],
+			qid : null
 		}
 	},
 	methods: {
@@ -144,10 +145,14 @@ export default {
 		async loadLikeInfo() {
 			const params = {
 				"userPhone" : this.userPhone,
+				"pageSize" : 2147483647,
+				"pageNo" : 1
 			};
-			var likeState = await getQaLikeInfo(this.topicId, params)
-			this.likeState = likeState.data
-			console.log(likeState)
+			var likeData = await getQaLikeInfo(this.qid, params)
+			if(likeData.data.likes.indexOf(parseInt(this.topicId)) > -1) this.likeState = true
+			else if(likeData.data.disLikes.indexOf(parseInt(this.topicId)) > -1) this.likeState = false
+			else this.likeState = null
+			console.log(this.likeState)
 			// this.hasLiked = (this.likeState == true)
 			// this.hasDisLiked = (this.likeState == false)
 		},
@@ -247,6 +252,7 @@ export default {
 		if (params.id) {
 			//console.log(params.id)
 			this.topicId = params.id
+			this.qid = params.qid
 			console.log('Loading ' + this.topicId)
 			await this.getCurrentUser()
 			//await this.getCurrentUser()
