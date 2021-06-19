@@ -96,7 +96,7 @@
 					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
 					<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
-						<view @tap="navigator('./contentQa?id=' + topic.answerId)" class="topic">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
 							<view class="topic-type">问答</view>
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
