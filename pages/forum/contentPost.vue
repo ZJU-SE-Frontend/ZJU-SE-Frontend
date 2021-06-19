@@ -44,9 +44,9 @@
 										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
 									<view class="reply-delete">
-										<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.replyId)">删除</text>
 										<text class="edit-text" v-if="userPhone==reply.userPhone" @tap="editReply(reply.replyId, reply.content)">编辑</text>
-										<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.replyId)">举报</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -77,7 +77,7 @@
 const moment = require('moment')
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
 			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost,
-			postReplyLike, deleteReplyLike} from '../../fetch/api.js'
+			postReplyLike, deleteReplyLike, getAuthInfo} from '../../fetch/api.js'
 export default {
 	data() {
 		return {
@@ -92,7 +92,8 @@ export default {
 			pageSize : 20,
 			pageNo : 1,
 			replies : [],
-			replyLikeInfo: null
+			replyLikeInfo: null,
+			role : ""
 		}
 	},
 	methods: {
@@ -110,7 +111,6 @@ export default {
 		async handleGetTopicDetail() {
 			var topic = await getPost(this.topicId);
 			this.topic = topic.data;
-			console.log(this.topic)
 			this.topic.updateTime = moment(this.topic.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
 		},
 		// 话题详情数据过滤
@@ -148,10 +148,8 @@ export default {
 				"pageSize" : 2147483647,
 				"pageNo" : 1
 			}
-			console.log(params)
 			var replyLikeInfo = await getReplyLikeInfo(this.topicId, params)
 			this.replyLikeInfo = replyLikeInfo.data
-			console.log(this.replyLikeInfo)
 		},
 		async LoadFavoriteInfo() {
 			const params = {
@@ -215,7 +213,6 @@ export default {
 			await deleteReplyLike(replyId, params)
 		},
 		async tapReplyLike(replyId) {
-			console.log("Tap Reply Like: ", replyId)
 			await this.signalReplyClear(replyId)
 			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
 				await this.signalReplyLike(replyId)
@@ -246,7 +243,6 @@ export default {
 			}
 			var replies = await getTopicReplies(this.topicId, params)
 			this.replies = replies.data.postReplys
-			console.log(this.replies)
 			replies = []
 			for(var r in this.replies) {
 				if(this.replies[r].content != "") {
@@ -267,10 +263,11 @@ export default {
 		},
 		async getCurrentUser() {
 			var userInfo = await getCurrentUserPhone()
-			console.log("user INFO: ")
-			console.log(userInfo)
 			this.userPhone = userInfo.user_phone
-			console.log(this.userPhone)
+		},
+		async loadAuthInfo() {
+			var authInfo = await getAuthInfo()
+			this.role = authInfo
 		},
 		async reportReply(replyId) {
 			await reportPostReply(replyId)
@@ -299,6 +296,7 @@ export default {
 			await this.getCurrentUser()
 			await addViewCnt(this.topicId)
 			await this.getReplies()
+			this.loadAuthInfo()
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.loadReplyLikeInfo()
