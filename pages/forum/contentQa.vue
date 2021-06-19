@@ -60,6 +60,14 @@
 									<view class="reply-finfo">
 										{{reply.viewCnt}}浏览• {{ reply.replyCnt }}回复• {{ reply.likeCnt }}点赞
 									</view>
+									<view class="detail-like">
+										<image v-if="replyLikeInfo.likes.indexOf(reply.answerId) > -1" class="info-icon" src="../../static/forum/赞 面性.svg"></image>
+										<image v-else class="info-icon" src="../../static/forum/赞.svg"></image>
+										<text class="info-cnt">{{ reply.likeCnt }}</text>
+										<image v-if='replyLikeInfo.disLikes.indexOf(reply.answerId) > -1' class="info-icon" src="../../static/forum/踩 面性.svg"></image>
+										<image v-else class="info-icon" src="../../static/forum/踩.svg"></image>
+										<text class="info-cnt">{{ reply.dislikeCnt }}</text>
+									</view>
 								</view>
 							</block>
 						</view>
@@ -171,7 +179,8 @@ export default {
 				}
 			],
 			currentListType: 'default',
-			sortedAnswers: []
+			sortedAnswers: [],
+			replyLikeInfo: null
 		}
 	},
 	methods: {
@@ -254,15 +263,6 @@ export default {
 			this.userPhone = userInfo.user_phone
 			console.log(this.userPhone)
 		},
-		async loadLikeInfo() {
-			const params = {
-				"userPhone" : this.userPhone.toString(),
-			};
-			var likeState = await getQaLikeInfo(this.topicId, params)
-			this.likeState = likeState.data
-			this.hasLiked = (this.likeState == true)
-			this.hasDisLiked = (this.likeState == false)
-		},
 		async LoadFavoriteInfo() {
 			const params = {
 				"userPhone" : this.userPhone.toString(),
@@ -328,6 +328,16 @@ export default {
 			console.log(answerId)
 			await reportQaAnswer(answerId)
 			this.$util.toast('举报成功')
+		},
+		async loadReplyLikeInfo() {
+			const params = {
+				"userPhone" : this.userPhone,
+				"pageSize" : 2147483647,
+				"pageNo" : 1
+			}
+			var replyLikeInfo = await getQaLikeInfo(this.topicId, params)
+			this.replyLikeInfo = replyLikeInfo.data
+			console.log(this.replyLikeInfo)
 		}
 	},
 	async onLoad(params) {
@@ -339,7 +349,7 @@ export default {
 			await addQaViewCnt(this.topicId)
 			await this.handleGetQaDetail(this.topicId)
 			await this.handleGetAnswer()
-			await this.loadLikeInfo()
+			this.loadReplyLikeInfo()
 			await this.LoadFavoriteInfo()
 		}
 	}
