@@ -64,9 +64,9 @@
 						</view>
 					</view>
 				</view>
-			</view>
+
 			
-			<view v-if="currentListType=='hot'">
+				<view v-if="currentListType=='hot'">
 					<view class="detail-reply">
 						<!-- 回复标题 -->
 						<view class="reply-title">{{sortedAnswers.length}}回答</view>
@@ -97,10 +97,10 @@
 						</view>
 					</view>
 				</view>
-			</view>
 			
 			<!-- No data -->
 			<!-- <ssx-no-data v-if="!topic.id"></ssx-no-data> -->
+			</view>
 		</view>
 		
 		<view @tap="onFloatButton()" class="plus">回答</view>
