@@ -406,14 +406,9 @@
 	const moment = require('moment')
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
-<<<<<<< Updated upstream
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent, getRecommendedAnswers,
-	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
-=======
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,getQuestion,
+	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,getQuestion, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,
 	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
->>>>>>> Stashed changes
 	export default {
 		components: {
 			slFilter
