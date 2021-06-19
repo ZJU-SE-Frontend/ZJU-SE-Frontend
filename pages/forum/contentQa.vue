@@ -50,8 +50,8 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
-											<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">删除</text>
-											<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.answerId)">举报</text>
+											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
 									<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply-content">
@@ -133,7 +133,7 @@ import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import slFilter from './sl-filter.vue'
 import {getQuestion, addQaViewCnt, getQaLikeInfo, postQaLike, deleteQaLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
-import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer} from '../../fetch/api.js'
+import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer, getAuthInfo} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -188,7 +188,8 @@ export default {
 			],
 			currentListType: 'default',
 			sortedAnswers: [],
-			replyLikeInfo: null
+			replyLikeInfo: null,
+			role : ""
 		}
 	},
 	methods: {
@@ -348,7 +349,11 @@ export default {
 			var replyLikeInfo = await getQaLikeInfo(this.topicId, params)
 			this.replyLikeInfo = replyLikeInfo.data
 			console.log(this.replyLikeInfo)
-		}
+		},
+		async loadAuthInfo() {
+			var authInfo = await getAuthInfo()
+			this.role = authInfo
+		},
 	},
 	async onLoad(params) {
 		console.log(params)
@@ -360,6 +365,7 @@ export default {
 			await this.handleGetQaDetail(this.topicId)
 			await this.handleGetAnswer()
 			this.loadReplyLikeInfo()
+			this.loadAuthInfo()
 			await this.LoadFavoriteInfo()
 		}
 	}
