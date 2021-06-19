@@ -386,6 +386,25 @@ export function getUserAnswer(userPhone,pageSize,pageNo){
 	return fetchGet("/api/forum/qa/answer/user/"+userPhone,params)
 }
 
+export function getReportQaAnswer(params){
+	return fetchGet("/api/forum/report/qa/answer",params)
+}
+
+export function deleteReportQaAnswer(ansId){
+	return fetchDelete("/api/forum/report/qa/answer/"+ansId)
+}
+
+export function getReportQaReply(params){
+
+	return fetchGet("/api/forum/report/qa/answer/reply",params)
+}
+
+export function deleteReportQaReply(replyId){
+	return fetchDelete("/api/forum/report/qa/answer/reply/"+replyId)
+}
+
+
+
 export function getTopicReplies(topicId, params) {
 	return fetchGet("/api/forum/post/reply/" + topicId, params)
 }
@@ -402,11 +421,7 @@ export function deleteReply(replyId) {
 	return fetchDelete("/api/forum/post/reply/" + replyId)
 }
 
-export function getQuestionList(pageSize, pageNo) {
-	const params = {
-		'pageSize' : pageSize,
-		'pageNo' : pageNo
-	}
+export function getQuestionList(params) {
 	return fetchGet("/api/forum/qa/question", params)
 }
 
@@ -529,3 +544,4 @@ export function getdoctor(hosp,dep){
 	}
 	return fetchGet("/api/appointment/patient/doctorList",params)
 }
+
