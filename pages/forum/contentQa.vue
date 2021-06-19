@@ -50,22 +50,23 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
-											<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">删除</text>
-											<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.answerId)">举报</text>
+											<text class="recommend-text" v-if="role=='manager'" @tap="recommandReply(reply.answerId)">推荐</text>
+											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
 									<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply-content">
 										<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 									</view>
 									<view class="reply-finfo">
-										{{reply.viewCnt}}浏览• {{ reply.replyCnt }}回复• {{ reply.likeCnt }}点赞
+										{{reply.viewCnt}}浏览• {{ reply.replyCnt }}回复
 									</view>
 									<view class="detail-like">
-										<image v-if="replyLikeInfo.likes.indexOf(reply.answerId) > -1" class="info-icon" src="../../static/forum/赞 面性.svg"></image>
-										<image v-else class="info-icon" src="../../static/forum/赞.svg"></image>
+										<image v-if="replyLikeInfo.likes.indexOf(reply.answerId) > -1" class="info-icon" @tap="tapReplyLike(reply.answerId)" src="../../static/forum/赞 面性.svg"></image>
+										<image v-else class="info-icon" @tap="tapReplyLike(reply.answerId)" src="../../static/forum/赞.svg"></image>
 										<text class="info-cnt">{{ reply.likeCnt }}</text>
-										<image v-if='replyLikeInfo.disLikes.indexOf(reply.answerId) > -1' class="info-icon" src="../../static/forum/踩 面性.svg"></image>
-										<image v-else class="info-icon" src="../../static/forum/踩.svg"></image>
+										<image v-if='replyLikeInfo.disLikes.indexOf(reply.answerId) > -1' class="info-icon" @tap="tapReplyDislike(reply.answerId)" src="../../static/forum/踩 面性.svg"></image>
+										<image v-else class="info-icon" @tap="tapReplyDislike(reply.answerId)" src="../../static/forum/踩.svg"></image>
 										<text class="info-cnt">{{ reply.dislikeCnt }}</text>
 									</view>
 								</view>
@@ -100,7 +101,15 @@
 										<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 									</view>
 									<view class="reply-finfo">
-										{{reply.viewCnt}}浏览• {{ reply.replyCnt }}回复• {{ reply.likeCnt }}点赞
+										{{reply.viewCnt}}浏览• {{ reply.replyCnt }}回复
+									</view>
+									<view class="detail-like">
+										<image v-if="replyLikeInfo.likes.indexOf(reply.answerId) > -1" class="info-icon" @tap="tapReplyLike(reply.answerId)" src="../../static/forum/赞 面性.svg"></image>
+										<image v-else class="info-icon" @tap="tapReplyLike(reply.answerId)" src="../../static/forum/赞.svg"></image>
+										<text class="info-cnt">{{ reply.likeCnt }}</text>
+										<image v-if='replyLikeInfo.disLikes.indexOf(reply.answerId) > -1' class="info-icon" @tap="tapReplyDislike(reply.answerId)" src="../../static/forum/踩 面性.svg"></image>
+										<image v-else class="info-icon" @tap="tapReplyDislike(reply.answerId)" src="../../static/forum/踩.svg"></image>
+										<text class="info-cnt">{{ reply.dislikeCnt }}</text>
 									</view>
 								</view>
 							</block>
@@ -124,8 +133,8 @@ import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import slFilter from './sl-filter.vue'
-import {getQuestion, addQaViewCnt, getQaLikeInfo, postLike, deleteLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
-import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer} from '../../fetch/api.js'
+import {getQuestion, addQaViewCnt, getQaLikeInfo, postQaLike, deleteQaLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
+import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer, getAuthInfo, recommendAnswer} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -180,7 +189,8 @@ export default {
 			],
 			currentListType: 'default',
 			sortedAnswers: [],
-			replyLikeInfo: null
+			replyLikeInfo: null,
+			role : ""
 		}
 	},
 	methods: {
@@ -271,39 +281,41 @@ export default {
 			this.favoriteState = favoriteState.data
 			console.log(this.favoriteState)
 		},
-		async signalLike() {
+		async signalLike(replyId) {
 			const params = {
 				"userPhone" : this.userPhone.toString(),
 				"like" : 1
 			};
-			await postQaLike(this.topicId, params)
+			await postQaLike(replyId, params)
 		},
-		async signalDislike() {
+		async signalDislike(replyId) {
 			const params = {
 				"userPhone" : this.userPhone.toString(),
 				"like" : 0
 			};
-			await postQaLike(this.topicId, params)
+			await postQaLike(replyId, params)
 		},		
-		async signalClear() {
+		async signalClear(replyId) {
 			const params = {
 				"userPhone" : this.userPhone.toString(),
 			};
-			await deleteQaLike(this.topicId, params)
+			await deleteQaLike(replyId, params)
 		},
-		async tapLike() {
-			await this.signalClear()
-			if (this.likeState != true)
-				await this.signalLike()
-			this.loadLikeInfo()
+		async tapReplyLike(replyId) {
+			await this.signalClear(replyId)
+			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+				await this.signalLike(replyId)
+			this.loadReplyLikeInfo()
 			this.handleGetQaDetail(this.topicId)
+			this.handleGetAnswer()
 		},
-		async tapDislike() {
-			await this.signalClear()
-			if (this.likeState != false)
-				await this.signalDislike()
-			this.loadLikeInfo()
+		async tapReplyDislike(replyId) {
+			await this.signalClear(replyId)
+			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+				await this.signalDislike(replyId)
+			this.loadReplyLikeInfo()
 			this.handleGetQaDetail(this.topicId)
+			this.handleGetAnswer()
 		},
 		async changeFavoriteState() {
 			console.log('change favorite')
@@ -338,6 +350,14 @@ export default {
 			var replyLikeInfo = await getQaLikeInfo(this.topicId, params)
 			this.replyLikeInfo = replyLikeInfo.data
 			console.log(this.replyLikeInfo)
+		},
+		async loadAuthInfo() {
+			var authInfo = await getAuthInfo()
+			this.role = authInfo
+		},
+		async recommandReply(answerId) {
+			await recommendAnswer(answerId)
+			this.$util.toast('推荐成功')
 		}
 	},
 	async onLoad(params) {
@@ -350,6 +370,7 @@ export default {
 			await this.handleGetQaDetail(this.topicId)
 			await this.handleGetAnswer()
 			this.loadReplyLikeInfo()
+			this.loadAuthInfo()
 			await this.LoadFavoriteInfo()
 		}
 	}
@@ -487,6 +508,11 @@ export default {
 							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
 							color: #b4b4b4;
+						}
+						.recommend-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							color: #0000ff;
 						}
 					}
 				}

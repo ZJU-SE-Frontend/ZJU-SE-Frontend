@@ -470,6 +470,10 @@ export function deleteAnswer(questionId) {
 	return fetchDelete("/api/forum/qa/answer/" + questionId)
 }
 
+export function recommendAnswer(answerId) {
+	return fetchPost("/api/forum/qa/recommended/" + answerId)
+}
+
 export function publicAnswer(questionId, params) {
 	return fetchPost("/api/forum/qa/answer/" + questionId, params)
 }
