@@ -13,7 +13,9 @@
 					<view class="topic-header-info">•修改于{{ topic.lastEditTime }}•作者 {{ topic.userName }}</view>
 				</view>
 				<!-- 话题内容 -->
-				<!--view class="detail-content"><u-parse :content="topic.content" @preview="preview" @navigate="navigate" /--><!--/view-->
+				<view class="detail-content">
+					<text>{{ topic.content }}</text>
+				</view>
 				<!-- 点赞/踩 -->
 				<view class="detail-like">
 					<!-- <image v-if="hasLiked" class="info-icon" @tap="tapLike" src="../../static/forum/赞 面性.svg"></image>
@@ -172,7 +174,7 @@ export default {
 			titleColor: '#666666',
 			menuList: [
 				{
-					'title': '回答排序',
+					'title': '默认排序',
 					'key': 'sort',
 					'isSort': true,
 					'reflexTitle': true,

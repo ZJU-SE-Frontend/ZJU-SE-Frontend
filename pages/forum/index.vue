@@ -86,7 +86,7 @@
 			<view  v-if="currentClassIfy==1" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
-					<block v-for="topic of topicList">
+					<block v-for="topic of topicList.slice((qaPage - 1)*limit, qaPage*limit)">
 						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
 							<!-- <view class="topic-author-avatar"> -->
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
