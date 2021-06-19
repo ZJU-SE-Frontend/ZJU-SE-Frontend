@@ -53,6 +53,14 @@
 								<view class="reply-content">
 									<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 								</view>
+								<view class="detail-like">
+									<image v-if="replyLikeInfo.likes.indexOf(reply.replyId) > -1" class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyLike(reply.replyId)" src="../../static/forum/赞.svg"></image>
+									<text class="info-cnt">{{ reply.likeCnt }}</text>
+									<image v-if='replyLikeInfo.disLikes.indexOf(reply.replyId) > -1' class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩 面性.svg"></image>
+									<image v-else class="info-icon" @tap="tapReplyDislike(reply.replyId)" src="../../static/forum/踩.svg"></image>
+									<text class="info-cnt">{{ reply.dislikeCnt }}</text>
+								</view>
 							</view>
 						</block>
 					</view>
@@ -75,7 +83,8 @@ import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import {getPost, addViewCnt, getQaLikeInfo, postQaLike, deleteLike, getQaAnswerFavoriteInfo, 
 			addToQaAnswerFavorite, removeFromQaAnswerFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
-import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply, deleteQaLike} from '../../fetch/api.js'
+import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply, deleteQaLike, 
+			getQaReplyLikeInfo, postQaReplyLike, deleteQaReplyLike} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -98,7 +107,8 @@ export default {
 			pageSize : 20,
 			pageNo : 1,
 			replies : [],
-			qid : null
+			qid : null,
+			replyLikeInfo: null
 		}
 	},
 	methods: {
@@ -246,7 +256,52 @@ export default {
 			console.log(userInfo)
 			this.userPhone = userInfo.user_phone
 			console.log(this.userPhone)
-		}
+		},
+		async loadReplyLikeInfo() {
+			const params = {
+				"userPhone" : this.userPhone,
+				"pageSize" : 2147483647,
+				"pageNo" : 1
+			}
+			var replyLikeList = await getQaReplyLikeInfo(this.topicId, params)
+			console.log(replyLikeList)
+			this.replyLikeInfo = replyLikeList.data
+		},
+		async signalReplyLike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 1
+			};
+			await postQaReplyLike(replyId, params)
+		},
+		async signalReplyDislike(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+				"like" : 0
+			};
+			await postQaReplyLike(replyId, params)
+		},		
+		async signalReplyClear(replyId) {
+			const params = {
+				"userPhone" : this.userPhone,
+			};
+			console.log('clear' + replyId)
+			await deleteQaReplyLike(replyId, params)
+		},
+		async tapReplyLike(replyId) {
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+				await this.signalReplyLike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
+		},
+		async tapReplyDislike(replyId) {
+			await this.signalReplyClear(replyId)
+			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+				await this.signalReplyDislike(replyId)
+			await this.loadReplyLikeInfo()
+			await this.getReplies()
+		},
 	},
 	async onLoad(params) {
 		if (params.id) {
@@ -264,6 +319,7 @@ export default {
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.handleGetTopicDetail(this.topicId)
+			this.loadReplyLikeInfo()
 		}
 	}
 }

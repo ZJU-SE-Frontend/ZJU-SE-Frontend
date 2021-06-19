@@ -430,6 +430,18 @@ export function postQaLike(topicId, params) {
 	return fetchPost("/api/forum/qa/answer/like/" + topicId, params)
 }
 
+export function getQaReplyLikeInfo(topicId, params) {
+	return fetchGet("/api/forum/qa/answer/reply/like/user/" + topicId, params)
+}
+
+export function postQaReplyLike(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/reply/like/" + topicId, params)
+}
+
+export function deleteQaReplyLike(topicId, params) {
+	return fetchDelete("/api/forum/qa/answer/reply/like/" + topicId + "?userPhone=" + params.userPhone)
+}
+
 export function deleteQaLike(topicId, params) {
 	return fetchDelete("/api/forum/qa/answer/like/" + topicId +'?userPhone=' + params.userPhone)
 }
