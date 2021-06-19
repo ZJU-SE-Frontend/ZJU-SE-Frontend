@@ -87,46 +87,24 @@
 				<view v-if="topicList.length" class="topic-list">
 					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
-					<view v-if="currentSortType=='default'">
-						<block v-for="topic of topicList.slice((qaPage - 1)*limit, qaPage*limit)">
-							<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
-								<!-- <view class="topic-author-avatar"> -->
-									<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-								<!-- </view> -->
-								<view class="topic-type">问答</view>
-								<view class="topic-info">
-									<view class="topic-title">{{ topic.title }}</view>
-									<view class="topic-other">
-										<view class="topic-view">
-											<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
-										</view>
-										<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-										<view class="topic-time">{{ topic.lastEditTime }}</view>
+					<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
+						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">问答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.title }}</view>
+								<view class="topic-other">
+									<view class="topic-view">
+										<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
 									</view>
+									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
+									<view class="topic-time">{{ topic.lastEditTime }}</view>
 								</view>
 							</view>
-						</block>
-					</view>
-					<view v-if="currentSortType=='hot'">
-						<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
-							<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
-								<!-- <view class="topic-author-avatar"> -->
-									<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-								<!-- </view> -->
-								<view class="topic-type">问答</view>
-								<view class="topic-info">
-									<view class="topic-title">{{ topic.title }}</view>
-									<view class="topic-other">
-										<view class="topic-view">
-											<text>{{ topic.answerCnt }}回复·{{ topic.viewCnt }}浏览</text>
-										</view>
-										<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-										<view class="topic-time">{{ topic.lastEditTime }}</view>
-									</view>
-								</view>
-							</view>
-						</block>
-					</view>
+						</view>
+					</block>
 					<!-- 分页器 -->
 					<view class="pagination">
 						<view class="pagination-action">
@@ -495,8 +473,8 @@
 			sortResult(value) {
 				this.currentSortType = value.sort
 				console.log(this.currentSortType)
-				if(this.currentSortType = 'hot') {
-					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
+				this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
+				if(this.currentSortType == 'hot') {
 					this.sortedTopicList.sort((a,b)=>{
 						var x = a.viewCnt
 						var y = b.viewCnt
@@ -541,6 +519,7 @@
 							}
 						}
 					}
+					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
 					console.log('问答页')
 				}
 			},
