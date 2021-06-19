@@ -93,8 +93,9 @@
 			
 			<view  v-if="currentClassIfy==1" class="post">
 				<view v-show="displayData.length && questionSession != 0" class="topic-list">
+					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
-					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
+					<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
 						<view @tap="navigator('./contentQa?id=' + topic.answerId)" class="topic">
 							<view class="topic-type">问答</view>
 							<view class="topic-info">
@@ -123,7 +124,7 @@
 				<view v-show="displayData.length && questionSession == 0" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
-						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+						<view @tap="navigator('./contentQaReply?id=' + topic.answerId)" class="topic">
 							<view class="topic-type">问答</view>
 							<view class="topic-info">
 								<view class="topic-question">{{ topic.title }}</view>
@@ -400,10 +401,14 @@
 
 <script>
 	const moment = require('moment')
+	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
 	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
 	export default {
+		components: {
+			slFilter
+		},
 		data() {
 			return {
 				// 当前帖子分类
@@ -447,9 +452,31 @@
 				profileTab:null,
 				favoriteTab:0,
 				reportTab:null,
-				questionCategories : ['推荐', '热门', '外科', '内科', '牙科', '科普'],
+				questionCategories : ['推荐', '外科', '内科', '牙科', '科普'],
 				questionSession : 0,
-				displayData : []
+				displayData : [],
+				// 排序
+				themeColor: '#000000',
+				titleColor: '#666666',
+				menuList: [
+					{
+						'title': '默认排序',
+						'key': 'sort',
+						'isSort': true,
+						'reflexTitle': true,
+						'detailList': [{
+								'title': '默认排序',
+								'value': 'default'
+							},
+							{
+								'title': '热门发帖',
+								'value': 'hot'
+							}
+						]
+					}
+				],
+				sortedTopicList: [],
+				currentSortType: 'default'
 			}
 		},
 		methods: {
@@ -464,6 +491,22 @@
 						'url': './createQuestion'
 					})
 					console.log('新建问答')
+				}
+			},
+			//排序
+			sortResult(value) {
+				this.currentSortType = value.sort
+				console.log(this.currentSortType)
+				console.log(this.displayData)
+				this.sortedTopicList = JSON.parse(JSON.stringify(this.displayData))
+				if(this.currentSortType == 'hot') {
+					this.sortedTopicList.sort((a,b)=>{
+						var x = a.viewCnt
+						var y = b.viewCnt
+						if(x>y) return -1;
+						else if(x<y) return 1;
+						else return 0;
+					})
 				}
 			},
 			// 获取数据
@@ -501,6 +544,7 @@
 							}
 						}
 					}
+					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
 					console.log('问答页')
 				}
 			},
@@ -1210,13 +1254,32 @@
 				if(type == '推荐') {
 					var recommendedAnswers = await getRecommendedAnswers(params)
 					this.displayData = recommendedAnswers.data.answers
-				}
-				else if(type == '热门') {
 					
 				}
 				else if(type == '外科') {
 					for(var ans in this.topicList) {
 						if(this.topicList[ans].session == 0) {
+							this.displayData.push(this.topicList[ans])
+						}
+					}
+				}
+				else if(type == '内科') {
+					for(var ans in this.topicList) {
+						if(this.topicList[ans].session == 1) {
+							this.displayData.push(this.topicList[ans])
+						}
+					}
+				}
+				else if(type == '牙科') {
+					for(var ans in this.topicList) {
+						if(this.topicList[ans].session == 2) {
+							this.displayData.push(this.topicList[ans])
+						}
+					}
+				}
+				else if(type == '科普') {
+					for(var ans in this.topicList) {
+						if(this.topicList[ans].session == 3) {
 							this.displayData.push(this.topicList[ans])
 						}
 					}

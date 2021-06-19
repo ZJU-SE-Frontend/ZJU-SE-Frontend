@@ -493,8 +493,8 @@ export function getAnswer(answerId, params) {
 	return fetchGet("/api/forum/qa/answer/" + answerId, params)
 }
 
-export function getAnswerContent(questionId) {
-	return fetchGet("/api/forum/qa/answer/content/" + questionId)
+export function getAnswerContent(answerId) {
+	return fetchGet("/api/forum/qa/answer/content/" + answerId)
 }
 
 export function deleteAnswer(questionId) {
