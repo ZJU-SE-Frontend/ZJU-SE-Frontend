@@ -24,6 +24,9 @@
 				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
 					<text>收藏</text>
 				</view>
+				<view @tap="handleGetReport()" class="block" :class="{'selected': profileTab === 4}">
+					<text>举报</text>
+				</view>
 			</view>
 			
 			<view  v-if="currentClassIfy==2 && profileTab==3" class="profile-tab">
@@ -37,6 +40,16 @@
 						<text>回答：{{this.favoriteAnswerCnt}}</text>
 				</view>
 
+			</view>
+			
+			<view  v-if="currentClassIfy==2 && profileTab==4" class="profile-tab">
+				<view @tap="handleGetReportAnswer()" class="block" :class="{'selected': reportTab === 0}">					
+						<text>回答：{{this.reportAnswerCnt}}</text>
+				</view>
+				<view @tap="handleGetReportReply()" class="block" :class="{'selected': reportTab === 1}">
+						<text>回复：{{this.reportReplyCnt}}</text>
+				</view>
+			
 			</view>
 
 			<!-- 列表 -->
@@ -207,6 +220,8 @@
 			
 			
 			
+			
+			
 			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==0" class="post">
 				<view v-if="topicList.length" class="topic-list">
 					<!-- 话题项 -->
@@ -302,6 +317,59 @@
 					</view>
 				</view>
 			</view>
+			
+			<view v-if="currentClassIfy ==2 && profileTab==4 && reportTab==0 " class = "post">
+				<view v-if="topicList.length" class ="topic-list">
+				<!-- 话题项 -->
+					<block v-for="topic of topicList">
+						<view @tap="navigator('./contentQa?id=' + topic.id)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">回答</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.content }}</view>
+							</view>
+						</view>
+					</block>
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ reportAnswerPage }}页
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view v-if="currentClassIfy ==2 && profileTab==4 && reportTab==1 " class = "post">
+				<view v-if="topicList.length" class ="topic-list">
+				<!-- 话题项 -->
+					<block v-for="topic of topicList"> 
+					<!-- 导出到content错误 -->
+						<view @tap="navigator('./contentQaReply?id=' + topic.id)" class="topic">
+							<!-- <view class="topic-author-avatar"> -->
+								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
+							<!-- </view> -->
+							<view class="topic-type">回复</view>
+							<view class="topic-info">
+								<view class="topic-title">{{ topic.content }}</view>
+							</view>
+						</view>
+					</block>
+					<view class="pagination">
+						<view class="pagination-action">
+							<view @tap="handlePageChange('prev')" class="prev">prev</view>
+							<view @tap="handlePageChange('next')" class="next">next</view>
+						</view>
+						<view class="current-page">
+								当前是第{{ reportReplyPage }}页
+						</view>
+					</view>
+				</view>
+			</view>
 
 		</view>
 		
@@ -313,7 +381,9 @@
 
 <script>
 	const moment = require('moment')
-	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent} from '../../fetch/api.js'
+	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
+	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,
+	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
 	export default {
 		data() {
 			return {
@@ -342,6 +412,8 @@
 				profileFavoritePostPage : 1,
 				profileFavortieQuestionPage:1,
 				profileFavortieAnswerPage:1,
+				reportAnswerPage:1,
+				reportReplyPage:1,
 				// 条数
 				limit: 10,
 				userPhone: null,
@@ -351,8 +423,13 @@
 				favoritePostCnt:0,
 				favoriteQuestionCnt:0,
 				favoriteAnswerCnt:0,
+				reportAnswerCnt:0,
+				reportReplyCnt:0,
 				profileTab:null,
-				favoriteTab:0
+				favoriteTab:0,
+				reportTab:null
+				
+				
 			}
 		},
 		methods: {
@@ -532,6 +609,9 @@
 										
 				}
 				
+				
+				await handleGetUserFavoritePost()
+				
 			},
 			
 			async handleGetUserFavoritePost(params){
@@ -671,6 +751,73 @@
 					}
 										
 				}
+				
+				await handleGetUserPost()
+				
+				
+			},
+			
+			async handleGetReport(){
+				
+				console.log("查看举报")
+				this.profileTab = 4
+				
+				const params = {
+					'pageSize':2147483647,
+					'pageNo':1
+				}
+				
+				var ans = await getReportQaAnswer(params)
+												
+				this.reportAnswerCnt = ans.data.total
+										
+				var replys = await getReportQaReply(params)
+									
+				this.reportReplyCnt = replys.data.total
+				
+				console.log("改变数量")
+								
+				await handleGetReportAnswer()				
+			},
+			
+
+			
+			async handleGetReportAnswer(){
+				
+				console.log("查看举报回答")
+				
+				this.reportTab = 0
+				
+				const params={
+					'pageSize':this.limit,
+					'pageNo':this.reportAnswerPage
+				}
+				
+				var ans =await getReportQaAnswer(params)
+				
+				if (ans.data.reports.length > 0) {
+					this.topicList = ans.data.reports;
+					return true;
+				}
+			},
+			
+			async handleGetReportReply(){
+				console.log("查看举报回复")
+				
+				this.reportTab = 1
+				
+				const params={
+					'pageSize':this.limit,
+					'pageNo':this.reportReplyPage
+				}
+				
+				var replys =await getReportQaReply(params)
+				
+				if (replys.data.reports.length > 0) {
+					this.topicList = replys.data.reports;
+					return true;
+				}
+				
 			},
 			// 话题分类切换
 			handleClassIfyChange(classIfyId) {
@@ -790,6 +937,31 @@
 								}
 							}
 							
+						}else if(this.profileTab == 4){
+							if(this.reportTab == 0){
+								if (this.reportAnswerPage === 1) {
+									this.$util.toast('这是第一页鸭')
+								}else{
+									const params = {
+										'pageSize':this.limit,
+										'pageNo':--this.reportAnswerPage
+									}
+									console.log("回答换页")
+									this.handleGetReportAnswer(params)
+								}
+							}else if(this.reportTab == 1){
+								if (this.reportReplyPage === 1) {
+									this.$util.toast('这是第一页鸭')
+								}else{
+									const params = {
+										'pageSize':this.limit,
+										'pageNo':--this.reportReplyPage
+									}
+									console.log("回答换页")
+									this.handleGetReportReply(params)
+								}
+							}
+							
 						}
 						
 					}else if(action === 'next'){
@@ -833,7 +1005,7 @@
 										pageNo:this.profileFavoritePostPage+1
 									}
 									console.log("回答换页")
-									result = this.handleGetUserFavoritePost(params)
+									result = this.handleGetUserFavoritePost(params).favorites
 								
 							}else if(this.favoriteTab == 1){
 
@@ -844,7 +1016,7 @@
 										pageNo:this.profileFavoriteQuestionPage+1
 									}
 									console.log("回答换页")
-									result = this.handleGetUserFavoriteQuestion(params)
+									result = this.handleGetUserFavoriteQuestion(params).favorites
 								
 							}else if(this.favoriteTab == 2){
 
@@ -855,9 +1027,23 @@
 										pageNo:this.profileFavoriteAnswerPage+1
 									}
 									console.log("回答换页")
-									result = this.handleGetUserFavoriteAnswer(params)
+									result = this.handleGetUserFavoriteAnswer(params).favorites
 								
 							}
+						}else if(this.profileTab == 4){
+							if(this.reportTab == 0){
+								const params = {
+									'pageSize':this.limit,
+									'pageNo':this.reportAnswerPage+1
+								}
+								result = this.handleGetReportAnswer(params).reports
+							}else if(this.reportTab == 1){
+								const params = {
+									'pageSize':this.limit,
+									'pageNo':this.reportReplyPage+1
+								}
+								result = this.handleGetReportReply(params).reports
+							}							
 						}
 						 
 						if(result) {
@@ -874,8 +1060,13 @@
 									this.profileFavortieQuestionPage++
 								}else if(this.favoriteTab == 2){
 									this.profileFavortieAnswerPage++
+								}								
+							}else if(this.prifileTab == 4){
+								if(this.reportTab == 0){
+									this.reportAnswerPage++
+								}else if(this.reportTab == 1){
+									this.reportReplyPage++
 								}
-								
 							}
 						}
 						else {
