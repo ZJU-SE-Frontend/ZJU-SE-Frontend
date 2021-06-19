@@ -280,10 +280,10 @@
 			</view>
 			
 			<view  v-if="currentClassIfy==2 && profileTab==3 && favoriteTab==1 " class="post">
-				<view v-if="topicList.length" class="topic-list">
+				<view v-if="changeList.length" class="topic-list">
 					<!-- 话题项 -->
-					<block v-for="topic of topicList">
-						<view @tap="navigator('./contentQa?id=' + topic.questionId)" class="topic">
+					<block v-for="topic of changeList">						
+						<view @tap="handleNavigateToQuestion(topic.questionId)" class="topic">
 							<!-- <view class="topic-author-avatar"> -->
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
@@ -291,8 +291,11 @@
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
 								<view class="topic-other">
+									<view class="topic-view">
+										<text> change  </text>
+									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
-									<view class="topic-time">{{ topic.lastEditTime }}</view>
+									<!-- <view class="topic-time">{{ topic.lastEditTime }}</view> -->
 								</view>
 							</view>
 						</view>
@@ -349,7 +352,7 @@
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
 								<view class="topic-type">回答</view>							
-								<view @tap="navigator('./contentQa?id=' + topic.id)" class="topic-report-title">{{ topic.content }}</view>
+								<view @tap="navigator('./contentQa?id=' + getAnswerContent(topic.id).data.questionId)" class="topic-report-title">{{ topic.content }}</view>
 								<view  @tap="handleDeleteReportAnswer(topic.id)" class="topic-report-delete">删除</view>							
 						</view>
 					</block>
@@ -403,8 +406,14 @@
 	const moment = require('moment')
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
+<<<<<<< Updated upstream
 	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply} from '../../fetch/api.js'
+=======
+	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,getQuestion,
+	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,
+	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
+>>>>>>> Stashed changes
 	export default {
 		components: {
 			slFilter
@@ -427,6 +436,9 @@
 				// 帖子列表
 				topicList: [],
 				postList: [],
+				changeList: [],
+				changeFlagList:[],
+				changeFlagIndex:0,
 				// 页码
 				page: 1,
 				qaPage: 1,
@@ -786,8 +798,7 @@
 			},
 			
 			async handleGetUserFavoriteQuestion(params){
-				this.topicList=null
-				
+								
 				this.favoriteTab = 1
 				if(params == null){
 					params = {
@@ -809,11 +820,30 @@
 					var posts = await getUserFavoriteQuestion(params.userPhone,params.pageSize,params.pageNo)
 					console.log("查询用户收藏")
 					if (posts.data.favorites.length > 0) {
-						this.topicList = posts.data.favorites;
-						for(var i = 0; i < this.topicList.length; i++) {
-							this.topicList[i].lastEditTime = moment(this.topicList[i].favoriteTime*1000).format('YYYY-MM-DD HH:mm:ss')
+						this.changeList = posts.data.favorites;
+						for(var i = 0; i < this.changeList.length; i++) {
+							this.changeList[i].lastEditTime = moment(this.changeList[i].favoriteTime*1000).format('YYYY-MM-DD HH:mm:ss')
+							
+							console.log(this.changeList[i].answerCnt)
+							var qas = await getQuestion(this.changeList[i].questionId)
+							var newCnt =qas.data.answerCnt
+							console.log("test:"+newCnt)
+							
+							if(this.changeList[i].answerCnt != newCnt){
+								console.log("有新的回答")
+								this.changeFlagList[i] = "有新的回答"	
+								console.log(this.changeFlagList[i])
+							}else{
+								console.log("无新的回答")
+								this.changeFlagList[i] = "无新的回答"
+								console.log(this.changeFlagList[i])
+							}							
+							
 						}
+						
+						
 						return true;
+																		
 					}
 					else {
 						return false;
@@ -857,6 +887,18 @@
 				}
 			},
 			
+			async handleNavigateToQuestion(questionId){
+				const params={
+					'userPhone': this.userPhone
+				}
+								
+				await removeFromQaFavorite(questionId,params)
+				await addToQaFavorite(questionId,params)
+				
+				console.log("更新收藏")
+				
+				this.navigator('./contentQa?id=' + questionId)				
+			},
 			
 			
 			async handleGetReport(){
@@ -905,6 +947,8 @@
 				return true;
 				
 			},
+			
+			
 			
 			async handleDeleteReportAnswer(id){
 				
