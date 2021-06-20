@@ -353,7 +353,7 @@
 							<!-- </view> -->
 								<view class="topic-type">回答</view>							
 								<view @tap="handleNavigateToReportAnswer(topic.id)" class="topic-report-title">{{ topic.content }}</view>
-								<view  @tap="handleDeleteReportAnswer(topic.id)" class="topic-report-delete">删除</view>							
+								<view  @tap="handleDeleteReportAnswer(topic.id)" class="topic-report-delete">删除举报</view>							
 						</view>
 					</block>
 					<view class="pagination">
@@ -378,8 +378,9 @@
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
 								<view class="topic-type">回复</view>							
-								<view @tap="navigator('./contentQaReply?id=' + topic.id)" class="topic-report-title">{{ topic.content }}</view>
-								<view @tap="handleDeleteReportReply(topic.id)"  class="topic-report-delete" >删除</view>							
+								<view class="topic-report-title">{{ topic.content }}</view>
+								<view @tap="handleDeleteReply(topic.id)"  class="topic-report-delete" >删除回复</view>
+								<view @tap="handleDeleteReportReply(topic.id)"  class="topic-report-delete" >删除举报</view>
 						</view>
 					</block>
 					<view class="pagination">
@@ -407,7 +408,7 @@
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
 	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,getQuestion, getRecommendedAnswers,
-	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,
+	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,deleteQaReply,
 	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
 	export default {
 		components: {
@@ -963,6 +964,13 @@
 				return true;
 				
 				
+			},
+			
+			async handleDeleteReply(id){
+				console.log("delete")
+				await deleteQaReply(id),
+				await deleteReportQaReply(id),
+				await this.handleGetReportReply()
 			},
 			
 			async handleDeleteReportReply(id){
@@ -1553,7 +1561,7 @@
 				}
 				
 				.topic-report-delete {
-					width: 80rpx;
+					width: 130rpx;
 					height: 60rpx;
 					padding: 0 4rpx;
 					margin-right: 15rpx;
