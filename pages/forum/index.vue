@@ -531,7 +531,7 @@
 			},
 			// 获取数据
 			async handleGetTopicList(args) {
-				this.topicList=null
+				this.topicList=[]
 				const params = {
 					'pageSize' : 2147483647,
 					'pageNo' : 1
@@ -570,7 +570,7 @@
 			
 			async handleGetProfile(){
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				const params = {
 					tab:this.handleGetTab(),
@@ -614,7 +614,7 @@
 			
 			async handleGetUserPost(params){	
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 0
 				if(params == null){
@@ -650,7 +650,7 @@
 			},
 			
 			async handleGetUserQuestion(params){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 1
 				if(params == null){
@@ -680,7 +680,7 @@
 			
 			async handleGetUserAnswer(params){
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 2
 				
@@ -711,7 +711,7 @@
 			},
 			
 			async handleGetUserFavorite(){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 3
 				
@@ -756,7 +756,7 @@
 			
 			async handleGetUserFavoritePost(params){
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.favoriteTab = 0
 				if(params == null){
@@ -846,7 +846,7 @@
 			},
 			
 			async handleGetUserFavoriteAnswer(params){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.favoriteTab = 2
 				if(params == null){
@@ -896,7 +896,7 @@
 			
 			
 			async handleGetReport(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报")
 				this.profileTab = 4
@@ -922,7 +922,7 @@
 
 			
 			async handleGetReportAnswer(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报回答")
 				
@@ -957,7 +957,7 @@
 			},
 			
 			async handleGetReportReply(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报回复")
 				
@@ -989,6 +989,7 @@
 				if (this.currentClassIfy === classIfyId) {
 					return
 				}else if( classIfyId == 2){
+					console.log(this.userPhone)
 					console.log("切换到个人中心")
 					this.currentClassIfy = classIfyId
 					
