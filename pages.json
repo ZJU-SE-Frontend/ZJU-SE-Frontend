@@ -35,7 +35,7 @@
 		    "path" : "pages/forum/createPost",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "发帖",
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -43,7 +43,7 @@
 		    "path" : "pages/forum/editPost",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "编辑贴子",
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -51,42 +51,36 @@
 		    "path" : "pages/forum/createQuestion",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "提问",
 		        "enablePullDownRefresh": false
 		    }
 		},
 		{
 			"path": "pages/forum/contentPost",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "贴子",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/forum/contentQa",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "问题",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/forum/contentQaReply",
 			"style": {
-				"navigationBarTitleText": "健康论坛",
-				"app-plus": {
-					"titleNView": {
-					"buttons": [{
-					"text" : "+",
-					"float": "right"
-					}]}
-				}
+				"navigationBarTitleText": "回答",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
 		    "path" : "pages/forum/createReply",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "回复",
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -94,7 +88,7 @@
 		    "path" : "pages/forum/editReply",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "编辑回复",
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -102,7 +96,7 @@
 		    "path" : "pages/forum/createAnswer",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "回答",
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -110,7 +104,7 @@
 		    "path" : "pages/forum/createQaReply",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "回复",
 		        "enablePullDownRefresh": false
 		    }
 		},
