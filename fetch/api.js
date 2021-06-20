@@ -159,13 +159,6 @@ export function fetchDelete(url, data) {
 	})
 }
 
-export function deleteAppointment(patientPhone, appointDate, section){
-	return fetchDelete('/api/appointment/patient/withdraw', {
-		"patientPhone": patientPhone,
-		"appointDate": Math.round(appointDate/1000),
-		"section": section
-	})
-}
 
 /*基本功能API*/
 export function getStatic(path) {
@@ -342,4 +335,45 @@ export function getdoctor(hosp,dep){
 		"department":dep
 	}
 	return fetchGet("/api/appointment/patient/doctorList",params)
+}
+export function insert_record(phone1,phone2,date,sec){
+	const params = {
+		  "patientPhone": phone1,
+		  "doctorPhone": phone2,
+		  "appointDate": date,
+		  "section": sec
+	}
+	return fetchPost("/api/appointment/patient/appoint",params)
+}
+
+export function getPatientInfo(patientPhone){
+	return fetchGet(`/api/appointment/doctor/`+patientPhone)
+}
+export function getRemainder(docp,appo,sec){
+	const params = {
+		  "doctorPhone": docp,
+		  "appointDate": appo,
+		  "section": sec
+	}
+	return fetchGet("/api/appointment/patient/appoint/doctor",params);
+}
+export function getappoint(patientphone){
+	return fetchGet("/api/appointment/patient/appoint/" + patientphone)
+}
+export function getPatientAppointList(doctor_phone){
+	var time = new Date()
+	const params = {
+		"appointDate" : parseInt(time.getTime() / 1000)
+	}
+	console.log(params.appointDate)
+	return fetchGet("/api/appointment/doctor/appointList/"+doctor_phone, params)
+}
+
+
+export function deleteAppointment(patientPhone, appointDate, section){
+	 return fetchDelete('/api/appointment/patient/withdraw', {
+    "patientPhone": patientPhone,
+    "appointDate": appointDate,
+    "section": section
+  })
 }

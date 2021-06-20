@@ -20,17 +20,17 @@
 				<image src = "../../static/register.jpg" style = "zoom:40%;"></image>
 				<view >预约挂号</view>
 			</view>
-			<view class = "block">
+			<view class = "block" @click = "jump_show">
 				<image src = "../../static/control.jpg" style = "zoom:40%;"></image>
 				<view>预约管理</view>
 			</view>
-			<view class = "block">
+			<view class = "block" @click = "jump_doctors">
 				<image src = "../../static/pay.jpg" style = "zoom:40%;"></image>
-				<view>账单支付</view>
+				<view>医生端</view>
 			</view>
-			<view class = "block">
+			<view class = "block" @click = "jump_patient">
 				<image src = "../../static/person.jpg" style = "zoom:40%;"></image>
-				<view>个人信息</view>
+				<view>未添加</view>
 			</view>
 			
 		</view>
@@ -217,6 +217,21 @@
 					});
 				}		
 			},
+			jump_doctors()
+			{
+				this.hasclick = 1;	
+				this.showchoose = false;
+				this.showhospital = true;
+				uni.navigateTo({//跳转页面
+					url:"/pages/registration/Reception"
+				});
+			},
+			jump_patient()
+			{
+				uni.navigateTo({//跳转页面
+					url:"/pages/registration/patient"
+				});
+			},
 			changes()
 			{
 				this.showchoose = true;
@@ -284,6 +299,11 @@
 			jump_choose: function(){
 				uni.navigateTo({//跳转页面
 					url:"/pages/registration/choose"
+				});
+			},
+			jump_show: function(){
+				uni.navigateTo({//跳转页面
+					url:"/pages/registration/show"
 				});
 			}
 		}
@@ -456,16 +476,19 @@
 		flex-direction: row;
 		justify-content: center;
 		overflow: hidden;
-		height: 300rpx;
-		width:100%;
+		height: 250rpx;
+		width:90%;
+		border-radius:20rpx;
+		box-shadow: 20rpx 20rpx 2rpx 2rpx #888888;
 	}
 	.panel .block{
 		padding:0 15px 0 15px;
 		height:100%;
+		font-size:27rpx;
 		flex:2;
 	}
 	.panel .block image{
 		height:25%;
-		width:33%;
+		width:56%;
 	}
 </style>

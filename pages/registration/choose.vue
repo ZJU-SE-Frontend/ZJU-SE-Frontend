@@ -1,9 +1,9 @@
 <template>
-	<view>
+	<view class = "pagess">
 		<!-- 搜索栏-->
 		<view class = "search">
 			<view class="example">
-				<uni-easyinput prefixIcon="search" v-model="value" placeholder="请输入医院/科室" @iconClick="iconClick"></uni-easyinput>
+				<uni-easyinput prefixIcon="search" v-model="value" placeholder="请输入医院/科室(未开发)" @iconClick="iconClick"></uni-easyinput>
 			</view>
 		</view>
 		<!-- 医院列表-->
@@ -28,9 +28,6 @@
 					</uni-card>
 				</view>
 			</scroll-view>
-		</view>
-		<view @tap="goTop" class="uni-link uni-center uni-common-mt">
-			点击这里返回顶部
 		</view>
 	</view>
 </template>
@@ -118,13 +115,20 @@
 		flex-direction: column;
 		box-sizing: border-box;
 		background-color: #efeff4;
-		min-height: 100%;
-		height: auto;
+		height: 100%;
 	}
 
 	view {
 		font-size: 14px;
 		line-height: inherit;
+	}
+	.pagess{
+		height:100%;
+		width:100%;
+	}
+	.search{
+		height:10%;
+		width:100%;
 	}
 
 	.example {
@@ -189,11 +193,11 @@
 		margin-bottom: 10px;
 	}
 	.hoses{
-		height:1000rpx;
+		height:95%;
 		width:100%;
 	}
 	.scroll-Y {
-		height: 1000rpx;
+		height: 100%;
 		width:100%;
 	}
 	.scroll-view-item {

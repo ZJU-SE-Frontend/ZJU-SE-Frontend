@@ -158,7 +158,7 @@
 		{
 			"path": "pages/registration/patient",
 			"style": {
-				"navigationBarTitleText": "bing"
+				"navigationBarTitleText": "相关预约"
 			}
 		},
 		{
@@ -188,6 +188,34 @@
 		        "navigationBarTitleText": "选择科室"
 				
 		    }  
+		},
+		{
+		    "path" : "pages/registration/show",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "预约管理"
+				
+		    }  
+		},
+		{
+			"path" : "pages/registration/issue_withdraw",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "提交退号申请"
+			}
+			
+		},
+		{
+			"path":"pages/registration/Reception",
+			"style":{
+				"navigationBarTitleText":"挂号病人列表",
+				"enablePullDownRefresh":true,
+				"backgroundTextStyle":"dark",
+				"backgroundColor":"#FFFFFF",
+				"app-plus":{
+					"titleView": false
+				}
+			}
 		}
 	],
 	"globalStyle": {
