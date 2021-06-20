@@ -813,11 +813,11 @@
 							
 							if(this.changeList[i].answerCnt != newCnt){
 								console.log("有新的回答")
-								this.changeFlagList[i] = "有新的回答"	
+								this.changeFlagList.splice(i, 1, "有新的回答")
 								console.log(this.changeFlagList[i])
 							}else{
 								console.log("无新的回答")
-								this.changeFlagList[i] = ""
+								this.changeFlagList.splice(i, 1, "")
 								console.log(this.changeFlagList[i])
 							}							
 							
