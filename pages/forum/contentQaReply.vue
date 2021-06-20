@@ -45,9 +45,9 @@
 										<text class="reply-author">{{ reply.userName}}</text>
 										<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 									</view>
-									<view class="reply-delete" v-if="userPhone==reply.userPhone">
-										<text class="delete-text" @tap="removeReply(reply.replyId)">删除</text>
-										<!-- <text class="edit-text" @tap="editReply(reply.replyId, reply.content)">编辑</text> -->
+									<view class="reply-delete">
+										<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -84,7 +84,7 @@ import SsxFixButton from './ssx-fix-button'
 import {getPost, addViewCnt, getQaLikeInfo, postQaLike, deleteLike, getQaAnswerFavoriteInfo, 
 			addToQaAnswerFavorite, removeFromQaAnswerFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
 import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply, deleteQaLike, 
-			getQaReplyLikeInfo, postQaReplyLike, deleteQaReplyLike} from '../../fetch/api.js'
+			getQaReplyLikeInfo, postQaReplyLike, deleteQaReplyLike, getAuthInfo, reportQaReply} from '../../fetch/api.js'
 export default {
 	components: {
 		uParse,
@@ -108,7 +108,8 @@ export default {
 			pageNo : 1,
 			replies : [],
 			qid : null,
-			replyLikeInfo: null
+			replyLikeInfo: null,
+			role : ""
 		}
 	},
 	methods: {
@@ -116,6 +117,10 @@ export default {
 			uni.navigateTo({
 				'url': './createQaReply?id=' + this.topicId
 			})
+		},
+		async loadAuthInfo() {
+			var authInfo = await getAuthInfo()
+			this.role = authInfo
 		},
 		// 获取话题详情
 		async handleGetTopicDetail(id) {
@@ -250,6 +255,11 @@ export default {
 				'url': './editReply?id=' + replyId
 			})
 		},
+		async reportReply(replyId) {
+			console.log(replyId)
+			await reportQaReply(replyId)
+			this.$util.toast('举报成功')
+		},
 		async getCurrentUser() {
 			var userInfo = await getCurrentUserPhone()
 			console.log("user INFO: ")
@@ -322,6 +332,7 @@ export default {
 			console.log('33333333')
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
+			this.loadAuthInfo()
 			this.handleGetTopicDetail(this.topicId)
 			this.loadReplyLikeInfo()
 		}
@@ -451,18 +462,21 @@ export default {
 					.reply-delete {
 						margin-left: 20rpx;
 						.delete-text {
-							padding: 3rpx 10rpx 3rpx 10rpx;
+							padding: 3rpx 10rpx 3rpx 20rpx;
 							font-size: 11px;
 							// color: #ffffff;
 							// background-color: #ff0000;
 							color: #ff0000;
 						}
-						.edit-text {
+						.report-text {
 							padding: 3rpx 10rpx 3rpx 10rpx;
 							font-size: 11px;
-							// color: #ffffff;
-							// background-color: #ff0000;
-							color: #ffaa00;
+							color: #b4b4b4;
+						}
+						.recommend-text {
+							padding: 3rpx 10rpx 3rpx 10rpx;
+							font-size: 11px;
+							color: #0000ff;
 						}
 					}
 				}

@@ -95,8 +95,9 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
-											<text class="delete-text" v-if="userPhone==reply.userPhone" @tap="removeReply(reply.answerId)">删除</text>
-											<text class="report-text" v-if="userPhone!=reply.userPhone" @tap="reportReply(reply.answerId)">举报</text>
+											<text class="recommend-text" v-if="role=='manager'" @tap="recommandReply(reply.answerId)">推荐</text>
+											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
 									<view class="reply-content">

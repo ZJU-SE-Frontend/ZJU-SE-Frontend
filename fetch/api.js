@@ -396,11 +396,15 @@ export function deleteReportQaAnswer(ansId){
 
 export function getReportQaReply(params){
 
-	return fetchGet("/api/forum/report/qa/answer/reply",params)
+	return fetchGet("/api/forum/report/qa/answer/reply/",params)
+}
+
+export function reportQaReply(replyId) {
+	return fetchPost("/api/forum/report/qa/answer/reply/" + replyId)
 }
 
 export function deleteReportQaReply(replyId){
-	return fetchDelete("/api/forum/report/qa/answer/reply/"+replyId)
+	return fetchDelete("/api/forum/report/qa/answer/reply/" + replyId)
 }
 
 
