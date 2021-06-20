@@ -115,7 +115,6 @@
 					value = this.min;
 				}
 				this.inputValue = value;
-			},
 			_onFocus(event) {
 				this.$emit('focus', event)
 			}
@@ -161,16 +160,20 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
-		width: 35px;
-		height: 35px;
+		width: 25px;
+		height: 25px;
+		/* line-height: $box-line-height;
+ */
+		/* text-align: center;
+ */
 		font-size: 20px;
 		color: #333;
 		background-color: #f8f8f8;
 		border-width: 1rpx;
 		border-style: solid;
 		border-color: #e5e5e5;
-		border-top-left-radius: 3px;
-		border-bottom-left-radius: 3px;
+		border-top-left-radius: 6rpx;
+		border-bottom-left-radius: 6rpx;
 		border-right-width: 0;
 	}
 

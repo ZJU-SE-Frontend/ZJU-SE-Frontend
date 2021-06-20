@@ -1,13 +1,13 @@
 {
-  "id": "uni-icons",
-  "displayName": "uni-icons 图标",
-  "version": "1.1.5",
-  "description": "图标组件，用于展示移动端常见的图标，可自定义颜色、大小。",
+  "id": "uni-search-bar",
+  "displayName": "uni-search-bar 搜索栏",
+  "version": "1.0.9",
+  "description": "搜索栏组件，通常用于搜索商品、文章等",
   "keywords": [
     "uni-ui",
     "uniui",
-    "icon",
-    "图标"
+    "搜索框",
+    "搜索栏"
 ],
   "repository": "https://github.com/dcloudio/uni-ui",
   "engines": {
@@ -40,7 +40,9 @@
     "npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui"
   },
   "uni_modules": {
-    "dependencies": [],
+    "dependencies": [
+			"uni-icons"
+		],
     "encrypt": [],
     "platforms": {
       "cloud": {
