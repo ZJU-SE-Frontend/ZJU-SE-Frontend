@@ -7,7 +7,7 @@
 			</view>
 		</view>
 		<view class="content">
-			<view class="datesel" style="align-self: center; margin-top: 20rpx; margin-bottom: 20rpx;">
+			<view class="datesel" style="margin-left: 20rpx; margin-top: 20rpx; margin-bottom: 20rpx;">
 				<image class="image" src="../../../static/exam/calendar.png" @click="onShowDatePicker('date')"></image>
 				<view style=" margin-left: 0px; " >{{date}}</view>
 			</view>

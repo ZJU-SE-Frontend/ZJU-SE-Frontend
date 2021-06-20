@@ -7,18 +7,18 @@
 			<view class="section">
 				<image src="/static/exam/covid.png" class="image" mode="aspectFit"/>
 				<view class="item">
-					<image src="/static/exam/history_cov.png" class="mimage" mode="aspectFit" @click="gotoCovRecord()"/>
-					<image src="/static/exam/notice.png" class="mimage" mode="aspectFit" @click="gotoCovNotice()"/>
-					<image src="/static/exam/shedule.png" class="mimage" mode="aspectFit" @click="gotoCov()"/>
+					<image :src="'/static/exam/history_cov'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoCovRecord()"/>
+					<image :src="'/static/exam/notice'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoCovNotice()"/>
+					<image :src="'/static/exam/shedule'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoCov()"/>
 				</view>
 			</view>
 			
 			<view class="section">
 				<image src="/static/exam/phy.png" class="image" mode="aspectFit"/>
 				<view class="item">
-					<image src="/static/exam/history_phy.png" class="mimage" mode="aspectFit" @click="gotoPhyRecord()"/>
-					<image src="/static/exam/notice.png" class="mimage" mode="aspectFit" @click="gotoPhyNotice()"/>
-					<image src="/static/exam/shedule.png" class="mimage" mode="aspectFit" @click="gotoPhy()"/>
+					<image :src="'/static/exam/history_phy'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoPhyRecord()"/>
+					<image :src="'/static/exam/notice'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoPhyNotice()"/>
+					<image :src="'/static/exam/shedule'+ismngr+'.png'" class="mimage" mode="aspectFit" @click="gotoPhy()"/>
 				</view>
 			</view>
 		</view>
@@ -34,11 +34,20 @@
 				title: '体检中心',
 				username: '',
 				userphone: '',
-				welcome: ''
+				welcome: '',
+				ismngr: ''
 			}
 		},
 		
 		onShow() {
+			fetchGet('/api/exam/hospital/'+store.state.uerInfo.userPhone).then(res =>{
+				if(res.st == 0) {
+					this.ismngr='1'
+				} else {
+					this.ismngr=''
+				}
+			})
+			
 			if (store.state.hasLogin != false) {
 				this.username = store.state.uerInfo.userName,
 				this.userphone = store.state.uerInfo.userPhone,
@@ -96,8 +105,12 @@
 					})
 				}
 				else{
-					uni.navigateTo({
-						url:"covid/history_cov?user_phone=" + this.userphone
+					fetchGet('/api/exam/hospital/'+store.state.uerInfo.userPhone).then(res =>{
+					if(res.st != 0) {
+						uni.navigateTo({
+							url:"covid/history_cov?user_phone=" + this.userphone
+						})
+					}
 					})
 				}
 			},
@@ -110,8 +123,12 @@
 					})
 				}
 				else{
-					uni.navigateTo({
-						url:"phys/history_phy?user_phone=" + this.userphone
+					fetchGet('/api/exam/hospital/'+store.state.uerInfo.userPhone).then(res =>{
+					if(res.st != 0) {
+						uni.navigateTo({
+							url:"phys/history_phy?user_phone=" + this.userphone
+						})
+					}
 					})
 				}
 			},
