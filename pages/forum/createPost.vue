@@ -39,10 +39,7 @@
 				}
 			},
 			async getCurrentUser() {
-				var userInfo = await getCurrentUserPhone()
-				console.log("user INFO: ")
-				console.log(userInfo)
-				this.userPhone = userInfo.user_phone
+				this.userPhone = await getCurrentUserPhone()
 				console.log(this.userPhone)
 			},
 			onLoad() {

@@ -240,8 +240,7 @@ export default {
 			})
 		},
 		async getCurrentUser() {
-			var userInfo = await getCurrentUserPhone()
-			this.userPhone = userInfo.user_phone
+			this.userPhone = await getCurrentUserPhone()
 		},
 		async loadAuthInfo() {
 			var authInfo = await getAuthInfo()

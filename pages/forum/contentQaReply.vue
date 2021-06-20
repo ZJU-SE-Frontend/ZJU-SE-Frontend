@@ -151,10 +151,7 @@ export default {
 			return topic
 		},
 		async getCurrentUser() {
-			var userInfo = await getCurrentUserPhone()
-			console.log("user INFO: ")
-			console.log(userInfo)
-			this.userPhone = userInfo.user_phone
+			this.userPhone = await getCurrentUserPhone()
 			console.log(this.userPhone)
 		},
 		async loadLikeInfo() {
@@ -261,11 +258,7 @@ export default {
 			this.$util.toast('举报成功')
 		},
 		async getCurrentUser() {
-			var userInfo = await getCurrentUserPhone()
-			console.log("user INFO: ")
-			console.log(userInfo)
-			this.userPhone = userInfo.user_phone
-			console.log(this.userPhone)
+			this.userPhone = await getCurrentUserPhone()
 		},
 		async loadReplyLikeInfo() {
 			const params = {
@@ -324,7 +317,6 @@ export default {
 			await this.getQid()
 			console.log('Loading ' + this.topicId)
 			await this.getCurrentUser()
-			//await this.getCurrentUser()
 			console.log('11111111')
 			await addAnswerViewCnt(this.topicId)
 			console.log('22222222')

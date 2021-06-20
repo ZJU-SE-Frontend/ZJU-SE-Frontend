@@ -143,21 +143,21 @@ export function fetchPut(url, data) {
 	})
 }
 
-export function fetchDelete(url, data) {
-	console.log(data)
-	return new Promise((resolve, reject) => {
-		axios.delete(url, {data})
-			.then(response => {
-				console.log("responsed")
-				resolve(response.data)
-			}, err => {
-				reject(err)
-			})
-			.catch((error) => {
-				reject(error);
-			})
-	})
-}
+// export function fetchDelete(url, data) {
+// 	console.log(data)
+// 	return new Promise((resolve, reject) => {
+// 		axios.delete(url, {data})
+// 			.then(response => {
+// 				console.log("responsed")
+// 				resolve(response.data)
+// 			}, err => {
+// 				reject(err)
+// 			})
+// 			.catch((error) => {
+// 				reject(error);
+// 			})
+// 	})
+// }
 
 export function deleteAppointment(patientPhone, appointDate, section){
 	return fetchDelete('/api/appointment/patient/withdraw', {
@@ -365,7 +365,7 @@ export function postLike(topicId, params) {
 
 export function fetchDelete(url, data) {
 	return new Promise((resolve, reject) => {
-		axios.delete(url, {data: data, headers:{'Content-Type': 'application/json'}})
+		axios.delete(url, {data: data})
 		.then(response => {
 			console.log("responsed")
 			resolve(response.data)

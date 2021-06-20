@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import {publicQuestion} from '../../fetch/api.js'
+	import {publicQuestion,getCurrentUserPhone} from '../../fetch/api.js'
 	import slFilter from './sl-filter.vue'
 	export default {
 		components: {
@@ -21,6 +21,7 @@
 		data() {
 			return {
 				title : '',
+				userPhone : null,
 				content : '',
 				menuList: [
 					{
@@ -55,7 +56,7 @@
 				if (this.title.length > 0 && this.content.length > 0) {
 					const params = {
 						"title" : this.title,
-						"userPhone" : "18888888888",
+						"userPhone" : this.userPhone,
 						"content" : this.content,
 						"session" : this.session
 					};
@@ -74,7 +75,12 @@
 				this.session = value.sort
 				console.log(this.session)
 			},
+			async getCurrentUser() {
+				this.userPhone = await getCurrentUserPhone()
+				console.log(this.userPhone)
+			},
 			onLoad() {
+				this.getCurrentUser()
 			}
 		}
 	}

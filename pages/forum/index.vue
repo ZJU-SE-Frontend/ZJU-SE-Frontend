@@ -407,7 +407,7 @@
 	const moment = require('moment')
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getAnswerContent,getQuestion, getRecommendedAnswers,
+	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getCurrentUserRole,getAnswerContent,getQuestion, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,deleteQaReply,
 	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
 	export default {
@@ -1342,12 +1342,10 @@
 				this.dataGen()
 			},
 			async getCurrentUser() {
-				var userInfo = await getCurrentUserPhone()
-				console.log("user INFO: ")
-				console.log(userInfo)
-				this.userPhone = userInfo.user_phone
-				this.userRole = userInfo['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+				this.userPhone = await getCurrentUserPhone()
+				this.userRole = await getCurrentUserRole()
 				console.log(this.userPhone)
+				console.log(this.userRole)
 			}
 		},
 		// 下拉刷新
