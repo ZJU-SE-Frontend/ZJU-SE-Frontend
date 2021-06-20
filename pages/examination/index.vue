@@ -1,32 +1,26 @@
 <template>
 	<view class="content">
-		
+		<view class="welcome">
+			<text style="color: #FFFFFF ; font-size: larger; font-weight: 700;">  {{welcome}} </text>
+		</view>
 		<view class="grid-content">
-			<uni-grid :column="4" :showBorder="false"  :square="false">
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<image src="/static/exam/exam_covid.png" class="image" mode="aspectFit" @click="gotoCov()"/>
-			        	<text class="title" @click="gotoCov()"> 核酸检测 </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-			        <view class="switch-item">
-			        	<image src="/static/exam/exam_phy.png" class="image" mode="aspectFit" @click="gotoPhy()"/>
-			        	<text class="title" @click="gotoPhy()"> 健康体检 </text>
-			        </view>
-			    </uni-grid-item>
-			    <uni-grid-item>
-					<view class="switch-item">
-						<text class="title">   </text>
-					</view>
-			    </uni-grid-item>
-				<uni-grid-item>
-				    <view class="switch-item">
-				    	<text class="title">   </text>
-				    </view>
-				</uni-grid-item>
-			</uni-grid>
-
+			<view class="section">
+				<image src="/static/exam/covid.png" class="image" mode="aspectFit"/>
+				<view class="item">
+					<image src="/static/exam/history_cov.png" class="mimage" mode="aspectFit" @click="gotoCovRecord()"/>
+					<image src="/static/exam/notice.png" class="mimage" mode="aspectFit" @click="gotoCovNotice()"/>
+					<image src="/static/exam/shedule.png" class="mimage" mode="aspectFit" @click="gotoCov()"/>
+				</view>
+			</view>
+			
+			<view class="section">
+				<image src="/static/exam/phy.png" class="image" mode="aspectFit"/>
+				<view class="item">
+					<image src="/static/exam/history_phy.png" class="mimage" mode="aspectFit" @click="gotoPhyRecord()"/>
+					<image src="/static/exam/notice.png" class="mimage" mode="aspectFit" @click="gotoPhyNotice()"/>
+					<image src="/static/exam/shedule.png" class="mimage" mode="aspectFit" @click="gotoPhy()"/>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -37,12 +31,23 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: '体检中心',
+				username: '',
+				userphone: '',
+				welcome: ''
 			}
 		},
-		onLoad() {
-
+		
+		onShow() {
+			if (store.state.hasLogin != false) {
+				this.username = store.state.uerInfo.userName,
+				this.userphone = store.state.uerInfo.userPhone,
+				this.welcome = "你好，" + this.username
+			} else {
+				this.welcome = "请先登录"
+			}
 		},
+		
 		methods: {
 			gotoPhy() {
 				if(store.state.hasLogin == false){
@@ -82,6 +87,46 @@
 					})
 				}
 			},
+			
+			gotoCovRecord() {
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else{
+					uni.navigateTo({
+						url:"covid/history_cov?user_phone=" + this.userphone
+					})
+				}
+			},
+			
+			gotoPhyRecord() {
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else{
+					uni.navigateTo({
+						url:"phys/history_phy?user_phone=" + this.userphone
+					})
+				}
+			},
+			
+			gotoCovNotice() {
+				uni.navigateTo({
+					url:"covid/notice_cov"
+				})
+			},
+			
+			gotoPhyNotice() {
+				uni.navigateTo({
+					url:"phys/notice_phy"
+				})
+			}
 
 		}
 	}
@@ -98,30 +143,54 @@
 		background-size: cover;
 	}
 	
-	.grid-content {
-		width: 85%;
+	.welcome {
 		display: flex;
-		height: fit-content;
-		margin-top: 100px;
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: flex-start;
+		margin-top: 80px;
+		margin-bottom: 10px;
+		width: 85%;
+	}
+	
+	.grid-content {
+		margin-top: 10px;
+		width: 80%;
+		display: flex;
+		flex-direction: row;
+		justify-content:  space-between;
+
+	}
+	
+	.section {
+		width: 40%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		background-color: #FFFFFF;
 		border-radius: 5px;
 		padding: 10px;
 		box-shadow:1px 1px 2px #7d7d7d;
 	}
 	
-	.switch-item {
-		flex: 1;
-		/* #ifndef APP-NVUE */
+	.item {
+		width: 80%;
+		margin-top: 10px;
+		margin-bottom: 5px;
 		display: flex;
-		/* #endif */
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 5px 0;
 	}
 	
 	.image {
-		width: 60rpx;
+		width: 200rpx;
+		height: 60rpx;
+	}
+	
+	.mimage {
+		width: 170rpx;
 		height: 60rpx;
 	}
 
