@@ -292,7 +292,7 @@
 								<view class="topic-title">{{ topic.title }}</view>
 								<view class="topic-other">
 									<view class="topic-view">
-										<text> change  </text>
+										<text> {{changeFlagList[changeList.indexOf(topic)]}} </text>
 									</view>
 									<!-- <view class="topic-time">{{ moment(topic.lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}</view> -->
 									<!-- <view class="topic-time">{{ topic.lastEditTime }}</view> -->
@@ -314,7 +314,7 @@
 			</view>
 			
 			<view v-if="currentClassIfy ==2 && profileTab==3 && favoriteTab==2" class = "post">
-				<view v-if="topicList.length" class ="topic-list">
+				<view v-if=" topicList.length" class ="topic-list">
 				<!-- 话题项 -->
 					<block v-for="topic of topicList">
 						<view @tap="navigator('./contentQaReply?id=' + topic.answerId)" class="topic">
@@ -817,7 +817,7 @@
 								console.log(this.changeFlagList[i])
 							}else{
 								console.log("无新的回答")
-								this.changeFlagList[i] = "无新的回答"
+								this.changeFlagList[i] = ""
 								console.log(this.changeFlagList[i])
 							}							
 							
