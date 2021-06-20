@@ -25,6 +25,18 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/order",
+			"style": {
+				"navigationBarTitleText": "订单结算"
+			}
+		},
+		{
+			"path": "pages/pharmacy/orders",
+			"style": {
+				"navigationBarTitleText": "订单列表"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"
@@ -231,13 +243,13 @@
 				"iconPath": "static/个人中心.png",
 				"selectedIconPath": "static/个人中心.png",
 				"text": ""
+			},
+			{
+				"pagePath": "pages/test/index",
+			 	"iconPath": "",
+			 	"selectedIconPath": "",
+			 	"text": "测试页"
 			}
-			// {
-			// 	"pagePath": "pages/test/index",
-			// 	"iconPath": "",
-			// 	"selectedIconPath": "",
-			// 	"text": "测试页"
-			// }
 		]	
 	}
 }

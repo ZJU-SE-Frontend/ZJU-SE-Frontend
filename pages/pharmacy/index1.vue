@@ -1,56 +1,44 @@
 <template>
-	<view  @touchmove.prevent  @mousewheel.prevent>
-		<template class = "content1">
-			<view>
-				<view>
-					<uni-search-bar @confirm="search" :focus="true" v-model="searchValue">
-					</uni-search-bar>
-				</view>
-			</view>	
-		</template>
-		<view class="content2">
-			<scroll-view class="menu-wrapper" scroll-y :style="'height:'+height+'px'">
-				<view ref="menuWrapper">
-					<!--  :class="{'current': currentIndex == index}" @click="selectMenu(index,$event)" -->
-					<view style="position: relative;" v-for="(item,index) in goods" :key="index" ref="menuList" @click="select(index)"
-					 :class="{'current': currentIndex == index}">
+	<view class="content">
+		<scroll-view class="menu-wrapper" scroll-y :style="'height:'+height+'px'">
+			<view ref="menuWrapper">
+				<!--  :class="{'current': currentIndex == index}" @click="selectMenu(index,$event)" -->
+				<view style="position: relative;" v-for="(item,index) in goods" :key="index" ref="menuList" @click="select(index)"
+				 :class="{'current': currentIndex == index}">
 		
-						<view class="menu-item">{{item.name}}</view>
-						<text class="allcount" v-if="getAllCount>=item.count&&item.count>0">{{item.count}}</text>
-						<!-- <text class="allcount">1</text> -->
+					<view class="menu-item">{{item.name}}</view>
+					<text class="allcount" v-if="getAllCount>=item.count&&item.count>0">{{item.count}}</text>
+					<!-- <text class="allcount">1</text> -->
+				</view>
+			</view>
+		</scroll-view>
+		<!--  @scroll="scroll" -->
+		<scroll-view class="items-wrapper" scroll-y :style="'height:'+height+'px'" :scroll-top="itemsTop">
+			<view ref="itemsWrapper">
+				<view ref="foodList" class="items" v-for="(item, i) in goods" :key="i">
+					<view class="food-title" style="background: #f3f5f7">
+						{{item.name}}
 					</view>
-				</view>
-			</scroll-view>
-			<!--  @scroll="scroll" -->
-			<scroll-view class="items-wrapper" scroll-y :style="'height:'+height+'px'" :scroll-top="itemsTop">
-				<view ref="itemsWrapper">
-					<view ref="foodList" class="items" v-for="(item, i) in goods" :key="i">
+					<view class="food" v-for="(food, index) in item.items" :key="index" >
+						<image :src="food.img" mode="" style="width: 75px;height: 75px;margin-top: 6px;"@tap="onItemClicked(index, index)"></image>
+						<view class="food-info" >
+							<text style="font-size: 15px;margin-top: 2px;" @tap="onItemClicked(index, index)">{{food.name}}</text>
+							<text style="font-size: 13px;margin: 2px 0;" @tap="onItemClicked(index, index)">{{food.description}}</text>
+							<text style="font-size: 13px;margin: 2px 0 4px;" @tap="onItemClicked(index, index)">月售{{food.sellCount}}</text>
 		
-						<view class="food-title" style="background: #f3f5f7">
-							{{item.name}}
-						</view>
-						<view class="food" v-for="(food, index) in item.items" :key="index" >
-							<image :src="food.img" mode="" style="width: 75px;height: 75px;margin-top: 6px;"@tap="onItemClicked(i, index)"></image>
-							<view class="food-info" >
-								<text style="font-size: 15px;margin-top: 2px;" @tap="onItemClicked(i, index)">{{food.name}}</text>
-								<text style="font-size: 13px;margin: 2px 0;" @tap="onItemClicked(i, index)">{{food.description}}</text>
-								<text style="font-size: 13px;margin: 2px 0 4px;" @tap="onItemClicked(i, index)">月售{{food.sellCount}}</text>
-		
-								<!-- 加减 -->
-								<view class="food-btm">
-									<text class="food-price" @tap="onItemClicked(i, index)">￥{{food.price}}</text>
-									<cartcontrol :food="food" @add="addCart" @dec="decreaseCart" ></cartcontrol>
-									
-								</view>
+							<!-- 加减 -->
+							<view class="food-btm">
+								<text class="food-price" @tap="onItemClicked(index, index)">￥{{food.price}}</text>
+								<cartcontrol :food="food" @add="addCart" @dec="decreaseCart" ></cartcontrol>
+								
 							</view>
 						</view>
 					</view>
 				</view>
-			</scroll-view>
-			<shopcart :goods="goods" @add="addCart" @dec="decreaseCart" @delAll="delAll" @test="createOrder"></shopcart>
-		</view>
+			</view>
+		</scroll-view>
+		<shopcart :goods="goods" @add="addCart" @dec="decreaseCart" @delAll="delAll"></shopcart>
 	</view>
-
 </template>
 
 <script>
@@ -65,7 +53,6 @@
 			return {
 				title: 'Hello',
 				goods: [],
-				searchValue: '',
 				height: 0,
 				itemsTop: 0,
 				currentIndex: 0
@@ -114,7 +101,20 @@
 		},
 	
 		computed: {
+			getList() {
+				let result = [];
+				this.goods.forEach((good) => {
 
+					good.items.forEach((food) => {
+
+						if (food.count) {
+							result.push(food)
+						}
+					})
+				})
+				console.log('result', result);
+				return result
+			},
 			// 获得购物车所有商品数量
 			getAllCount: function(item) {
 				let result = [];
@@ -143,57 +143,11 @@
 
 		},
 		methods: {
-			getList() {
-				let result = [];
-				this.goods.forEach((good) => {
 
-					good.items.forEach((food) => {
-
-						if (food.count) {
-							result.push(food)
-						}
-					})
-				})
-				console.log('result', result);
-				return result
-			},
 			// 点击侧边栏
 			select(index) {
 				this.currentIndex = index;
 				this.setScrollH(index);
-
-			},
-			search(res){
-				var index = 0;
-				var dict ={
-					"防疫口罩":0,
-					"体温计":1,
-					"医用手套":2,
-					"医用酒精":3,
-					"阿司匹林":4,
-					"阿莫西林":5,
-					"感冒灵胶囊":6,
-					"黄连上清片":7,
-					"养胃舒颗粒":8,
-					"健胃消食片":9,
-					"咽炎片":10,
-					"通宣理肺颗粒":11
-				}
-				index = dict[res.value];
-				if(index == undefined){
-					uni.showToast({
-						title:"未能搜索到匹配的药品",
-						duration:1000,
-						icon:"none"
-					});
-				}
-				else{
-					this.$nextTick(function() {
-						this.itemsTop =  Math.floor(index * 110) ;
-						console.log(this.itemsTop);
-					})
-					this.$forceUpdate();
-				}
 			},
 
 			// 设置点击侧边栏右边滚动的高度
@@ -211,14 +165,12 @@
 							that.itemsTop = 0;
 						}
 						for (let i = 0; i < index; i++) {
-
 							height += parseInt(data[i].height);
 							that.itemsTop = height;
 						}
-
 					}).exec();
 				})
-
+				this.$forceUpdate();
 			},
 			
 			addCart: function(item) {
@@ -230,6 +182,7 @@
 								food.count = item.count
 						})
 					})
+					// console.log('c++', JSON.stringify(item))
 
 				} else {
 					console.log('add')
@@ -237,6 +190,8 @@
 						good.items.forEach((food) => {
 							if (item.name == food.name)
 								Vue.set(food, 'count', 1)
+							// food.count = 1
+							// console.log('add-shop', JSON.stringify(food))
 						})
 					})
 				}
@@ -265,23 +220,10 @@
 					})
 				})
 			},
-			createOrder() {
-				var inCarts=this.getList();
-				if (inCarts.length == 0)
-				 {
-					 return;
-				 }
-				var jsonObj = JSON.stringify(inCarts);
-				uni.navigateTo({url: 'order?data='+jsonObj});
-			},
 			onItemClicked(index, index2) {
-				let id=0;
-				if(index==0)
-					id = index2+1;
-				else
-					id = (10+index*2+index2-1)
 				uni.navigateTo({
-					url: 'details?id='+id
+					//url: 'details?id='+index2
+					url: 'temp?id=1'
 				})
 			}
 		}
@@ -289,15 +231,12 @@
 </script>
 
 <style>
-	.content1{
-
-	}
-	.content2 {
+	.content {
 		/* text-align: center; */
 		/* height: 400upx; */
 		display: flex;
 		position: absolute;
-		top: 50px;
+		top: 0;
 		bottom: 15px;
 		width: 100%;
 		overflow: hidden;
