@@ -460,7 +460,7 @@
 				profileTab:null,
 				favoriteTab:0,
 				reportTab:null,
-				questionCategories : ['推荐', '外科', '内科', '牙科', '科普'],
+				questionCategories : ['推荐', '外科', '内科', '牙科', '健康知识'],
 				questionSession : 0,
 				displayData : [],
 				// 排序
