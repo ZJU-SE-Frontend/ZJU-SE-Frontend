@@ -566,7 +566,7 @@
 						}
 					}
 					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
-					// console.log('TopicList: ', this.topicList)
+					this.getSessionData()
 				}
 			},
 			async handleGetProfile(){
@@ -1288,41 +1288,41 @@
 				if(this.questionSession == i)
 					return 
 				this.questionSession = i
-				this.getSessionData(type)
+				this.getSessionData()
 			},
-			async getSessionData(type, i) {
+			async getSessionData() {
 				this.displayData = []
 				const params = {
 					'pageSize' : 2147483647,
 					'pageNo' : 1
 				}
-				if(type == '推荐') {
+				if(this.questionSession == 0) {
 					var recommendedAnswers = await getRecommendedAnswers(params)
 					this.displayData = recommendedAnswers.data.answers
 					
 				}
-				else if(type == '外科') {
+				else if(this.questionSession == 1) {
 					for(var ans in this.topicList) {
 						if(this.topicList[ans].session == 0) {
 							this.displayData.push(this.topicList[ans])
 						}
 					}
 				}
-				else if(type == '内科') {
+				else if(this.questionSession == 2) {
 					for(var ans in this.topicList) {
 						if(this.topicList[ans].session == 1) {
 							this.displayData.push(this.topicList[ans])
 						}
 					}
 				}
-				else if(type == '牙科') {
+				else if(this.questionSession == 3) {
 					for(var ans in this.topicList) {
 						if(this.topicList[ans].session == 2) {
 							this.displayData.push(this.topicList[ans])
 						}
 					}
 				}
-				else if(type == '科普') {
+				else if(this.questionSession == 4) {
 					for(var ans in this.topicList) {
 						if(this.topicList[ans].session == 3) {
 							this.displayData.push(this.topicList[ans])
@@ -1350,7 +1350,6 @@
 		onLoad() {
 			this.getCurrentUser()
 			this.load()
-			this.getSessionData('推荐')
 		}
 	}
 </script>
