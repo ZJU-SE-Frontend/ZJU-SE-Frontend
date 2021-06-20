@@ -1289,7 +1289,6 @@
 					return 
 				this.questionSession = i
 				this.getSessionData(type)
-				this.sortResult()
 			},
 			async getSessionData(type, i) {
 				this.displayData = []
