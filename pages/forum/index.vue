@@ -1255,14 +1255,14 @@
 				}
 				else{
 					if (action === 'prev') {
-						if (this.page === 1) {
+						if (this.qaPage === 1) {
 							this.$util.toast('这是第一页鸭')
 						} else {
-							this.page--;
+							this.qaPage--;
 						}
 					} else if (action === 'next') {
-						if(this.topicList.length / this.limit > this.page) {
-							this.page++;
+						if(this.topicList.length / this.limit > this.qaPage) {
+							this.qaPage++;
 						}
 						else {
 							this.$util.toast('没有更多贴子啦')
