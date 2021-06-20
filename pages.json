@@ -200,7 +200,7 @@
 				"text": ""
 			},
 			{
-				"pagePath": "pages/pharmacy/orders",
+				"pagePath": "pages/forum/index",
 				"iconPath": "static/健康论坛.png",
 				"selectedIconPath": "static/健康论坛.png",
 				"text": ""
@@ -210,13 +210,13 @@
 				"iconPath": "static/个人中心.png",
 				"selectedIconPath": "static/个人中心.png",
 				"text": ""
+			},
+			{
+				"pagePath": "pages/test/index",
+			 	"iconPath": "",
+			 	"selectedIconPath": "",
+			 	"text": "测试页"
 			}
-			// {
-			// 	"pagePath": "pages/test/index",
-			// 	"iconPath": "",
-			// 	"selectedIconPath": "",
-			// 	"text": "测试页"
-			// }
 		]	
 	}
 }

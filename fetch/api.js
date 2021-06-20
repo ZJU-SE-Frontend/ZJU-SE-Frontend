@@ -12,9 +12,32 @@ axios.defaults.baseURL = 'http://121.41.94.85:5000';
 // #endif
 
 
+export function getJwtToken(){
+	let token = undefined
+	uni.getStorageInfo({
+		success: function (res) {
+			res.keys.forEach((key)=>{
+				if(key == 'jwt'){
+					uni.getStorage({
+					    key: 'jwt',
+					    success: function (res) {
+							token = res.data;
+					    }
+					});
+				}
+			})
+			
+		}
+	});
+	return token;
+}
 
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
+	let token = getJwtToken();
+	if (token!=undefined){
+		config.headers.Authorization = 'Bearer '+token
+	}
 	return config;
 }, (error) => {
 	return Promise.reject(error);
@@ -120,6 +143,30 @@ export function fetchPut(url, data) {
 	})
 }
 
+export function fetchDelete(url, data) {
+	console.log(data)
+	return new Promise((resolve, reject) => {
+		axios.delete(url, {data})
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
+export function deleteAppointment(patientPhone, appointDate, section){
+	return fetchDelete('/api/appointment/patient/withdraw', {
+		"patientPhone": patientPhone,
+		"appointDate": Math.round(appointDate/1000),
+		"section": section
+	})
+}
+
 /*基本功能API*/
 export function getStatic(path) {
 	return fetchGet(`/static`+path)
@@ -128,11 +175,10 @@ export function getStatic(path) {
 
 /*用户权限管理API*/
 export function postLoginIn(userPhone, password) {
-	var data = {
+	return fetchPost(`/api/login`, {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
-	}
-	return fetchPost(`/api/login`, data = data);
+	});
 }
 
 export function postJoinIn(userPhone, userName, password, authType = 1, userEmail) {
@@ -148,10 +194,42 @@ export function postJoinIn(userPhone, userName, password, authType = 1, userEmai
 	return fetchPost(`/api/join`, data = data);
 }
 
+
+
+export function getCurrentUserPhone(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["user_phone"]
+	}
+}
+
+export function getCurrentUserName(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["user_name"]
+	}
+}
+
+export function getCurrentUserRole(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+	}
+}
+
+export function getCurrentUserExpireTime(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["exp"]
+	}
+}
+
 // Modified!
 export function getUserInfo(userPhone){
 	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
 }
+
+
 
 /*电子病历模块API*/
 export function getPcase(id){
@@ -162,11 +240,7 @@ export function getPdetail(phone,id){
 	return fetchGet('/api/healthrecord/case/detail?userPhone='+phone+'&caseId='+id)
 }
 
-export function getCurrentUserPhone(){
-	let token = jwt_decode(uni.getStorageSync('jwt'));
-	console.log(token["user_phone"])
-	return token
-}
+
 
 /*在线药房模块API*/
 export function getPharBoothList(cata, count){
@@ -250,3 +324,5 @@ export function getAppointments_Cov(tel) {
 export function getReport_Cov(appoint_id) {
 	return fetchGet(`/api/exam/covid/report/`, appoint_id)
 }
+
+

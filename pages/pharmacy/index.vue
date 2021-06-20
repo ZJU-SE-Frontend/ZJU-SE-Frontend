@@ -164,8 +164,6 @@
 
 			},
 			search(res){
-				console.log(this.searchValue);
-				// 根据名称遍历药品找到对应的index
 				var index = 0;
 				var dict ={
 					"防疫口罩":0,
@@ -182,11 +180,20 @@
 					"通宣理肺颗粒":11
 				}
 				index = dict[res.value];
-				this.$nextTick(function() {
-					this.itemsTop =  Math.floor(index * 110) ;
-					console.log(this.itemsTop);
-				})
-				this.$forceUpdate();
+				if(index == undefined){
+					uni.showToast({
+						title:"未能搜索到匹配的药品",
+						duration:1000,
+						icon:"none"
+					});
+				}
+				else{
+					this.$nextTick(function() {
+						this.itemsTop =  Math.floor(index * 110) ;
+						console.log(this.itemsTop);
+					})
+					this.$forceUpdate();
+				}
 			},
 
 			// 设置点击侧边栏右边滚动的高度
@@ -223,7 +230,6 @@
 								food.count = item.count
 						})
 					})
-					// console.log('c++', JSON.stringify(item))
 
 				} else {
 					console.log('add')
@@ -231,8 +237,6 @@
 						good.items.forEach((food) => {
 							if (item.name == food.name)
 								Vue.set(food, 'count', 1)
-							// food.count = 1
-							// console.log('add-shop', JSON.stringify(food))
 						})
 					})
 				}
