@@ -352,7 +352,7 @@
 								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
 							<!-- </view> -->
 								<view class="topic-type">回答</view>							
-								<view @tap="navigator('./contentQa?id=' + getAnswerContent(topic.id).data.questionId)" class="topic-report-title">{{ topic.content }}</view>
+								<view @tap="handleNavigateToReportAnswer(topic.id)" class="topic-report-title">{{ topic.content }}</view>
 								<view  @tap="handleDeleteReportAnswer(topic.id)" class="topic-report-delete">删除</view>							
 						</view>
 					</block>
@@ -950,6 +950,11 @@
 				console.log("delete")
 				await deleteReportQaAnswer(id)
 				await this.handleGetReportAnswer()
+			},
+			
+			async handleNavigateToReportAnswer(id) {
+				var answer = await getAnswerContent(id)
+				this.navigator('./contentQa?id=' + answer.data.questionId)
 			},
 			
 			async handleGetReportReply(){
