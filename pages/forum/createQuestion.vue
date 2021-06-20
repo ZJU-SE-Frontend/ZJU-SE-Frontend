@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<sl-filter :independence="true" :color="'#666666'" :themeColor="'#000000'" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 		<view class="input">
 			<textarea class="title-text" placeholder="请输入你想提的问题" auto-height="true" v-model="title"/>
 		</view>
@@ -12,11 +13,41 @@
 
 <script>
 	import {publicQuestion} from '../../fetch/api.js'
+	import slFilter from './sl-filter.vue'
 	export default {
+		components: {
+			slFilter
+		},
 		data() {
 			return {
 				title : '',
-				content : ''
+				content : '',
+				menuList: [
+					{
+						'title': '外科',
+						'key': 'sort',
+						'isSort': true,
+						'reflexTitle': true,
+						'detailList': [{
+								'title': '外科',
+								'value': 0
+							},
+							{
+								'title': '内科',
+								'value': 1
+							},
+							{
+								'title': '牙科',
+								'value': 2
+							},
+							{
+								'title': '科普',
+								'value': 3
+							}
+						]
+					}
+				],
+				session : 0
 			}
 		},
 		methods: {
@@ -25,8 +56,10 @@
 					const params = {
 						"title" : this.title,
 						"userPhone" : "18888888888",
-						"content" : this.content
+						"content" : this.content,
+						"session" : this.session
 					};
+					// console.log(params)
 					publicQuestion(params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
@@ -36,6 +69,10 @@
 						animationType: 'pop-out'
 					})
 				}
+			},
+			sortResult(value) {
+				this.session = value.sort
+				console.log(this.session)
 			},
 			onLoad() {
 			}

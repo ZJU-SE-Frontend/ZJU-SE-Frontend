@@ -531,7 +531,6 @@
 			},
 			// 获取数据
 			async handleGetTopicList(args) {
-				
 				this.topicList=null
 				const params = {
 					'pageSize' : 2147483647,
@@ -565,7 +564,7 @@
 						}
 					}
 					this.sortedTopicList = JSON.parse(JSON.stringify(this.topicList))
-					console.log('问答页')
+					// console.log('TopicList: ', this.topicList)
 				}
 			},
 			
