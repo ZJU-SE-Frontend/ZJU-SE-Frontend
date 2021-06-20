@@ -24,15 +24,15 @@
 						<text>发帖：{{this.postCnt}}</text>
 				</view>
 				<view @tap="handleGetUserQuestion()" class="block" :class="{'selected': profileTab === 1}">
-					<text>提问:{{this.questionCnt}}</text>
+					<text>提问：{{this.questionCnt}}</text>
 				</view>
 				<view @tap="handleGetUserAnswer()" class="block" :class="{'selected': profileTab === 2}">
-					<text>回答:{{this.answerCnt}}</text>
+					<text>回答：{{this.answerCnt}}</text>
 				</view>			
 				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
 					<text>收藏</text>
 				</view>
-				<view @tap="handleGetReport()" class="block" :class="{'selected': profileTab === 4}">
+				<view v-if="userRole == 'manager'" @tap="handleGetReport()" class="block" :class="{'selected': profileTab === 4}">
 					<text>举报</text>
 				</view>
 			</view>
@@ -448,6 +448,7 @@
 				// 条数
 				limit: 10,
 				userPhone: null,
+				userRole: 'patient',
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
@@ -532,7 +533,7 @@
 			},
 			// 获取数据
 			async handleGetTopicList(args) {
-				this.topicList=null
+				this.topicList=[]
 				const params = {
 					'pageSize' : 2147483647,
 					'pageNo' : 1
@@ -569,7 +570,7 @@
 				}
 			},
 			async handleGetProfile(){
-				this.topicList=null
+				this.topicList=[]
 				const params = {
 					tab:this.handleGetTab(),
 					userPhone:this.userPhone,
@@ -587,21 +588,15 @@
 					
 					
 					console.log("查询成功")
-					if(posts.data.total){
-						this.postCnt = posts.data.total
-						console.log(posts.data.total)
-					}
-					
-					if(questions.data.total){
-						this.questionCnt = questions.data.total
-						console.log(questions.data.total)
-					}
-					
-					if(answers.data.total){
-						this.answerCnt = answers.data.total
-						console.log(answers.data.total)
-					}
-										
+					this.postCnt = posts.data.total
+					console.log(posts.data.total)
+				
+					this.questionCnt = questions.data.total
+					console.log(questions.data.total)
+				
+					this.answerCnt = answers.data.total
+					console.log(answers.data.total)
+ 										
 				}
 				
 						
@@ -612,7 +607,7 @@
 			
 			async handleGetUserPost(params){	
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 0
 				if(params == null){
@@ -648,7 +643,7 @@
 			},
 			
 			async handleGetUserQuestion(params){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 1
 				if(params == null){
@@ -678,7 +673,7 @@
 			
 			async handleGetUserAnswer(params){
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 2
 				
@@ -709,7 +704,7 @@
 			},
 			
 			async handleGetUserFavorite(){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.profileTab = 3
 				
@@ -730,20 +725,14 @@
 					
 					
 					console.log("查询成功")
-					if(posts.data.total){
-						this.favoritePostCnt = posts.data.total
-						console.log(posts.data.total)
-					}
-					
-					if(questions.data.total){
-						this.favoriteQuestionCnt = questions.data.total
-						console.log(questions.data.total)
-					}
-					
-					if(answers.data.total){
-						this.favoriteAnswerCnt = answers.data.total
-						console.log(answers.data.total)
-					}
+					this.favoritePostCnt = posts.data.total
+					console.log(posts.data.total)
+				
+					this.favoriteQuestionCnt = questions.data.total
+					console.log(questions.data.total)
+				
+					this.favoriteAnswerCnt = answers.data.total
+					console.log(answers.data.total)
 										
 				}
 				
@@ -754,7 +743,7 @@
 			
 			async handleGetUserFavoritePost(params){
 				
-				this.topicList=null
+				this.topicList=[]
 				
 				this.favoriteTab = 0
 				if(params == null){
@@ -844,7 +833,7 @@
 			},
 			
 			async handleGetUserFavoriteAnswer(params){
-				this.topicList=null
+				this.topicList=[]
 				
 				this.favoriteTab = 2
 				if(params == null){
@@ -894,7 +883,7 @@
 			
 			
 			async handleGetReport(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报")
 				this.profileTab = 4
@@ -920,7 +909,7 @@
 
 			
 			async handleGetReportAnswer(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报回答")
 				
@@ -955,7 +944,7 @@
 			},
 			
 			async handleGetReportReply(){
-				this.topicList=null
+				this.topicList=[]
 				
 				console.log("查看举报回复")
 				
@@ -983,10 +972,12 @@
 			},
 			
 			// 话题分类切换
-			handleClassIfyChange(classIfyId) {
+			async handleClassIfyChange(classIfyId) {
 				if (this.currentClassIfy === classIfyId) {
 					return
 				}else if( classIfyId == 2){
+					await this.getCurrentUser()
+					console.log(this.userPhone)
 					console.log("切换到个人中心")
 					this.currentClassIfy = classIfyId
 					
@@ -1348,6 +1339,7 @@
 				console.log("user INFO: ")
 				console.log(userInfo)
 				this.userPhone = userInfo.user_phone
+				this.userRole = userInfo['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
 				console.log(this.userPhone)
 			}
 		},
