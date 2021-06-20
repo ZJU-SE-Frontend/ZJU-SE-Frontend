@@ -507,8 +507,9 @@
 			//排序
 			sortResult(value) {
 				this.currentSortType = value.sort
-				console.log(this.currentSortType)
-				console.log(this.displayData)
+				this.dataGen()
+			},
+			dataGen() {
 				this.sortedTopicList = JSON.parse(JSON.stringify(this.displayData))
 				if(this.currentSortType == 'hot') {
 					this.sortedTopicList.sort((a,b)=>{
@@ -567,11 +568,8 @@
 					// console.log('TopicList: ', this.topicList)
 				}
 			},
-			
 			async handleGetProfile(){
-				
 				this.topicList=null
-				
 				const params = {
 					tab:this.handleGetTab(),
 					userPhone:this.userPhone,
@@ -1300,6 +1298,7 @@
 					return 
 				this.questionSession = i
 				this.getSessionData(type)
+				this.sortResult()
 			},
 			async getSessionData(type, i) {
 				this.displayData = []
@@ -1340,8 +1339,9 @@
 						}
 					}
 				}
-				console.log(this.topicList)
-				console.log(this.displayData)
+				// console.log(this.topicList)
+				// console.log(this.displayData)
+				this.dataGen()
 			},
 			async getCurrentUser() {
 				var userInfo = await getCurrentUserPhone()
