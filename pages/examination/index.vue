@@ -22,8 +22,7 @@
 			    </uni-grid-item>
 				<uni-grid-item>
 				    <view class="switch-item">
-				    	<image src="/static/exam/dummy" class="image" mode="aspectFit" @click="gotoSer()"/>
-				    	<text class="title" @click="gotoSer()"> [医院管理员入口] </text>
+				    	<text class="title">   </text>
 				    </view>
 				</uni-grid-item>
 			</uni-grid>
@@ -33,6 +32,8 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
+	import {getHospitalList_Phy, fetchGet} from "@/fetch/api.js";
 	export default {
 		data() {
 			return {
@@ -44,22 +45,43 @@
 		},
 		methods: {
 			gotoPhy() {
-				uni.navigateTo({
-					url:"phys/phys"
-				})
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else{
+					fetchGet('/api/exam/hospital/'+store.state.uerInfo.userPhone).then(res =>{
+						if(res.st == 0) uni.navigateTo({
+							url:"phys/server?hospital=" + res.data
+						})
+						else uni.navigateTo({
+							url:"phys/phys?username=" + store.state.uerInfo.userName + "&userphone=" + store.state.uerInfo.userPhone
+						})
+					})
+				
+				}
 			},
 			
 			gotoCov() {
-				uni.navigateTo({
-					url:"covid/covid"
-				})
+				if(store.state.hasLogin == false){
+					uni.showToast({
+						icon: 'none',
+						title: '请先登录'
+					})
+				}
+				else{
+					fetchGet('/api/exam/hospital/'+store.state.uerInfo.userPhone).then(res =>{
+						if(res.st == 0) uni.navigateTo({
+							url:"covid/server?hospital=" + res.data
+						})
+						else uni.navigateTo({
+							url:"covid/covid?username=" + store.state.uerInfo.userName + "&userphone=" + store.state.uerInfo.userPhone
+						})
+					})
+				}
 			},
-			
-			gotoSer(){
-				uni.navigateTo({
-					url:"exam_server"
-				})
-			}
 
 		}
 	}

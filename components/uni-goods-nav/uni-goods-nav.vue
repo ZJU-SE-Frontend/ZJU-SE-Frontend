@@ -11,7 +11,9 @@
 					</view>
 					<text class="uni-tab__text">{{ item.text }}</text>
 					<view class="flex uni-tab__dot-box">
-						<text v-if="item.info" :class="{ 'uni-tab__dots': item.info > 9 }" class="uni-tab__dot ">{{ item.info }}</text>
+						<text v-if="item.info" :class="{ 'uni-tab__dots': item.info > 9 }" class="uni-tab__dot " :style="{'backgroundColor':item.infoBackgroundColor?item.infoBackgroundColor:'#ff0000',
+						color:item.infoColor?item.infoColor:'#fff'
+						}">{{ item.info }}</text>
 					</view>
 				</view>
 			</view>
@@ -47,7 +49,7 @@
 				default () {
 					return [{
 						icon: 'shop',
-						text: '店铺'
+						text: '店铺',
 					}, {
 						icon: 'cart',
 						text: '购物车'
@@ -121,7 +123,6 @@
 		height: 50px;
 		background-color: #fff;
 		z-index: 900;
-		
 	}
 
 	.uni-tab__cart-sub-left {
@@ -143,13 +144,14 @@
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
-		/* flex: 1;
- */
 		position: relative;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 		margin: 0 10px;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.uni-tab__icon {
@@ -176,10 +178,13 @@
 		flex: 1;
 		justify-content: center;
 		align-items: center;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
 	}
 
 	.uni-tab__cart-button-right-text {
-		font-size: 28rpx;
+		font-size: 14px;
 		color: #fff;
 	}
 
@@ -219,8 +224,6 @@
 
 	.uni-tab__dots {
 		padding: 0 4px;
-		/* width: auto;
- */
 		border-radius: 15px;
 	}
 
