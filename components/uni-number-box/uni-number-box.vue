@@ -115,6 +115,7 @@
 					value = this.min;
 				}
 				this.inputValue = value;
+			},
 			_onFocus(event) {
 				this.$emit('focus', event)
 			}
