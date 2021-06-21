@@ -5,11 +5,11 @@
 				<text style="color: #FFFFFF ; font-size: larger; font-weight: 700;">  {{this.username}} </text>
 				<text style="color: #FFFFFF ;font-size: smaller;"> {{this.userphone}} </text>
 			</view>
-			<button size="mini" style="border-width: 3rpx; border-color: #ffffff; margin-right: 15px;" type="default" @click="gotoHistory">预约记录</button>
 		</view>
 		<view class="content">
-			<view class="datesel">
-				<view style=" margin-left: 20px; margin-top: 10px; margin-bottom: 10px;" @click="onShowDatePicker('date')">{{date}}</view>
+			<view class="datesel" style="margin-left: 20rpx; margin-top: 20rpx; margin-bottom: 20rpx;">
+				<image class="image" src="../../../static/exam/calendar.png" @click="onShowDatePicker('date')"></image>
+				<view style=" margin-left: 0px; " >{{date}}</view>
 			</view>
 			<view class="divider"/>
 			<view class="uni-list">
@@ -41,6 +41,7 @@
 		data() {
 			return {
 				showPicker: false,
+				nowdate: new Date().toLocaleDateString(),
 				date: new Date().toLocaleDateString(),
 				type: 'date',
 				value: '',
@@ -101,13 +102,30 @@
 				console.log('Phys -> Timesel：');
 				console.log('hospital => '+ this.hospitals[this.index]);
 				console.log('date => '+ this.date);
-				
-				uni.navigateTo({
-					url:"timesel_cov?hospital=" + this.hospitals[this.index]
-						+ "&appoint_date=" +  this.date
-						+ "&username=" +  this.username
-						+ "&user_phone=" +  this.userphone
-				})
+				let now = new Date(this.nowdate).getTime()/1000/60/60/24;
+				let then = new Date(this.date).getTime()/1000/60/60/24;
+				console.log('timestamp: ' + new Date(this.date).getTime()/1000/60/60/24);
+				console.log('timestamp: ' + new Date(this.nowdate).getTime()/1000/60/60/24);
+				console.log(then - now);
+				if (then < now) {
+					uni.showToast({
+						icon: "none",
+						title: '已过期'
+					})
+				} else if(then - now >= 15){
+					uni.showToast({
+						icon: "none",
+						title: '仅开放15天以内的预约'
+					})
+				} else
+				{
+					uni.navigateTo({
+						url:"timesel_cov?hospital=" + this.hospitals[this.index]
+							+ "&appoint_date=" +  this.date
+							+ "&username=" +  this.username
+							+ "&user_phone=" +  this.userphone
+					})
+				}
 				
 				
 				
@@ -134,7 +152,7 @@
 		align-items: flex-end;
 		justify-content: space-between;
 		height: 90px;
-		width: 100%;
+		width: 85%;
 		margin-top: 0;
 		margin-bottom: 10px;
 	}
@@ -142,7 +160,7 @@
 	.Info {
 		display: flex;
 		flex-direction: column;
-		margin-left: 15px;
+		margin-left: 0px;
 	}
 	
 	.content {
@@ -171,6 +189,13 @@
 		align-self: center;
 		width: 90%;
 		height: 1rpx;
+		}
+		
+	.image {
+			width: 35rpx;
+			height: 35rpx;
+			padding-left: 20rpx;
+			padding-right: 20rpx;
 		}
 
 </style>
