@@ -10,10 +10,32 @@ axios.defaults.baseURL = '';
 // #ifdef MP-WEIXIN
 axios.defaults.baseURL = 'http://121.41.94.85:5000';
 // #endif
+export function getJwtToken(){
+	let token = undefined
+	uni.getStorageInfo({
+		success: function (res) {
+			res.keys.forEach((key)=>{
+				if(key == 'jwt'){
+					uni.getStorage({
+					    key: 'jwt',
+					    success: function (res) {
+							token = res.data;
+					    }
+					});
+				}
+			})
+			
+		}
+	});
+	return token;
 
+  
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
-//	config.headers.Authorization = "Bearer " + uni.getStorageSync('jwt')
+	let token = getJwtToken();
+	if (token!=undefined){
+		config.headers.Authorization = 'Bearer '+token
+	}
 	return config;
 }, (error) => {
 	return Promise.reject(error);
@@ -38,6 +60,39 @@ axios.interceptors.response.use((res) => {
 }, (error) => {
 	return Promise.reject(error);
 });
+
+// #ifdef MP-WEIXIN
+axios.defaults.adapter = function(config) { //自己定义个适配器，用来适配uniapp的语法
+    return new Promise((resolve, reject) => {
+        console.log(config)
+        var settle = require('axios/lib/core/settle');
+        var buildURL = require('axios/lib/helpers/buildURL');
+        uni.request({
+            method: config.method.toUpperCase(),
+            url: config.baseURL + buildURL(config.url, config.params, config.paramsSerializer),
+            header: config.headers,
+            data: config.data,
+            dataType: config.dataType,
+            responseType: config.responseType,
+            sslVerify: config.sslVerify,
+            complete: function complete(response) {
+                console.log("执行完成：",response)
+                response = {
+                    data: response.data,
+                    status: response.statusCode,
+                    errMsg: response.errMsg,
+                    header: response.header,
+                    config: config
+                };
+
+                settle(resolve, reject, response);
+            }
+        })
+    })
+}
+// #endif
+
+
 
 export function fetchGet(url, param) {
 	return new Promise((resolve, reject) => {
@@ -86,6 +141,23 @@ export function fetchPut(url, data) {
 	})
 }
 
+export function fetchDelete(url, data) {
+	console.log(data)
+	return new Promise((resolve, reject) => {
+		axios.delete(url, {data})
+			.then(response => {
+				console.log("responsed")
+				resolve(response.data)
+			}, err => {
+				reject(err)
+			})
+			.catch((error) => {
+				reject(error);
+			})
+	})
+}
+
+
 /*基本功能API*/
 export function getStatic(path) {
 	return fetchGet(`/static`+path)
@@ -94,7 +166,7 @@ export function getStatic(path) {
 
 /*用户权限管理API*/
 export function postLoginIn(userPhone, password) {
-	var data = {
+	return fetchPost(`/api/login`, {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
 	}
@@ -112,6 +184,39 @@ export function postJoinIn(userPhone, userName, password, authType = 1) {
 	return fetchPost(`/api/join`, data = data);
 }
 
+export function getCurrentUserPhone(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["user_phone"]
+	}
+}
+
+export function getCurrentUserName(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["user_name"]
+	}
+}
+
+export function getCurrentUserRole(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+	}
+}
+
+export function getCurrentUserExpireTime(){
+	let token = getJwtToken();
+	if(token!=undefined){
+		return jwt_decode(token)["exp"]
+	}
+}
+
+// Modified!
+export function getUserInfo(userPhone){
+	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
+}
+
 /*电子病历模块API*/
 export function getPcase(id){
 	return fetchGet('/api/healthrecord/case/'+id)
@@ -121,11 +226,7 @@ export function getPdetail(phone,id){
 	return fetchGet('/api/healthrecord/case/detail?userPhone='+phone+'&caseId='+id)
 }
 
-export function getCurrentUserPhone(){
-	let token = jwt_decode(uni.getStorageSync('jwt'));
-	console.log(token["user_phone"])
-	return token
-}
+
 
 export function getUserInfo(userPhone){
 	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
@@ -156,6 +257,13 @@ export function getPharBoothList(cata, count){
 export function getPharBoothDetail(id){
 	return fetchGet(`/api/phar/booth/detail/`+id)
 }
+
+export function getPharOrderList(userPhone){
+	return fetchGet(`/api/phar/order/list/` + userPhone)
+ }
+export function getPharOrderDetail(id){
+	return fetchGet(`/api/phar/order/detail/` + id)
+ }
 
 /* 健康检测模块API */
 
@@ -218,4 +326,64 @@ export function getAppointments_Cov(tel) {
 
 export function getReport_Cov(appoint_id) {
 	return fetchGet(`/api/exam/covid/report/`, appoint_id)
+}
+export function getdepart(hos){
+	return fetchGet("/api/appointment/patient/department/"+hos)
+}
+export function gethospital(){
+	return fetchGet("/api/appointment/patient/hospital")
+}
+export function getsubdep(dep,hosp){
+	const params = {
+		"hospital": hosp
+	}
+	return fetchGet("/api/appointment/patient/subdepart/" + dep,params)
+}
+export function getdoctor(hosp,dep){
+	const params = {
+		"hospital": hosp,
+		"department":dep
+	}
+	return fetchGet("/api/appointment/patient/doctorList",params)
+}
+export function insert_record(phone1,phone2,date,sec){
+	const params = {
+		  "patientPhone": phone1,
+		  "doctorPhone": phone2,
+		  "appointDate": date,
+		  "section": sec
+	}
+	return fetchPost("/api/appointment/patient/appoint",params)
+}
+
+export function getPatientInfo(patientPhone){
+	return fetchGet(`/api/appointment/doctor/`+patientPhone)
+}
+export function getRemainder(docp,appo,sec){
+	const params = {
+		  "doctorPhone": docp,
+		  "appointDate": appo,
+		  "section": sec
+	}
+	return fetchGet("/api/appointment/patient/appoint/doctor",params);
+}
+export function getappoint(patientphone){
+	return fetchGet("/api/appointment/patient/appoint/" + patientphone)
+}
+export function getPatientAppointList(doctor_phone){
+	var time = new Date()
+	const params = {
+		"appointDate" : parseInt(time.getTime() / 1000)
+	}
+	console.log(params.appointDate)
+	return fetchGet("/api/appointment/doctor/appointList/"+doctor_phone, params)
+}
+
+
+export function deleteAppointment(patientPhone, appointDate, section){
+	 return fetchDelete('/api/appointment/patient/withdraw', {
+    "patientPhone": patientPhone,
+    "appointDate": appointDate,
+    "section": section
+  })
 }

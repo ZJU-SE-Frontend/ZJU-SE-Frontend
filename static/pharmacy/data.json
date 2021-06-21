@@ -2,20 +2,98 @@
     "st": 0,
     "msg": "",
     "data": {
-        "length": 20,
+        "length": 0,
         "list": [{
                 "id": 1,
+                "name": "防疫口罩",
+                "type": "防疫物资",
+                "description": "用于医疗防疫",
+                "price": 18.9,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/11.jpg"
+            }, {
+                "id": 2,
+                "name": "体温计",
+                "type": "防疫物资",
+                "description": "用于医疗防疫",
+                "price": 16.9,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/12.jpg"
+            }, {
+                "id": 3,
+                "name": "医用手套",
+                "type": "防疫物资",
+                "description": "用于医疗防疫",
+                "price": 64.9,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/13.jpg"
+            }, {
+                "id": 4,
+                "name": "医用酒精",
+                "type": "防疫物资",
+                "description": "用于医疗防疫",
+                "price": 9.9,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/14.jpg"
+            }, {
+                "id": 11,
                 "name": "阿司匹林",
                 "type": "抗生素",
-                "price": 21.99,
-                "sIndication": "用于发热,疼痛及类风湿关节炎等"
+                "description": "对血小板的聚集有抑制作用",
+                "price": 14.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/1.jpg"
             },
             {
-                "id": 2,
+                "id": 12,
                 "name": "阿莫西林",
                 "type": "抗生素",
+                "description": "治疗伤寒、其他沙门菌感染",
+                "price": 15.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/2.jpg"
+            },
+            {
+                "id": 13,
+                "name": "感冒灵胶囊",
+                "type": "感冒发烧",
+                "description": "解热镇痛",
+                "price": 24.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/3.jpg"
+            },
+            {
+                "id": 14,
+                "name": "黄连上清片",
+                "type": "感冒发烧",
+                "description": "滋阴养胃",
                 "price": 13.99,
-                "sIndication": "细菌感染"
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/4.jpg"
+            },
+            {
+                "id": 15,
+                "name": "养胃舒颗粒",
+                "type": "肠胃消化",
+                "description": "散风清热，泻火止痛",
+                "price": 23.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/5.jpg"
+            },
+            {
+                "id": 16,
+                "name": "健胃消食片",
+                "type": "肠胃消化",
+                "description": "健胃消食",
+                "price": 6.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/6.jpg"
+            },
+            {
+                "id": 17,
+                "name": "咽炎片",
+                "type": "呼吸用药",
+                "description": "养阴润肺，清热解毒",
+                "price": 34.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/7.jpg"
+            },
+            {
+                "id": 18,
+                "name": "通宣理肺颗粒",
+                "type": "呼吸用药",
+                "description": "解表散寒，宣肺止咳",
+                "price": 55.99,
+                "picPath": "https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/previewImage/8.jpg"
             }
         ]
     }

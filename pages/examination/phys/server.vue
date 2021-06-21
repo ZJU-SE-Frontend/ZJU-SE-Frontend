@@ -1,10 +1,11 @@
 <template>
 	<view class="page">
 		<view class="content">
+		<text style="color:#FFFFFF">{{curHospital}}</text>
 		<view class=myitem>
 		    <view class="title">默认容量</view>
 			<view style="display: flex; flex-direction: row; align-content: flex-end;">
-				<input class="uni-input" v-model="defaultval"  focus :value="defaultval" />
+				<input class="uni-input" v-model="defaultval"  focus :name="defaultval" />
 				<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/updateR.png" @click="applyDef"></image>
 			</view>
 		</view>
@@ -21,7 +22,7 @@
 					<text style="width: 100px; margin-left: 5%; ">{{convertText[key]}}</text>
 					
 					<view style="display: flex; flex-direction: row;"> 
-						<input class="uni-input" v-model="remainder[key]" :value="val"> </input>
+						<input class="uni-input" v-model="remainder[key]" :name="val"> </input>
 						<image mode="aspectFit" style=" margin-right: 30rpx; width: 120rpx; height: 50rpx;" src="../../../static/exam/update.png" @click="apply(key)"></image>
 					</view>
 					
@@ -40,6 +41,13 @@
 <script>
 	import {fetchGet, fetchPut} from "@/fetch/api.js";
 	import MxDatePicker from "../../../components/mx-datepicker/mx-datepicker.vue";
+	
+	function sleep(time){
+		return new Promise(function(resolve){
+			setTimeout(resolve, time);
+		});
+	}
+	
 	export default {
 		components: {
 		            MxDatePicker
@@ -68,7 +76,9 @@
 			}
 		},
 		
-		onLoad() {
+		onLoad(e) {
+			this.curHospital = e.hospital;
+			console.log(this.curHospital);
 
 			fetchGet('/api/exam/physical/remainder/',{
 				hospital: this.curHospital,
@@ -167,19 +177,24 @@
 						defaultCapacty: this.defaultval,
 						defaultCapacity: this.defaultval,
 					}).then(res => {
-						console.log(res)
-						this.updata = true;
-						this.$forceUpdate();
+						console.log(res);
 						uni.showToast({
 							title: '更新成功'
-						})
+						})	
 					})
-									
+					
+					sleep(800).then(()=>{
+						fetchGet('/api/exam/physical/remainder/',{
+							hospital: this.curHospital,
+							appointDate: new Date(this.date).getTime() / 1000,
+						}).then(res => {
+							this.remainder = res.data.sections;	
+							this.updata = true;
+							this.$forceUpdate();
+						})
+					})			
 				}
-			
-			
 			}
-
 		}
 	}
 </script>
@@ -201,7 +216,7 @@
 		align-items: flex-start;
 		width: 85%;
 		height: fit-content;
-		margin-top: 100px;
+		margin-top: 80px;
 	}
 	
 	.myitem {

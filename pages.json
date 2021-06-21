@@ -19,6 +19,24 @@
 			}
 		},
 		{
+			"path": "pages/pharmacy/details",
+			"style": {
+				"navigationBarTitleText": "药品详情"
+			}
+		},
+		{
+			"path": "pages/pharmacy/order",
+			"style": {
+				"navigationBarTitleText": "订单结算"
+			}
+		},
+		{
+			"path": "pages/pharmacy/orders",
+			"style": {
+				"navigationBarTitleText": "订单列表"
+			}
+		},
+		{
 			"path": "pages/forum/index",
 			"style": {
 				"navigationBarTitleText": "健康论坛"
@@ -147,23 +165,16 @@
 			}
 		},
 		{
-			"path": "pages/examination/exam_server",
-			"style": {
-				"navigationBarTitleText": "医院管理员入口",
-				"enablePullDownRefresh": false
-			}
-		},
-		{
 			"path": "pages/examination/phys/server",
 			"style": {
-				"navigationBarTitleText": "医院管理员入口",
+				"navigationBarTitleText": "体检余量修改",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/examination/covid/server",
 			"style": {
-				"navigationBarTitleText": "医院管理员入口",
+				"navigationBarTitleText": "核酸余量修改",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -172,6 +183,74 @@
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/registration/register",
+			"style": {
+				"navigationBarTitleText": "挂号预约界面"
+			}
+		},
+		{
+			"path": "pages/registration/patient",
+			"style": {
+				"navigationBarTitleText": "相关预约"
+			}
+		},
+		{
+			"path": "pages/registration/info",
+			"style": {
+				"navigationBarTitleText": "测试界面"
+			}
+		},
+		{
+			"path": "pages/registration/doctor_ver2",
+			"style": {
+				"navigationBarTitleText": "医生界面"
+			}
+		}
+		,{
+		    "path" : "pages/registration/choose",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择医院"
+		    }
+		    
+		}
+		,{
+		    "path" : "pages/registration/room",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择科室"
+				
+		    }  
+		},
+		{
+		    "path" : "pages/registration/show",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "预约管理"
+				
+		    }  
+		},
+		{
+			"path" : "pages/registration/issue_withdraw",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "提交退号申请"
+			}
+			
+		},
+		{
+			"path":"pages/registration/Reception",
+			"style":{
+				"navigationBarTitleText":"挂号病人列表",
+				"enablePullDownRefresh":true,
+				"backgroundTextStyle":"dark",
+				"backgroundColor":"#FFFFFF",
+				"app-plus":{
+					"titleView": false
+				}
 			}
 		}
     ],
@@ -202,40 +281,40 @@
 		"list": [
 			{
 				"pagePath": "pages/registration/index",
-				"iconPath": "static/挂号预约.svg",
-				"selectedIconPath": "static/挂号预约.svg",
+				"iconPath": "static/挂号预约.png",
+				"selectedIconPath": "static/挂号预约.png",
 				"text": ""
 			},
 			{
 				"pagePath": "pages/examination/index",
-				"iconPath": "static/健康检测.svg",
-				"selectedIconPath": "static/健康检测.svg",
+				"iconPath": "static/健康检测.png",
+				"selectedIconPath": "static/健康检测.png",
 				"text": ""
 			},
 			{
 				"pagePath": "pages/pharmacy/index",
-				"iconPath": "static/在线药房.svg",
-				"selectedIconPath": "static/在线药房.svg",
+				"iconPath": "static/在线药房.png",
+				"selectedIconPath": "static/在线药房.png",
 				"text": ""
 			},
 			{
 				"pagePath": "pages/forum/index",
-				"iconPath": "static/健康论坛.svg",
-				"selectedIconPath": "static/健康论坛.svg",
+				"iconPath": "static/健康论坛.png",
+				"selectedIconPath": "static/健康论坛.png",
 				"text": ""
 			},
 			{
 				"pagePath": "pages/center/index",
-				"iconPath": "static/个人中心.svg",
-				"selectedIconPath": "static/个人中心.svg",
+				"iconPath": "static/个人中心.png",
+				"selectedIconPath": "static/个人中心.png",
 				"text": ""
+			},
+			{
+				"pagePath": "pages/test/index",
+			 	"iconPath": "",
+			 	"selectedIconPath": "",
+			 	"text": "测试页"
 			}
-			// {
-			// 	"pagePath": "pages/test/index",
-			// 	"iconPath": "",
-			// 	"selectedIconPath": "",
-			// 	"text": "测试页"
-			// }
 		]	
 	}
 }
