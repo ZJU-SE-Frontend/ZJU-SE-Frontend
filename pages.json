@@ -66,6 +66,42 @@
 				"navigationBarTitleText": "登陆"
 			}
 		},
+        {
+            "path" : "pages/center/healthcode",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "健康码",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        {
+            "path" : "pages/center/register",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "用户注册",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        {
+            "path" : "pages/center/cgpswd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "修改密码",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        {
+            "path" : "pages/center/cginfo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "修改信息",
+                "enablePullDownRefresh": false
+            }
+            
+        },
 		{
 			"path": "pages/test/index",
 			"style": {
@@ -217,7 +253,8 @@
 				}
 			}
 		}
-	],
+    ],
+	
 	"globalStyle": {
 		"pageOrientation": "portrait",
 		"navigationBarTitleText": "健康导航",

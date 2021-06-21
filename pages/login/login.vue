@@ -13,6 +13,9 @@
 		<section>
 			<button type="button" @click="onLoginClicked">登陆</button>
 		</section>
+		<section>
+			<button type="button" @click="onRegister">注册账号</button>
+		</section>
 	</view>
 </template>
 
@@ -39,11 +42,12 @@
 			onLoginClicked(){
 				let t_name = this.userPhone
 				let t_pwd = this.password
-				this.title="登陆中"
+				this.title="登陆中..."
 				postLoginIn(t_name, t_pwd).then((res)=>{
 					if(res.st==0){
 						this.title="登陆成功\n"
 						getUserInfo(t_name).then((res)=>{
+							this.userInfo=res.data.userName
 							console.log(res.data);
 							this.login(res.data);
 							uni.navigateBack();
@@ -52,6 +56,11 @@
 					else if(res.st==1)
 						this.title="登陆失败"
 				});
+			},
+			onRegister(){
+				uni.navigateTo({
+					url:"../center/register"
+				})
 			},
 			...mapMutations(['login'])
 		}

@@ -3,15 +3,13 @@ import jwt_decode from "jwt-decode";
 
 import {
 	getEncryptedPassword
-} from "../common/encrypt.js";
+} from "../common/encrypt.js"
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = '';
 // #ifdef MP-WEIXIN
 axios.defaults.baseURL = 'http://121.41.94.85:5000';
 // #endif
-
-
 export function getJwtToken(){
 	let token = undefined
 	uni.getStorageInfo({
@@ -30,8 +28,8 @@ export function getJwtToken(){
 		}
 	});
 	return token;
-}
 
+  
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
 	let token = getJwtToken();
@@ -171,23 +169,20 @@ export function postLoginIn(userPhone, password) {
 	return fetchPost(`/api/login`, {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
-	});
+	}
+	console.log(data)
+	return fetchPost(`/api/login`, data = data);
 }
 
-export function postJoinIn(userPhone, userName, password, authType = 1, userEmail) {
+export function postJoinIn(userPhone, userName, password, authType = 1) {
 	var data = {
 		"userPhone": userPhone,
 		"userName": userName,
 		"password": getEncryptedPassword(password),
 		"authType": authType
 	}
-	if (userEmail !== undefined) {
-		data.userEmail = userEmail
-	}
 	return fetchPost(`/api/join`, data = data);
 }
-
-
 
 export function getCurrentUserPhone(){
 	let token = getJwtToken();
@@ -222,8 +217,6 @@ export function getUserInfo(userPhone){
 	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
 }
 
-
-
 /*电子病历模块API*/
 export function getPcase(id){
 	return fetchGet('/api/healthrecord/case/'+id)
@@ -234,6 +227,23 @@ export function getPdetail(phone,id){
 }
 
 
+
+export function getUserInfo(userPhone){
+	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
+}
+
+export function putchpwd(userPhone, password) {
+	var data = {
+		"password": getEncryptedPassword(password)
+	}
+	//console.log(data)
+	return fetchPut(`/api/user/chpwd/`+userPhone, data = data);
+}
+
+export function putchinfo(userPhone, data) {
+	console.log(data)
+	return fetchPut(`/api/user/chinfo/`+userPhone, data = data);
+}
 
 /*在线药房模块API*/
 export function getPharBoothList(cata, count){
