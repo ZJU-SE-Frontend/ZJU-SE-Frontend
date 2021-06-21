@@ -141,21 +141,21 @@ export function fetchPut(url, data) {
 	})
 }
 
-export function fetchDelete(url, data) {
-	console.log(data)
-	return new Promise((resolve, reject) => {
-		axios.delete(url, {data})
-			.then(response => {
-				console.log("responsed")
-				resolve(response.data)
-			}, err => {
-				reject(err)
-			})
-			.catch((error) => {
-				reject(error);
-			})
-	})
-}
+// export function fetchDelete(url, data) {
+// 	console.log(data)
+// 	return new Promise((resolve, reject) => {
+// 		axios.delete(url, {data})
+// 			.then(response => {
+// 				console.log("responsed")
+// 				resolve(response.data)
+// 			}, err => {
+// 				reject(err)
+// 			})
+// 			.catch((error) => {
+// 				reject(error);
+// 			})
+// 	})
+// }
 
 
 /*基本功能API*/
@@ -327,6 +327,295 @@ export function getAppointments_Cov(tel) {
 export function getReport_Cov(appoint_id) {
 	return fetchGet(`/api/exam/covid/report/`, appoint_id)
 }
+
+/* 健康论坛模块API */
+export function getAuthInfo(){
+	let token = jwt_decode(uni.getStorageSync('jwt'))
+	return token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+}
+
+export function getPostList(params) {
+	return fetchGet("/api/forum/post", params)
+}
+
+export function getPost(topicId) {
+	return fetchGet("/api/forum/post/" + topicId)
+}
+
+export function publicPost(params) {
+	return fetchPost("/api/forum/post", params)
+}
+
+export function addViewCnt(topicId) {
+	return fetchPut('/api/forum/post/addViewCnt/' + topicId)
+}
+ 
+export function getLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/post/like/' + topicId, params)
+}
+
+export function getReplyLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/post/reply/like/' + topicId, params)
+}
+
+export function postReplyLike(replyId, params) {
+	return fetchPost('/api/forum/post/reply/like/' + replyId, params)
+}
+
+export function postLike(topicId, params) {
+	return fetchPost("/api/forum/post/like/" + topicId, params)
+}
+
+export function fetchDelete(url, data) {
+	return new Promise((resolve, reject) => {
+		axios.delete(url, {data: data})
+		.then(response => {
+			console.log("responsed")
+			resolve(response.data)
+		}, err => {
+			reject(err)
+		})
+		.catch((error) => {
+			reject(error);
+		})
+	})
+}
+
+export function deletePost(topicId) {
+	const params = {
+		"title" : "",
+		"content" : ""
+	}
+	return fetchPut('/api/forum/post/' + topicId, params)
+}
+
+export function modifyPost(topicId, params) {
+	return fetchPut('/api/forum/post/' + topicId, params)
+}
+
+export function deleteLike(topicId, params) {
+	return fetchDelete("/api/forum/post/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function deleteReplyLike(replyId, params) {
+	return fetchDelete('/api/forum/post/reply/like/' + replyId + '?userPhone=' + params.userPhone)
+}
+
+export function getFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/post/favorite/' + topicId, params)
+}
+
+export function addToFavorite(topicId, params) {
+	return fetchPost("/api/forum/post/favorite/" + topicId, params)
+}
+
+export function removeFromFavorite(topicId, params) {
+	return fetchDelete("/api/forum/post/favorite/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function reportPostReply(replyId) {
+	return fetchPost('/api/forum/report/post/reply/' + replyId)
+}
+
+//只考虑个人页面中的信息显示，封装了参数
+
+export function getUserFavoritePost(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/post/favorite/user/"+userPhone,params)
+}
+
+export function getUserFavoriteQuestion(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/question/favorite/user/"+userPhone,params)
+}
+
+export function getUserFavoriteAnswer(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/answer/favorite/user/"+userPhone,params)
+}
+
+
+
+export function getUserPost(userPhone,pageSize,pageNo){
+	const params = {		
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/post/user/"+userPhone,params)
+}
+
+export function getUserQuestion(userPhone,pageSize,pageNo){
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/question/user/"+userPhone,params)
+}
+
+export function getUserAnswer(userPhone,pageSize,pageNo){
+	const params = {
+		'pageSize' : pageSize,
+		'pageNo' : pageNo
+	}
+	return fetchGet("/api/forum/qa/answer/user/"+userPhone,params)
+}
+
+export function getReportQaAnswer(params){
+	return fetchGet("/api/forum/report/qa/answer",params)
+}
+
+export function deleteReportQaAnswer(ansId){
+	return fetchDelete("/api/forum/report/qa/answer/"+ansId)
+}
+
+export function getReportQaReply(params){
+
+	return fetchGet("/api/forum/report/qa/answer/reply/",params)
+}
+
+export function reportQaReply(replyId) {
+	return fetchPost("/api/forum/report/qa/answer/reply/" + replyId)
+}
+
+export function deleteReportQaReply(replyId){
+	return fetchDelete("/api/forum/report/qa/answer/reply/" + replyId)
+}
+
+
+
+export function getTopicReplies(topicId, params) {
+	return fetchGet("/api/forum/post/reply/" + topicId, params)
+}
+
+export function publicReply(topicId, params) {
+	return fetchPost("/api/forum/post/reply/" + topicId, params)
+}
+
+export function editReply(replyId, params) {
+	return fetchPut("/api/forum/post/reply/" + replyId, params)
+}
+
+export function deleteReply(replyId) {
+	return fetchDelete("/api/forum/post/reply/" + replyId)
+}
+
+export function getRecommendedAnswers(params) {
+	return fetchGet('/api/forum/qa/recommended', params)
+}
+
+export function getQuestionList(params) {
+	return fetchGet("/api/forum/qa/question", params)
+}
+
+export function getQuestion(questionId) {
+	return fetchGet("/api/forum/qa/question/" + questionId)
+}
+
+export function publicQuestion(params) {
+	return fetchPost("/api/forum/qa/question", params)
+}
+
+export function addQaViewCnt(topicId) {
+	return fetchPut('/api/forum/qa/question/addViewCnt/' + topicId)
+}
+
+export function getQaLikeInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/answer/like/user/' + topicId, params)
+}
+
+export function postQaLike(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/like/" + topicId, params)
+}
+
+export function getQaReplyLikeInfo(topicId, params) {
+	return fetchGet("/api/forum/qa/answer/reply/like/user/" + topicId, params)
+}
+
+export function postQaReplyLike(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/reply/like/" + topicId, params)
+}
+
+export function deleteQaReplyLike(topicId, params) {
+	return fetchDelete("/api/forum/qa/answer/reply/like/" + topicId + "?userPhone=" + params.userPhone)
+}
+
+export function deleteQaLike(topicId, params) {
+	return fetchDelete("/api/forum/qa/answer/like/" + topicId +'?userPhone=' + params.userPhone)
+}
+
+export function getQaFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/question/favorite/' + topicId, params)
+}
+
+export function addToQaFavorite(topicId, params) {
+	return fetchPost("/api/forum/qa/question/favorite/" + topicId, params)
+}
+
+export function removeFromQaFavorite(topicId, params) {
+	return fetchDelete("/api/forum/qa/question/favorite/" + topicId, params)
+}
+
+export function addToQaAnswerFavorite(topicId, params) {
+	return fetchPost('/api/forum/qa/answer/favorite/' + topicId, params)
+}
+
+export function removeFromQaAnswerFavorite(topicId, params) {
+	return fetchDelete('/api/forum/qa/answer/favorite/' + topicId + '?userPhone=' + params.userPhone)
+}
+
+export function getQaAnswerFavoriteInfo(topicId, params) {
+	return fetchGet('/api/forum/qa/answer/favorite/' + topicId, params)
+}
+
+export function getAnswer(answerId, params) {
+	return fetchGet("/api/forum/qa/answer/" + answerId, params)
+}
+
+export function getAnswerContent(answerId) {
+	return fetchGet("/api/forum/qa/answer/content/" + answerId)
+}
+
+export function deleteAnswer(questionId) {
+	return fetchDelete("/api/forum/qa/answer/" + questionId)
+}
+
+export function recommendAnswer(answerId) {
+	return fetchPost("/api/forum/qa/recommended/" + answerId)
+}
+
+export function publicAnswer(questionId, params) {
+	return fetchPost("/api/forum/qa/answer/" + questionId, params)
+}
+
+export function addAnswerViewCnt(questionId) {
+	return fetchPut('/api/forum/qa/answer/addViewCnt/' + questionId)
+}
+
+export function getQaTopicReplies(topicId, params) {
+	return fetchGet("/api/forum/qa/answer/reply/" + topicId, params)
+}
+
+export function publicQaReply(topicId, params) {
+	return fetchPost("/api/forum/qa/answer/reply/" + topicId, params)
+}
+
+export function deleteQaReply(topicId) {
+	return fetchDelete("/api/forum/qa/answer/reply/" + topicId)
+}
+
+export function reportQaAnswer(topicId) {
+	return fetchPost("/api/forum/report/qa/answer/" + topicId)
+}
+
 export function getdepart(hos){
 	return fetchGet("/api/appointment/patient/department/"+hos)
 }
@@ -346,6 +635,7 @@ export function getdoctor(hosp,dep){
 	}
 	return fetchGet("/api/appointment/patient/doctorList",params)
 }
+  
 export function insert_record(phone1,phone2,date,sec){
 	const params = {
 		  "patientPhone": phone1,

@@ -39,8 +39,86 @@
 		{
 			"path": "pages/forum/index",
 			"style": {
-				"navigationBarTitleText": "健康论坛"
+				"navigationBarTitleText": "健康论坛",
+				 "enablePullDownRefresh": false
 			}
+		},
+		{
+		    "path" : "pages/forum/createPost",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "发帖",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/editPost",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "编辑贴子",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createQuestion",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "提问",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+			"path": "pages/forum/contentPost",
+			"style": {
+				"navigationBarTitleText": "贴子",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/forum/contentQa",
+			"style": {
+				"navigationBarTitleText": "问题",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/forum/contentQaReply",
+			"style": {
+				"navigationBarTitleText": "回答",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+		    "path" : "pages/forum/createReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "回复",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/editReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "编辑回复",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createAnswer",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "回答",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/forum/createQaReply",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "回复",
+		        "enablePullDownRefresh": false
+		    }
 		},
 		{
 			"path": "pages/center/index",
