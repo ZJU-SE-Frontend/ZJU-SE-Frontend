@@ -19,6 +19,8 @@ const store = new Vuex.Store({
 			state.uerInfo.userHeight = provider.userHeight
 			state.uerInfo.userWeight = provider.userWeight
 			state.uerInfo.userGender = provider.userGender
+			state.uerInfo.socnum=provider.socialNum
+			state.uerInfo.healthcode=provider.healthCode
 			uni.setStorage({
 				key: 'uerInfo',
 				data: provider

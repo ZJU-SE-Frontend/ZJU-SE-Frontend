@@ -4,13 +4,12 @@
              <view class="list-title">
  
               <view class="list-text">
-                    <text class="title">病案号：{{id}}\n时间：{{createTime}}</text>
+                  <text class="title">病案号：{{id}}\n时间：{{createTime}}</text>
                   <text class="content">主治医师：{{doctorName}}\n联系方式：{{doctorPhone}}</text>
 				  <text class="content">就诊医院：{{hospital}}</text>
-				  <text class="content">诊断结果：{{caseResult}}</text>
-				  <text class="content">诊断费用：{{cost}}</text>
-				  <text class="content">诊断药物：{{medicine}}</text>
-              </view>
+				  <text class="content">诊断信息:\n1、诊断结果：{{caseResult}}\n2、诊断费用：{{cost}}\n3、诊断药物：{{medicine}}</text>
+                  <text class="content">手术信息：{{operation}}</text>
+			  </view>
              </view>
           
        </view>
@@ -31,6 +30,7 @@
 				cost: 0,
 				medicine: "",
 				createTime: 0,
+				operation:""
 			}
 		},
 		onLoad:function(option) {
@@ -45,6 +45,7 @@
 				this.cost=res.data.cost
 				this.medicine=res.data.medicine
 				this.createTime=res.data.createTime
+				this.operation=res.data.operInfo
 			})
 			
 		},

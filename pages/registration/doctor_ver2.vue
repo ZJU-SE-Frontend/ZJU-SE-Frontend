@@ -10,16 +10,15 @@
 			</swiper>
 		</uni-swiper-dot>
 		<!-- 挂普通号-->
-		{{iinfo}}
 		<view class = "common">
 			<uni-card  class = "uni-cards"  >
 				<view class="content-box">
 					<text class="content-box-position">
 						<text class="iconfont icon-wenzhen"></text>
-						普通门诊
+						普通门诊(正在开发)
 					</text>
 				</view>
-			<view class = "discription" @click="showModal = true;iinfo = nn;">
+			<view class = "discription" @click="show">
 				<view class="image-box">
 					<image class="images" mode="aspectFill" src="/static/doctor.png" style = "zoom:20%;border: 5px solid #ddd;border-radius:30rpx;">
 				</view>
@@ -33,27 +32,30 @@
 
 			</uni-card>
 		</view>
-		<view v-if = "showModal" class = "pop" @click = "gui">
+		<view v-if = "showModal" class = "pop" >
 			<view class="uni-list" style = "height:10%;width:100%;">
 				<view class="uni-list-cell">
 					<view class="uni-list-cell-left">
 						当前选择
 					</view>
 					<view class="uni-list-cell-db">
-						<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-							<view class="uni-input" >{{date}}</view>
+						<picker mode="multiSelector" @change="cha" @columnchange="bindMultiPickerColumnChange" :value="multiIndex" :range="multiArray">
+							<view class="uni-input">{{multiArray[0][multiIndex]}}</view>
 						</picker>
 					</view>
 				</view>
 			</view>
-			<picker-view style = "height:70%;width:100%;"v-if="visible" :indicator-style="indicatorStyle" :value="value" @change="bindChange">
-			    <picker-view-column>
-			        <view class="item" v-for="(item,index) in array_time" :key="index" style="color:#000000;">{{item.times}}余量为{{item.num}}</view>
-			    </picker-view-column>
-			</picker-view>
+			<view  class = "choo">
+					<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y2" @scrolltoupper="upper" @scrolltolower="lower"
+					@scroll="scroll">
+					<view class = "scroll-view-item">
+						<uni-tag :inverted="item.t" :disabled="item.t" :text="item.show" :type="item.state" @click="ajp(item.times,item.ind)" size="small" v-for = "(item,index) in array_time" class = "trt" />
+					</view>
+					</scroll-view>
+			</view>
 			<view class="button-sp-area">
-				<view class="tag-view" >
-					<uni-tag :inverted="true" text="选择" type="success" @click="ajp" size="small"/>
+				<view class="tag-view2" >
+					<uni-tag :inverted="true" text="取消" type="warning" @click="showModal =false;" size="small"/>
 				</view>
 			</view>
 		</view>
@@ -68,7 +70,7 @@
 			<view  class="infos" >
 				<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
 				@scroll="scroll">
-					<view v-for ="item in array" @click="showModal = true;iinfo = item.doctorName;" class = "info-box">
+					<view v-for ="item in array" @click="show2(item.doctorName,item.doctorPhone,$event)" class = "info-box" v-if = "item.doctorName!=nn">
 						<view class="image-box-experts">
 							<image class="images" mode="aspectFill" src="/static/doctor.png" />
 						</view>
@@ -78,7 +80,6 @@
 								<text>{{item.doctorInfo}}</text>
 								<text>￥15</text>
 							</view>
-							
 						</view>
 					</view>
 				</scroll-view>
@@ -88,10 +89,15 @@
 	</view>
 </template>
 
+/*
+任务：
+目前，可以选择新的日期，但是如何在选择新的日期之后立刻刷新余量等
+开放更多的时间段
+*/
 <script>
 	import {getStatic, getPharBoothList, getPharBoothDetail, postLoginIn, postJoinIn, getUserInfo} from "../../fetch/api.js"
 	import {getEncryptedPassword} from "../../common/encrypt.js"
-	import { getdoctor } from "../../fetch/api.js"
+	import { getdoctor,insert_record,getRemainder,getCurrentUserPhone} from "../../fetch/api.js"
 	function getDate(type) {
 		const date = new Date();
 	
@@ -100,9 +106,9 @@
 		let day = date.getDate();
 	
 		if (type === 'start') {
-			year = year - 10;
+			year = year;
 		} else if (type === 'end') {
-			year = year + 10;
+			year = year;
 		}
 		month = month > 9 ? month : '0' + month;;
 		day = day > 9 ? day : '0' + day;
@@ -124,10 +130,10 @@
 			    years.push(i)
 			}*/
 			//years.push(date.getFullYear());
-			/*
-			for (let i = month; i <= ; i++) {
+			
+			for (let i = month; i <=month ; i++) {
 			    months.push(i)
-			}*/
+			}
 			
 			for (let i = 1; i <= 31; i++) {
 			    days.push(i)
@@ -141,50 +147,172 @@
 					scrollTop: 0
 				},
 				iinfo:'',
+				dates:'',
 				nn:'普通号',
 				time_id:'8:00 - 9:00',
 				array:[
 				],
+				now_hour:0,
+				indexss:'',
+				userphone:'',
+				choose_phone:'',
+				time:{
+					times:'',
+					num:0,
+					ind:''
+				},
+				/***********************/
+				multiArray: [
+					['周一', '测占位']
+				],
+				num:0,
+				multiIndex: [0, 0, 0],
+				datt:[],
+				/***********************/
 				array_time:[
 					{
 						times : '8:00 - 9:00',
-						num :'5'
+						num :'5',
+						ind:'0',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times : '9:00 - 10:00',
-						num:'6'
+						num:'6',
+						ind:'1',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times : '10:00 - 11:00',
-						num :'7'
+						num :'7',
+						ind:'2',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times : '11:00 - 12:00',
-						num:'8'
+						num:'8',
+						ind:'3',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times :'12:00 - 13:00',
-						num:'4'
+						num:'4',
+						ind:'4',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times:'13:00 - 14:00',
-						num:'4'
+						num:'4',
+						ind:'5',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times:'14:00 - 15:00',
-						num:'4'
+						num:'4',
+						ind:'6',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times:'15:00 - 16:00',
-						num:'4'
+						num:'4',
+						ind:'7',
+						ins:'0',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times:'16:00 - 17:00',
-						num:'4'
+						num:'4',
+						ind:'8',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					},
 					{
 						times:'17:00 - 18:00',
-						num:'4'
+						num:'4',
+						ind:'9',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'18:00 - 19:00',
+						num:'4',
+						ind:'10',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'19:00 - 20:00',
+						num:'4',
+						ind:'11',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'20:00 - 21:00',
+						num:'4',
+						ind:'12',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'21:00 - 22:00',
+						num:'4',
+						ind:'13',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'22:00 - 23:00',
+						num:'4',
+						ind:'14',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
+					},
+					{
+						times:'23:00 - 24:00',
+						num:'4',
+						ind:'15',
+						ins:'-1',
+						t:'false',
+						state:'success',
+						show:''
 					}
 				],
 				info: [{
@@ -228,7 +356,9 @@
 				modeIndex: -1,
 				styleIndex: -1,
 				current: 0,
+				section:'0',
 				mode: 'default',
+				state:0,
 				dotsStyles: {},
 				//处理日期选择
 				date: getDate({
@@ -253,11 +383,141 @@
 			}
 			return false
 		},
-		created :{
-		},
 		methods :{
 			change(e) {
 				this.current = e.detail.current
+			},
+			cha:function(e){
+				this.multiIndex = this.num;
+				this.date = this.datt[this.num];
+				
+				var p = this.innfo;
+				var q = this.choose_phone;
+				var phone  = q;
+				var inn = p;
+				
+				var new_str = this.date;
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
+				this.dates = datum.getTime()/1000;
+				
+				var dd = this.dates;
+				var j = 0;
+				var h = this.now_hour;
+				var sec = 0;
+				var d = this.date;
+				var flag = 0;
+				if(this.num!=0) flag = 1;
+				
+				function conp(item, index) {
+					getRemainder(phone,dd,index).then((res)=>{
+						item.num =30-res.data.appointNum;
+						item.show = item.times + "余量 "+("" + item.num) + "/30";
+						if (item.num <=0 || (item.ind<h&&flag == 0) ){
+							//item.t = 'true';
+							item.state = "error";
+						}
+						else if(item.num<=2 && item.num>0){
+							item.state = "warning";
+							item.t = 'false';
+						}
+						else{
+							item.state = "success";
+							item.t = 'false';
+						}
+					})
+				}
+				this.array_time.forEach(conp);
+				///this.section = sec;
+			},
+			bindMultiPickerColumnChange: function(e) {
+				this.num = e.detail.value;
+				//this.multiIndex = e.detail.value;
+			},
+			show(e){
+				this.showModal = true;
+				this.iinfo = "普通号";
+				this.choose_phone = "00000000000";
+				//this.choose_phone = q;
+				const val = e.detail.value;
+				//console.log(val);
+				var new_str = this.date;
+				
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
+				this.dates = datum.getTime()/1000;
+				var dd = this.dates;
+				var j = 0;
+				var h = this.now_hour;
+				new_str = new Date().toISOString().slice(0, 10);
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
+				var ddd = datum.getTime()/1000;
+				var sec = 0;
+				for (var i = 0;i<=9;i++)
+				{
+					if(this.array_time[i].ind<h && ddd == dd){
+						this.array_time[i].t = 'true';
+						this.array_time[i].state = "error";
+					}
+					else{
+						this.array_time[i].state = "success";
+						this.array_time[i].t = 'false';
+					}
+				}
+			},
+			show2(p,q,e){
+				this.showModal = true;
+				this.iinfo = p;
+				this.choose_phone = q;
+				var phone  = q;
+				var inn = p;
+				const val = e.detail.value;
+				//console.log(val);
+				var new_str = this.date;
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],0,0,0));
+				this.dates = datum.getTime()/1000;
+				var dd = this.dates;
+				var j = 0;
+				var h = this.now_hour;
+				var sec = 0;
+				var d = this.date;
+				var flag = 0;
+				if(this.num!=0) flag = 1;
+				new_str = new Date().toISOString().slice(0, 10);
+				new_str = new_str.replace(/ /g,'-');
+				var arr = new_str.split("-");
+				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
+				var ddd = datum.getTime()/1000;
+				console.log(this.date);
+				function conp(item, index) {
+					getRemainder(phone,dd,index).then((res)=>{
+						item.num =30-res.data.appointNum;
+						item.show = item.times + "余量 "+("" + item.num) + "/30";
+						if (item.num <=0 || (item.ind<h&&flag == 0) ){
+							item.t = 'true';
+							item.state = "error";
+						}
+						else if(item.num<=2 && item.num>0){
+							item.state = "warning";
+							item.t = 'false';
+						}
+						else{
+							item.state = "success";
+							item.t = 'false';
+						}
+					})
+				}
+				this.array_time.forEach(conp);
+				///this.section = sec;
+			},
+			onChange(e){
+				this.section= e;
 			},
 			upper: function(e) {
 			},
@@ -266,13 +526,17 @@
 			scroll: function(e) {
 				this.old.scrollTop = e.detail.scrollTop
 			},
-			gui()
-			{
-				this.showModal = false;
-			},
-			bindChange (e) {
+			bindChange(e) {
 			    const val = e.detail.value
-				this.time_id = this.array_time[val[0]].times;
+				console.log(val[0]);
+				for (var i=0;i<=9;i++)
+				{
+					if(this.array_time[i].ins == val[0]){
+						this.time_id = this.array_time[i].times;
+						this.section = this.array_time[i].ind;
+					}
+				}
+				console.log(this.time_id);
 			},
 			bindDateChange: function(e) {
 				this.date = e.detail.value
@@ -290,37 +554,169 @@
 			clickItem(e) {
 				this.swiperDotIndex = e
 			},
-			ajp:function(){
-				uni.showModal({
-				    title: '预约成功',
-				    content: '恭喜你成功预约'+this.iinfo+'医生的'+this.time_id+'时间段~',
-				    success: function (res) {
-				        if (res.confirm) {
-				            console.log('用户点击确定');
-							
-							/*
-							uni.navigateTo({//跳转页面
-								url:"/pages/registration/index"
-							});*/
-							
-							uni.switchTab({
-							       url: '/pages/registration/index'
-							});
-				        } else if (res.cancel) {
-				            console.log('用户点击取消');
-				        }
-				    }
-				});
+			ajp(p,q){
+				/*
+				生成预约记录并插入
+				*/
+			   var new_str = this.date;
+			   var ddddd = this.date;
+			   new_str = new_str.replace(/ /g,'-');
+			   var arr = new_str.split("-");
+			   var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
+			   this.dates = datum.getTime()/1000;
+			   this.time_id = p;
+			   this.section = q;
+			   console.log(123);
+			   var ph = this.userphone.user_phone;
+			   var ph2 = this.choose_phone;
+			   var se = this.section;
+			   var da = this.dates;
+			   var st = 0;
+			   var doc = this.iinfo;
+			   var time = this.time_id;
+			   uni.showModal({
+				   title: '确认预约',
+				   content: '您确定预约'+doc+'医生'+ddddd+'日的'+time+'时间段?',
+				   cancelText: "取消", // 取消按钮的文字  
+				   success: function (res) {
+					   if (res.confirm) {
+						   insert_record(ph,ph2,da,se).then((res)=>{
+						   	st=res.st
+						   })
+						   if(st == 0){
+							   uni.showModal({
+								   title: '预约成功',
+								   content: '恭喜你成功预约'+doc+'医生的'+time+'时间段~',
+								   cancelText: "详情", // 取消按钮的文字  
+								   success: function (res) {
+									   if (res.confirm) {
+										   console.log('用户点击确定');
+										
+										/*
+										uni.navigateTo({//跳转页面
+											url:"/pages/registration/index"
+										});*/
+										
+										uni.switchTab({
+											   url: '/pages/registration/index'
+										});
+									   } else if (res.cancel) {
+										   uni.navigateTo({//跳转页面
+											url:"/pages/registration/show"
+										   });
+									   }
+								   }
+							   });
+							}
+							else{
+								uni.showToast({
+									title: "预约失败",
+								});
+							}
+					   } else if (res.cancel) {
+					   }
+				   }
+			   });
+			},
+			mGetDate:function(year,month){
+				var d = new Date(year, month, 0);
+				return d.getDate();
 			}
-			
 		},
 		onLoad(option){
 			this.hospital = JSON.parse(decodeURIComponent(option.hospital));
+			//console.log("完成1");
 			this.room_sub = JSON.parse(decodeURIComponent(option.room));
+			//console.log("完成2");
+			this.userphone = getCurrentUserPhone();
+			//console.log("完成3");
+			
 			getdoctor(this.hospital,this.room_sub).then((res)=>{
 				this.array=res.data.doctorList
 			})
+			//console.log("完成4");
+			
+			var myDate = new Date();
+			this.now_hour = myDate.getHours(); //获取当前小时数(0-23)
+			this.now_hour = this.now_hour - 8;
+			this.section = this.now_hour + 1;
+		},
+		created:function(){
+			var arr = [];
+			var dats = [];
+			var dates = new Date;
+			var year = dates.getFullYear();
+			var mouth = dates.getMonth()+1;
+			var day = dates.getDate();
+			var strds = "周" + "日一二三四五六".charAt(new Date().getDay());
+			console.log(strds);
+			if(mouth<10){
+				mouth = '0'+mouth
+			}
+			if(day<10){
+				day = '0'+day
+			}
+			var str = strds+":"+year+'-'+mouth+'-'+day;
+			var index = 0;
+			var strm;
+			var strd;
+			var d = this.mGetDate(year,mouth);
+			
+			if (d - day<6){//此时这一个月内不足7天
+				arr.push(d-day);
+				arr.push(6-(d-day));
+			}
+			else
+				arr.push(7);
+			for(var j =0; j<arr.length;j++){
+				for(var x = 0;x<arr[j];x++){
+					if(j==0){//此时，日期需要加上当前日期
+						strm = parseInt(j+mouth)
+						if(parseInt(j+mouth)<=9){
+							strm = '0'+parseInt(j+mouth)
+						}
+						strd = parseInt(x+day)
+						if(parseInt(x+day)<9){
+							strd = '0'+parseInt(x+1)
+						}
+						dats.push(year+'-'+strm+'-'+strd)
+					}
+					else if(j==1){
+						strm = parseInt(j+mouth)
+						if(parseInt(j+mouth)<=9){
+							strm = '0'+parseInt(j+mouth)
+						}
+						strd = parseInt(x+1)
+						if(parseInt(x+1)<9){
+							strd = '0'+parseInt(x+1)
+						}
+						dats.push(year+'-'+strm+'-'+strd)
+					}
+					
+				}
+			}
+			this.datt = dats;       
+			// index 为当前日期所对应的下标。
+			var zm = [];
+			for(var z = 0;z<dats.length;z++){
+				var strdz = "周" + "日一二三四五六".charAt(new Date(dats[z]).getDay());
+				zm.push(strdz+":"+dats[z])
+			}
+			// this.multiArray[0] = dats // dats 为没有星期几的日期
+			this.multiArray[0] = zm // dats 为没有星期几的日期
+			console.log(zm)
+			var flag = 0;
+			for(var i=0;i<zm.length;i++){
+				if(str == zm[i] ){
+					index = i;
+					console.log("位置",i);
+					flag = 1;
+				}
+			}
+			if(flag == 0) console.log('没有');
+			this.multiIndex = index
 		}
+		
 	}
 </script>
 
@@ -343,12 +739,11 @@
 		flex-direction: column;
 		box-sizing: border-box;
 		background-color: #efeff4;
-		min-height: 100%;
-		height: auto;
+		height: 100%;
 	}
 	.content {
 		width:100%;
-		height:auto;
+		height:100%;
 	}
 
 	view {
@@ -438,7 +833,7 @@
 	@media screen and (min-width: 500px) {
 		.uni-swiper-dot-box {
 			width: 100%;
-			height:auto;
+			height:30%;
 			margin: 0 auto;
 			margin-top: 8px;
 		}
@@ -570,7 +965,7 @@
 	.content-experts{
 		padding-left:20rpx;
 		padding-top:20rpx;
-		height:20%;
+		height:5%;
 	}
 	.content-experts-text{
 		font-size: 25rpx;
@@ -637,7 +1032,7 @@
 		height:100%;
 		position:absolute;
 		top:10%;
-		left:60%;
+		left:50%;
 	}
 	picker-view {
 	    width: 100%;
@@ -682,7 +1077,7 @@
 	}
 	.common{
 		font-size:14rpx;
-		height:200rpx;
+		height:20%;
 		width:100%;
 		padding-top:20rpx;
 		padding-left:30rpx;
@@ -693,23 +1088,37 @@
 	}
 	.experts{
 		font-size:14rpx;
-		height:1000rpx;
+		height:60%;
 		width:100%;
 	}
 	.infos{
-		height:80%;
+		height:40%;
 		width:100%;
 	}
 	.scroll-Y {
-		height:750rpx;
+		height:100%;
 		width:100%;
+	}
+	.scroll-Y2 {
+		height:100%;
+		width:80%;
+		padding-left:15%;
 	}
 	
 	.scroll-view-item {
-		height: 100rpx;
-		line-height: 100rpx;
+		height: 15%;
 		text-align: center;
 		font-size: 25rpx;
+		width:100%;
+		padding-top:10%;
+	}
+	.trt{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding-top:30rpx;
+		width:80%;
+		font-size:10rpx;
 	}
 	.info-box{
 		height:30%;
@@ -742,15 +1151,44 @@
 		flex-direction: column;
 		padding-left:20rpx;
 	}
-	.tag-view {
+	.tag-view1 {
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
 		flex-direction: column;
 		justify-content: center;
 		padding-top:30rpx;
-		width:30%;
-		left:35%;
+		width:20%;
+		left:25%;
+		font-size:10rpx;
+		position: fixed;
+	}
+	.choo{
+		display: flex;
+		flex-direction: column;
+		height:75%;
+		width:100%;
+	}
+	.tag-view_choose {
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		justify-content: center;
+		padding-top:30rpx;
+		padding-left:10%;
+		width:80%;
+		font-size:10rpx;
+	}
+	.tag-view2 {
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		justify-content: center;
+		padding-top:30rpx;
+		width:20%;
+		left:41%;
 		font-size:10rpx;
 		position: fixed;
 	}

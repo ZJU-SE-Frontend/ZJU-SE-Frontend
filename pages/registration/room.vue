@@ -40,7 +40,7 @@
 
 <script>
 	import { getdepart,getsubdep } from "../../fetch/api.js"
-	
+	var re ='';
 	export default {
 		
 		data() {
@@ -50,6 +50,8 @@
 				room_sub:'',
 				clickFlag: 0,
 				scrollTop: 0,
+				phoneHeight:0,
+				now:'',
 				roomer:'',
 				old: {
 					scrollTop: 0
@@ -99,14 +101,26 @@
 			
 		},
 		onLoad(option){   
+			let _this = this;
+		
+			uni.getSystemInfo({ 	//异步获取。
+				success(res) {
+					_this.phoneHeight = res.windowHeight;//窗口高度
+				}
+			});
 			this.hospital = JSON.parse(decodeURIComponent(option.hospital));
 			this.position = JSON.parse(decodeURIComponent(option.pos));
+			
 			getdepart(this.hospital).then((res)=>{
 				this.room_array=res.data.departmentList
+				this.now = this.room_array[0]
+				getsubdep(this.now,this.hospital).then((res)=>{
+					this.subroom=res.data.subdepartmentList
+				})
+				console.log(this.now)
+				re = this.room_array[0]
 			})
-			getsubdep("儿科",this.hospital).then((res)=>{
-				this.subroom=res.data.subdepartmentList
-			})
+			
 		}
 	}
 </script>
@@ -130,8 +144,7 @@
 		flex-direction: column;
 		box-sizing: border-box;
 		background-color: #efeff4;
-		min-height: 100%;
-		height: auto;
+		height: 100%;
 	}
 
 	view {
@@ -170,7 +183,7 @@
 	  background: rgba(255,255,255,0.7);
 	}
 	.pagess {
-		height:1000rpx;
+		height:100%;
 		width:100%;
 	}
 
@@ -211,19 +224,20 @@
 		display: flex;
 		flex-direction: row;
 		width:100%;
+		height:80%;
 	}
 	.roomm{
-		height:750rpx;
+		height:100%;
 		width:40%;
 		background: rgba(180,180,180,0.5);
 	}
 	.subroom{
-		height:750rpx;
+		height:100%;
 		width:60%;
 		background: -webkit-linear-gradient(top, rgba(255,255,255,0.6),rgba(212,252,121,0.1), rgba(255,255,255,0.8)) no-repeat;
 	}
 	.scroll-Y {
-		height:750rpx;
+		height:100%rpx;
 		width:100%;
 	}
 	
