@@ -393,7 +393,7 @@
 				"text": ""
 			},
 			{
-				"pagePath": "pages/forum/index",
+				"pagePath": "pages/pharmacy/orders",
 				"iconPath": "static/健康论坛.png",
 				"selectedIconPath": "static/健康论坛.png",
 				"text": ""
