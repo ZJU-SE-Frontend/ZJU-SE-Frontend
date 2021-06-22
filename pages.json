@@ -403,13 +403,13 @@
 				"iconPath": "static/个人中心.png",
 				"selectedIconPath": "static/个人中心.png",
 				"text": ""
-			},
-			{
+			}
+			/*{
 				"pagePath": "pages/test/index",
 			 	"iconPath": "",
 			 	"selectedIconPath": "",
 			 	"text": "测试页"
-			}
+			}*/
 		]	
 	}
 }
