@@ -48,6 +48,7 @@
 						this.title="登陆成功\n"
 						getUserInfo(t_name).then((res)=>{
 							this.userInfo=res.data.userName
+							console.log("res")
 							console.log(res.data);
 							this.login(res.data);
 							uni.navigateBack();

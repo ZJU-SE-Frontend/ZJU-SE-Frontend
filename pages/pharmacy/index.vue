@@ -54,6 +54,7 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
 	import shopcart from './components/shopcart.vue';
 	import cartcontrol from './components/cartcontrol.vue'
 	import {getStatic} from '../../fetch/api.js'
@@ -266,13 +267,21 @@
 				})
 			},
 			createOrder() {
-				var inCarts=this.getList();
-				if (inCarts.length == 0)
-				 {
-					 return;
-				 }
-				var jsonObj = JSON.stringify(inCarts);
-				uni.navigateTo({url: 'order?data='+jsonObj});
+				if(store.state.hasLogin != false){
+					var inCarts=this.getList();
+					if (inCarts.length == 0)
+					 {
+						 return;
+					 }
+					var jsonObj = JSON.stringify(inCarts);
+					uni.navigateTo({url: 'order?data='+jsonObj});
+				}
+				else{
+					uni.showToast({
+						title:"请先登录",
+						icon:"none"
+					});
+				}
 			},
 			onItemClicked(index, index2) {
 				let id=0;
