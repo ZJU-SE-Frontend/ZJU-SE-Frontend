@@ -42,6 +42,7 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
 	import {
 		getStatic, getPharOrderList, getPharOrderDetail, getPharBoothDetail
 	} from "../../fetch/api.js"
@@ -269,7 +270,7 @@
 			}
 		},
 		onLoad: function(option) {
-			getPharOrderList("13777777777").then((res)=>{
+			getPharOrderList(store.state.uerInfo.userPhone).then((res)=>{
 					var found = false;
 					getPharOrderDetail(res.data[0].orderId).then((resp)=>{
 						for(var i = 0; i < resp.data.length; i++)
@@ -312,23 +313,9 @@
 							}
 							found = true;
 						})
-						
-						
-						
-								
-							
 						}
-						
-						
 					})
-						
-					// }
-				// })
-				
 			})
-			
-			
-
 			this.showlist = this.data_list;
 		}
 	}

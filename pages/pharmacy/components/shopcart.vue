@@ -5,7 +5,7 @@
 			<view class="carIcon">
 				<view class="iconBox" :class="getAllCount ? 'active' : '' ">
 					<text class="allcount" v-if="getAllCount">{{getAllCount}}</text>
-					<image src="https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/cart.png" mode="" class="img"></image>
+					<image src="https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/cart.png" mode="" class="img" @click="orders()"></image>
 				</view>
 			</view>
 			<view class="middle">
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
 	import cartcontrol from './cartcontrol.vue'
 	// import {mul} from '@/utils/lib'
 	export default {
@@ -132,8 +133,20 @@
 			},
 			test(item){
 				this.$emit('test')
+			},
+			orders(){
+				if(store.state.hasLogin != false){
+					uni.navigateTo({
+						url: 'orders'
+					})
+				}
+				else{
+					uni.showToast({
+						title:"请先登录",
+						icon:"none"
+					});
+				}
 			}
-
 		},
 	}
 </script>
