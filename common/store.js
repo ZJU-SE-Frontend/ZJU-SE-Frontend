@@ -16,6 +16,7 @@ const store = new Vuex.Store({
 			state.uerInfo.userEmail = provider.userEmail
 			state.uerInfo.userIDNumber = provider.userIDNumber
 			state.uerInfo.userPhone = provider.userPhone
+			state.uerInfo.authType = provider.authType
 			state.uerInfo.userHeight = provider.userHeight
 			state.uerInfo.userWeight = provider.userWeight
 			state.uerInfo.userGender = provider.userGender

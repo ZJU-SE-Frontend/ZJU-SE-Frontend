@@ -14,7 +14,7 @@
 			<text class="content">{{localContent4}}</text>
 		</view>
 		<section>
-			<button type="button" @click="onLoadLocalClicked">加载本地数据</button>
+			<button type="button" @click="onLoadLocalClicked">加载用户数据</button>
 		</section>
 		<view class="text-area">
 			<text class="status">{{remoteStatus}}</text>
@@ -22,20 +22,12 @@
 		<section>
 			<button type="button" @click="onLoadRemoteClicked">加载远程数据</button>
 		</section>
-		<view class="text-area">
-			<text class="text" style="text-align:center">{{loginStatus}}</text>
-		</view>
-		<view class="text-area">
-			<text class="text" style="text-align:center">{{userInfo}}</text>
-		</view>
-		<section>
-			<button type="button" @click="onLoginClicked">登陆测试用户</button>
-		</section>
 	</view>
 </template>
 
 <script>
-	import {postLoginIn, postJoinIn, getUserInfo, deleteAppointment, getCurrentUserPhone, getCurrentUserName, getCurrentUserRole, getCurrentUserExpireTime} from "../../fetch/api.js"
+	import {postLoginIn, postJoinIn, getUserInfo, deleteAppointment, getCurrentUserExpireTime} from "../../fetch/api.js"
+	import store from "@/common/store.js"
 	import {getEncryptedPassword} from "../../common/encrypt.js"
 	export default {
 		data() {
@@ -55,28 +47,24 @@
 		},
 		methods: {
 			onLoadLocalClicked(){
-				this.localContent1 = getCurrentUserPhone()
-				this.localContent2 = getCurrentUserName()
-				this.localContent3 = getCurrentUserRole()
-				this.localContent4 = getCurrentUserExpireTime()
+				if(store.state.hasLogin){
+					this.localContent1 = store.state.uerInfo.userPhone
+					this.localContent2 = store.state.uerInfo.userName
+					this.localContent3 = store.state.uerInfo.authType
+					this.localContent4 = getCurrentUserExpireTime()
+				}
+				else{
+					uni.showToast({
+						icon:"none",
+						title:"您未登录"
+					})
+				}
 			},
 			onLoadRemoteClicked(){
 				deleteAppointment("18888888888", new Date('2021-06-11 00:00:00'), 9).then((res)=>{
 					this.remoteStatus=res.st
 					console.log(res)
 				})
-			},
-			onLoginClicked(){
-				postLoginIn("18888888888", "123456789").then((res)=>{
-					if(res.st==0){
-						this.loginStatus="登陆成功\n"
-						getUserInfo("18888888888").then((res)=>{
-							this.userInfo=res.data.userName
-						})
-					}
-					else if(res.st==1)
-						this.loginStatus="登陆失败"
-				});
 			}
 		}
 	}
