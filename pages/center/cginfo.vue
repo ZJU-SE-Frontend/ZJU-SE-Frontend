@@ -20,6 +20,15 @@
 			<input class="uni-input"  placeholder="年龄" v-model="userAge"></input>
 		</section>
 		<section>
+			<select v-model="selected"  style="width:200px;height:40px;">
+			  <option disabled value="">请选择</option>
+			  <option v-for="option in options" v-bind:value="option.value">
+				{{ option.text }}
+			  </option>
+			</select>
+		</section>
+	
+		<section>
 			<input class="uni-input"  placeholder="身高" v-model="userHeight"></input>
 		</section>
 		<section>
@@ -54,8 +63,12 @@
 				userWeight: '',
 				userAge: '',
 				userIDNumber: '',
-				socialInsureNum: ''
-				
+				socialInsureNum: '',
+				selected: '男',
+				options: [
+				      { text: '男', value: 'male' },
+				      { text: '女', value: 'female' }
+				    ]
 			}
 		},
 		onLoad:function(option) {
@@ -83,6 +96,7 @@
 				}
 				if(this.userHeight!=''){
 					data.userHeight=parseInt(this.userHeight)
+					//data.userAge=parseInt(this.userAge);
 				}
 				if(this.userWeight!=''){
 					data.userWeight=parseInt(this.userWeight)
@@ -90,8 +104,16 @@
 				if(this.userAge!=''){
 					data.userAge=parseInt(this.userAge)
 				}
+				//if(this.selected != ''){
+				//	console.log(this.selected)
+				//}
+				else data.userAge=20;
+				console.log(data)
+				//console.log(this.selected)
+				
 				putchinfo(this.phone, data).then((res)=>{
 						if(res.st==0){
+							this.logout();
 							getUserInfo(this.phone).then((res)=>{
 								console.log(res)
 								this.login(res.data);
@@ -105,7 +127,7 @@
 						}
 					})
 			},
-			...mapMutations(['login'])
+			...mapMutations(['login' ,'logout'])
 		}
 	}
 </script>

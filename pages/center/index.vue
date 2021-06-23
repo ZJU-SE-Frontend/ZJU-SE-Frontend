@@ -101,7 +101,6 @@
 		mapMutations
 	} from 'vuex';
 	export default {
-		computed: mapState(['hasLogin','uerInfo']),
 		data() {
 			return {
 				//user_name:"",
@@ -115,6 +114,8 @@
 				history_title:  '',
 			}
 		},
+		computed: mapState(['hasLogin','uerInfo']),
+		//watch: mapState(['hasLogin','uerInfo']),
 		onLoad() {
 			// if(this.hasLogin){
 			// 	console.log("hahaha")
