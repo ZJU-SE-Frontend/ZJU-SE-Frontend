@@ -14,14 +14,11 @@
 			<input class="uni-input"  placeholder="邮箱" v-model="userEmail"></input>
 		</section>
 		<section>
-			<input class="uni-input"  placeholder="性别" v-model="userGender"></input>
-		</section>
-		<section>
 			<input class="uni-input"  placeholder="年龄" v-model="userAge"></input>
 		</section>
 		<section>
-			<select v-model="selected"  style="width:200px;height:40px;">
-			  <option disabled value="">请选择</option>
+			<select v-model="selected"  style="width:200px;height:40px;" defaultValue="">
+			  <option value="" disabled selected hidden>性别</option>
 			  <option v-for="option in options" v-bind:value="option.value">
 				{{ option.text }}
 			  </option>
@@ -64,7 +61,7 @@
 				userAge: '',
 				userIDNumber: '',
 				socialInsureNum: '',
-				selected: '男',
+				selected: '',
 				options: [
 				      { text: '男', value: 'male' },
 				      { text: '女', value: 'female' }
@@ -85,9 +82,6 @@
 				if(this.userEmail!=''){
 					data.userEmail=this.userEmail
 				}
-				if(this.userGender!=''){
-					data.userGender=(this.userGender=="男"?"male":"female");
-				}
 				if(this.userIDNumber!=''){
 					data.userIDNumber=this.userIDNumber
 				}
@@ -104,9 +98,11 @@
 				if(this.userAge!=''){
 					data.userAge=parseInt(this.userAge)
 				}
-				//if(this.selected != ''){
-				//	console.log(this.selected)
-				//}
+				if(this.selected != ''){
+					this.userGender = this.selected;
+					data.userGender = this.userGender
+					console.log(data.userGender)
+				}
 				else data.userAge=20;
 				console.log(data)
 				//console.log(this.selected)
