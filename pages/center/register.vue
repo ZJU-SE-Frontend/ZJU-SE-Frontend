@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="logo" src="../../static/center/logo.png"></image>
+		<image class="logo" src="/static/center/portrate.png"></image>
  		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view> 
@@ -27,7 +27,7 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello',
+				title: 'WELCOME',
 				username: '',
 				userPhone: '',
 				password: '',

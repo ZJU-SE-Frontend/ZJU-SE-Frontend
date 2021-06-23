@@ -30,19 +30,19 @@
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">身高</text>
-					<text class="list-text">{{hasLogin? uerInfo.userHeight: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userHeight + " 厘米": ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">体重</text>
-					<text class="list-text">{{hasLogin? uerInfo.userWeight: ''}}</text>
+					<text class="list-text">{{hasLogin? uerInfo.userWeight+" 公斤": ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">性别</text>
-					<text class="list-text">{{hasLogin? uerInfo.userGender: ''}}</text>
+					<text class="list-text">{{hasLogin? (uerInfo.userGender=="male"?"男":"女"): ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -101,21 +101,20 @@
 		mapMutations
 	} from 'vuex';
 	export default {
-		computed: mapState([ 'hasLogin','uerInfo']),
+		computed: mapState(['hasLogin','uerInfo']),
 		data() {
 			return {
-				//user_name:"王赵烨",
+				//user_name:"",
 				visitorUrl: "../../static/center/logo.png",
 				//hasLogin: false,
-				// patient_weight: '60kg',
-				// patient_height: '170cm',
-				// patient_age:    '21岁',
-				// patient_phone:  '18112345678',
-				// patient_id:     '330103200002131998',
+				// patient_weight: '',
+				// patient_height: '',
+				// patient_age:    '',
+				// patient_phone:  '',
+				// patient_id:     '',
 				history_title:  '',
 			}
 		},
-		
 		onLoad() {
 			// if(this.hasLogin){
 			// 	console.log("hahaha")

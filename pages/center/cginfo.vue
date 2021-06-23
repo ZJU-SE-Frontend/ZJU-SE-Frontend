@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="logo" src="../../static/center/logo.png"></image>
+		<image class="logo" src="/static/center/portrate.png"></image>
  		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view> 
@@ -38,14 +38,14 @@
 </template>
 
 <script>
-	import {putchinfo} from "../../fetch/api.js";
+	import {putchinfo, getUserInfo} from "../../fetch/api.js";
 	import {
 		mapMutations
 	} from 'vuex';
 	export default {
 		data() {
 			return {
-				title:'hello',
+				title:'WELCOME',
 				phone: '',
 				userName: '',
 			    userEmail: '',
@@ -73,7 +73,7 @@
 					data.userEmail=this.userEmail
 				}
 				if(this.userGender!=''){
-					data.userGender=this.userGender
+					data.userGender=(this.userGender=="男"?"male":"female");
 				}
 				if(this.userIDNumber!=''){
 					data.userIDNumber=this.userIDNumber
@@ -90,18 +90,22 @@
 				if(this.userAge!=''){
 					data.userAge=parseInt(this.userAge)
 				}
-				putchinfo(this.phone,data).then((res)=>{
+				putchinfo(this.phone, data).then((res)=>{
 						if(res.st==0){
-							this.title='修改成功,请重新登录'
-							uni.navigateBack();
-							this.logout()
+							getUserInfo(this.phone).then((res)=>{
+								console.log(res)
+								this.login(res.data);
+								this.title='修改成功!'
+								uni.navigateBack();
+								//this.logout()
+							})
 						}
 						else{
 							this.title='修改失败'
 						}
 					})
 			},
-			...mapMutations(['logout'])
+			...mapMutations(['login'])
 		}
 	}
 </script>
