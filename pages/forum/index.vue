@@ -405,6 +405,7 @@
 
 <script>
 	const moment = require('moment')
+	import store from "@/common/store.js"
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
 	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getCurrentUserRole,getAnswerContent,getQuestion, getRecommendedAnswers,

@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="hasLogin">
 		<view class="input">
 			<textarea class="title-text" placeholder="请输入主题贴标题" maxlength="40" auto-height="true" v-model="title"/>
 		</view>
@@ -12,12 +12,14 @@
 
 <script>
 	import {publicPost, getCurrentUserPhone} from '../../fetch/api.js'
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
 				title : '',
 				content : '',
-				userPhone : null
+				hasLogin : store.state.hasLogin,
+				userPhone : store.state.uerInfo.userPhone
 			}
 		},
 		methods: {
@@ -38,12 +40,16 @@
 					})
 				}
 			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				console.log(this.userPhone)
-			},
 			onLoad() {
-				this.getCurrentUser()
+				if(!this.hasLogin) {
+					this.$util.toast('请先登录！')
+					setTimeout(
+						function() {
+							uni.navigateBack({})
+						},
+						2000
+					)
+				}
 			}
 		}
 	}

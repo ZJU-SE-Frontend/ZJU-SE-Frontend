@@ -1,8 +1,5 @@
 <template>
-	<view class="content">
-		<!-- <view class="input"> -->
-			<!-- <textarea class="title-text" placeholder="请输入主题贴标题" auto-height="true" v-model="title"/> -->
-		<!-- </view> -->
+	<view class="content" v-if="hasLogin">
 		<view class="input">
 			<textarea class="content-text" placeholder="请输入回复内容" maxlength="-1" auto-height="true" v-model="content"/>
 		</view>
@@ -12,12 +9,14 @@
 
 <script>
 	import {publicReply, getCurrentUserPhone} from '../../fetch/api.js'
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
 				content : '',
 				topicId : null,
-				userPhone : null
+				hasLogin : store.state.hasLogin,
+				userPhone : store.state.uerInfo.userPhone
 			}
 		},
 		methods: {
@@ -38,14 +37,18 @@
 					})
 				}
 			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				console.log(this.userPhone)
-			},
 			onLoad(id) {
+				if(!this.hasLogin) {
+					this.$util.toast('请先登录！')
+					setTimeout(
+						function() {
+							uni.navigateBack({})
+						},
+						2000
+					)
+				}
 				if(id) {
 					this.topicId = id.id
-					this.getCurrentUser()
 				}
 			}
 		}

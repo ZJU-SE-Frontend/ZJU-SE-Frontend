@@ -28,6 +28,7 @@ export function getJwtToken(){
 		}
 	});
 	return token;
+}
 
   
 // axios请求拦截器，统一处理request
@@ -169,7 +170,7 @@ export function postLoginIn(userPhone, password) {
 	return fetchPost(`/api/login`, {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
-	}
+	})
 	console.log(data)
 	return fetchPost(`/api/login`, data = data);
 }
@@ -228,9 +229,9 @@ export function getPdetail(phone,id){
 
 
 
-export function getUserInfo(userPhone){
-	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
-}
+// export function getUserInfo(userPhone){
+// 	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
+// }
 
 export function putchpwd(userPhone, password) {
 	var data = {
