@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
+		<image class="logo" src="/static/center/portrate.png"></image>
  		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view> 
@@ -14,7 +14,7 @@
 			<button type="button" @click="onLoginClicked">登陆</button>
 		</section>
 		<section>
-			<button type="button" @click="onRegister">注册账号</button>
+			<button type="button" @click="onRegister">注册</button>
 		</section>
 	</view>
 </template>
@@ -48,6 +48,7 @@
 						this.title="登陆成功\n"
 						getUserInfo(t_name).then((res)=>{
 							this.userInfo=res.data.userName
+							console.log("res")
 							console.log(res.data);
 							this.login(res.data);
 							uni.navigateBack();

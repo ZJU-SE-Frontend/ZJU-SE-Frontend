@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="logo" src="../../static/center/logo.png"></image>
+		<image class="logo" src="/static/center/portrate.png"></image>
  		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view> 
@@ -14,11 +14,17 @@
 			<input class="uni-input"  placeholder="邮箱" v-model="userEmail"></input>
 		</section>
 		<section>
-			<input class="uni-input"  placeholder="性别" v-model="userGender"></input>
-		</section>
-		<section>
 			<input class="uni-input"  placeholder="年龄" v-model="userAge"></input>
 		</section>
+		<section>
+			<select v-model="selected"  style="width:200px;height:40px;" defaultValue="">
+			  <option value="" disabled selected hidden>性别</option>
+			  <option v-for="option in options" v-bind:value="option.value">
+				{{ option.text }}
+			  </option>
+			</select>
+		</section>
+	
 		<section>
 			<input class="uni-input"  placeholder="身高" v-model="userHeight"></input>
 		</section>
@@ -38,14 +44,14 @@
 </template>
 
 <script>
-	import {putchinfo} from "../../fetch/api.js";
+	import {putchinfo, getUserInfo} from "../../fetch/api.js";
 	import {
 		mapMutations
 	} from 'vuex';
 	export default {
 		data() {
 			return {
-				title:'hello',
+				title:'WELCOME',
 				phone: '',
 				userName: '',
 			    userEmail: '',
@@ -54,8 +60,12 @@
 				userWeight: '',
 				userAge: '',
 				userIDNumber: '',
-				socialInsureNum: ''
-				
+				socialInsureNum: '',
+				selected: '',
+				options: [
+				      { text: '男', value: 'male' },
+				      { text: '女', value: 'female' }
+				    ]
 			}
 		},
 		onLoad:function(option) {
@@ -72,9 +82,6 @@
 				if(this.userEmail!=''){
 					data.userEmail=this.userEmail
 				}
-				if(this.userGender!=''){
-					data.userGender=this.userGender
-				}
 				if(this.userIDNumber!=''){
 					data.userIDNumber=this.userIDNumber
 				}
@@ -83,6 +90,7 @@
 				}
 				if(this.userHeight!=''){
 					data.userHeight=parseInt(this.userHeight)
+					//data.userAge=parseInt(this.userAge);
 				}
 				if(this.userWeight!=''){
 					data.userWeight=parseInt(this.userWeight)
@@ -90,18 +98,30 @@
 				if(this.userAge!=''){
 					data.userAge=parseInt(this.userAge)
 				}
-				putchinfo(this.phone,data).then((res)=>{
+				if(this.selected != ''){
+					this.userGender = this.selected;
+					data.userGender = this.userGender
+					console.log(data.userGender)
+				}
+				console.log(data)
+				
+				putchinfo(this.phone, data).then((res)=>{
 						if(res.st==0){
-							this.title='修改成功,请重新登录'
-							uni.navigateBack();
-							this.logout()
+							this.logout();
+							getUserInfo(this.phone).then((res)=>{
+								console.log(res)
+								this.login(res.data);
+								this.title='修改成功!'
+								uni.navigateBack();
+								//this.logout()
+							})
 						}
 						else{
 							this.title='修改失败'
 						}
 					})
 			},
-			...mapMutations(['logout'])
+			...mapMutations(['login' ,'logout'])
 		}
 	}
 </script>

@@ -21,7 +21,7 @@
 				<view class="center-list-item">
 					<text class="list-icon">&#xe639;</text>
 					<text class="list-text">姓名</text>
-					<text class="list-text">{{hasLogin ? uerInfo.userName : ''}}</text>
+					<text class="list-text-i">{{hasLogin ? uerInfo.userName : ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -30,19 +30,19 @@
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">身高</text>
-					<text class="list-text">{{hasLogin? uerInfo.userHeight: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.userHeight + " 厘米": ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">体重</text>
-					<text class="list-text">{{hasLogin? uerInfo.userWeight: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.userWeight+" 公斤": ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">性别</text>
-					<text class="list-text">{{hasLogin? uerInfo.userGender: ''}}</text>
+					<text class="list-text-i">{{hasLogin? (uerInfo.userGender=="male"?"男":"女"): ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 			</view>
@@ -51,25 +51,25 @@
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">手机号</text>
-					<text class="list-text">{{hasLogin? uerInfo.userPhone: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.userPhone: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe60b;</text>
 					<text class="list-text">电子邮箱</text>
-					<text class="list-text">{{hasLogin? uerInfo.userEmail: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.userEmail: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">身份证号</text>
-					<text class="list-text">{{hasLogin? uerInfo.userIDNumber: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.userIDNumber: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">社保账号</text>
-					<text class="list-text">{{hasLogin? uerInfo.socnum: ''}}</text>
+					<text class="list-text-i">{{hasLogin? uerInfo.socnum: ''}}</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<view class="center-list-item border-bottom" v-show="hasLogin" @click="healthcodeView">
@@ -101,21 +101,21 @@
 		mapMutations
 	} from 'vuex';
 	export default {
-		computed: mapState([ 'hasLogin','uerInfo']),
 		data() {
 			return {
-				//user_name:"王赵烨",
+				//user_name:"",
 				visitorUrl: "../../static/center/logo.png",
 				//hasLogin: false,
-				// patient_weight: '60kg',
-				// patient_height: '170cm',
-				// patient_age:    '21岁',
-				// patient_phone:  '18112345678',
-				// patient_id:     '330103200002131998',
+				// patient_weight: '',
+				// patient_height: '',
+				// patient_age:    '',
+				// patient_phone:  '',
+				// patient_id:     '',
 				history_title:  '',
 			}
 		},
-		
+		computed: mapState(['hasLogin','uerInfo']),
+		//watch: mapState(['hasLogin','uerInfo']),
 		onLoad() {
 			// if(this.hasLogin){
 			// 	console.log("hahaha")
@@ -261,15 +261,23 @@
 	.list-icon {
 		width: 40rpx;
 		height: 90rpx;
+		margin-left: 0rpx;
 		line-height: 90rpx;
 		color: #0faeff;
 		text-align: center;
 		font-family: texticons;
 		margin-right: 20rpx;
 	}
-
 	.list-text {
 		height: 90rpx;
+		line-height: 90rpx;
+		color: #555;
+		flex: 1;
+		text-align: left;
+	}
+	.list-text-i {
+		height: 90rpx;
+		margin-left: -40rpx;
 		line-height: 90rpx;
 		color: #555;
 		flex: 1;

@@ -29,7 +29,6 @@ export function getJwtToken(){
 	});
 	return token;
 }
-
   
 // axios请求拦截器，统一处理request
 axios.interceptors.request.use((config) => {
@@ -90,7 +89,7 @@ axios.defaults.adapter = function(config) { //自己定义个适配器，用来�
             }
         })
     })
-}
+};
 // #endif
 
 
@@ -170,9 +169,9 @@ export function postLoginIn(userPhone, password) {
 	return fetchPost(`/api/login`, {
 		"userPhone": userPhone,
 		"password": getEncryptedPassword(password)
-	})
-	console.log(data)
-	return fetchPost(`/api/login`, data = data);
+	});
+	//console.log(data)
+	//return fetchPost(`/api/login`, data = data);
 }
 
 export function postJoinIn(userPhone, userName, password, authType = 1) {
@@ -211,11 +210,6 @@ export function getCurrentUserExpireTime(){
 	if(token!=undefined){
 		return jwt_decode(token)["exp"]
 	}
-}
-
-// Modified!
-export function getUserInfo(userPhone){
-	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
 }
 
 /*电子病历模块API*/
