@@ -21,13 +21,13 @@
 			
 			<view  v-if="currentClassIfy==2" class="profile-tab">
 				<view @tap="handleGetUserPost()" class="block" :class="{'selected': profileTab === 0}">					
-						<text>发帖：{{this.postCnt}}</text>
+						<text>发帖：{{postCnt}}</text>
 				</view>
 				<view @tap="handleGetUserQuestion()" class="block" :class="{'selected': profileTab === 1}">
-					<text>提问：{{this.questionCnt}}</text>
+					<text>提问：{{questionCnt}}</text>
 				</view>
 				<view @tap="handleGetUserAnswer()" class="block" :class="{'selected': profileTab === 2}">
-					<text>回答：{{this.answerCnt}}</text>
+					<text>回答：{{answerCnt}}</text>
 				</view>			
 				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
 					<text>收藏</text>
@@ -39,23 +39,23 @@
 			
 			<view  v-if="currentClassIfy==2 && profileTab==3" class="profile-tab">
 				<view @tap="handleGetUserFavoritePost()" class="block" :class="{'selected': favoriteTab === 0}">					
-						<text>发帖：{{this.favoritePostCnt}}</text>
+						<text>发帖：{{favoritePostCnt}}</text>
 				</view>
 				<view @tap="handleGetUserFavoriteQuestion()" class="block" :class="{'selected': favoriteTab === 1}">
-						<text>提问：{{this.favoriteQuestionCnt}}</text>
+						<text>提问：{{favoriteQuestionCnt}}</text>
 				</view>
 				<view @tap="handleGetUserFavoriteAnswer()" class="block" :class="{'selected': favoriteTab === 2}">
-						<text>回答：{{this.favoriteAnswerCnt}}</text>
+						<text>回答：{{favoriteAnswerCnt}}</text>
 				</view>
 
 			</view>
 			
 			<view  v-if="currentClassIfy==2 && profileTab==4" class="profile-tab">
 				<view @tap="handleGetReportAnswer()" class="block" :class="{'selected': reportTab === 0}">					
-						<text>回答：{{this.reportAnswerCnt}}</text>
+						<text>回答：{{reportAnswerCnt}}</text>
 				</view>
 				<view @tap="handleGetReportReply()" class="block" :class="{'selected': reportTab === 1}">
-						<text>回复：{{this.reportReplyCnt}}</text>
+						<text>回复：{{reportReplyCnt}}</text>
 				</view>
 			
 			</view>
