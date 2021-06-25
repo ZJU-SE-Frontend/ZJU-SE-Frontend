@@ -446,8 +446,9 @@
 				reportReplyPage:1,
 				// 条数
 				limit: 10,
-				userPhone: null,
-				userRole: 'patient',
+				hasLogin : store.state.hasLogin,
+				userPhone: store.state.uerInfo.userPhone,
+				userRole: store.state.uerInfo.authType,
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
@@ -577,31 +578,17 @@
 					pageNo:1
 				}
 				
-				
 				if (params.tab == '个人中心'){
-					console.log('个人中心')
-										
 					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
 					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
 					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
-					
-					
-					console.log("查询成功")
 					this.postCnt = posts.data.total
-					console.log(posts.data.total)
-				
 					this.questionCnt = questions.data.total
-					console.log(questions.data.total)
-				
 					this.answerCnt = answers.data.total
-					console.log(answers.data.total)
- 										
+					this.$util.toast('请先登录！')
 				}
 				
-						
 				await this.handleGetUserPost()
-				
-				
 			},
 			
 			async handleGetUserPost(params){	
@@ -982,13 +969,13 @@
 				if (this.currentClassIfy === classIfyId) {
 					return
 				}else if( classIfyId == 2){
-					await this.getCurrentUser()
-					console.log(this.userPhone)
-					console.log("切换到个人中心")
-					this.currentClassIfy = classIfyId
-					
-					this.topicList=[]
-					this.handleGetProfile()
+					if(this.hasLogin) {
+						this.currentClassIfy = classIfyId
+						this.topicList=[]
+						this.handleGetProfile()
+					} else {
+						this.$util.toast('请先登录！')
+					}
 				} else {
 					// Reset topicList
 					this.topicList = []
@@ -1335,12 +1322,6 @@
 					}
 				}
 				this.dataGen()
-			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				this.userRole = await getCurrentUserRole()
-				console.log(this.userPhone)
-				console.log(this.userRole)
 			}
 		},
 		// 下拉刷新
