@@ -119,9 +119,14 @@ export default {
 	},
 	methods: {
 		onFloatButton() {
-			uni.navigateTo({
-				'url': './createQaReply?id=' + this.topicId
-			})
+			if(this.hasLogin) {
+				uni.navigateTo({
+					'url': './createQaReply?id=' + this.topicId
+				})
+			}
+			else {
+				this.$util.toast('请先登录！')
+			}
 		},
 		async loadAuthInfo() {
 			var authInfo = await getAuthInfo()
