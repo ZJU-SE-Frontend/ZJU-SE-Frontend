@@ -3,7 +3,7 @@
 			<view class="logo" @click="Login" :hover-class="!hasLogin ? 'logo-hover' : ''">
 					<image class="logo-img" :src="visitorUrl"></image>
 					<view class="logo-title">
-						<text class="uer-name">Hi，{{hasLogin ? "您已登录" : '您未登录'}}</text>
+						<text class="uer-name">Hi，{{hasLogin ? "尊敬的 "+uerInfo.userName : '您未登录'}}</text>
 						<text class="go-login navigat-arrow" v-if="!hasLogin">&#xe65e;</text>
 					</view>
 			</view>
@@ -195,7 +195,7 @@
 		height: 240rpx;
 		padding: 40rpx;
 		box-sizing: border-box;
-		background-color: #0faeff;
+		background-color: #007aff;
 		flex-direction: row;
 		align-items: center;
 	}
@@ -277,7 +277,7 @@
 	}
 	.list-text-i {
 		height: 90rpx;
-		margin-left: -40rpx;
+		margin-left: -90rpx;
 		line-height: 90rpx;
 		color: #555;
 		flex: 1;
