@@ -103,9 +103,7 @@
 					data.userGender = this.userGender
 					console.log(data.userGender)
 				}
-				else data.userAge=20;
 				console.log(data)
-				//console.log(this.selected)
 				
 				putchinfo(this.phone, data).then((res)=>{
 						if(res.st==0){
