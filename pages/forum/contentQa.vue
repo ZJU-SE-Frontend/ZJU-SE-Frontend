@@ -196,7 +196,10 @@ export default {
 			],
 			currentListType: 'default',
 			sortedAnswers: [],
-			replyLikeInfo: null
+			replyLikeInfo: {
+				likes:[],
+				disLikes:[],
+			}
 		}
 	},
 	methods: {

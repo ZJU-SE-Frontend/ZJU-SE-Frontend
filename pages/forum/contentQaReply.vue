@@ -99,7 +99,16 @@ export default {
 			loading: false,
 			// 话题ID
 			topicId: null,
-			topic: null,
+			topic: {
+				"userName": " ",
+				"viewCnt": 0,
+				"updateTime": 0,
+				"content": " ",
+				"likeCnt": 0,
+				"dislikeCnt": 0,
+				"viewCnt": 0,
+				"replyCnt": 0,
+			},
 			likeState: null,
 			favoriteState: null,
 			hasLiked: null,
@@ -109,7 +118,10 @@ export default {
 			pageNo : 1,
 			replies : [],
 			qid : null,
-			replyLikeInfo: null,
+			replyLikeInfo: {
+				likes: [],
+				disLikes: []
+			},
 			role : "",
 			hasLogin : store.state.hasLogin,
 			userPhone: store.state.uerInfo.userPhone,
@@ -260,7 +272,7 @@ export default {
 		},
 		async removeReply(replyId) {
 			this.getUserState()
-			if(this.this.hasLogin){
+			if(this.hasLogin){
 				console.log("218 " + replyId)
 				await deleteQaReply(replyId)
 				this.getReplies()
