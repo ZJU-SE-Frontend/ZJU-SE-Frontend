@@ -92,7 +92,7 @@
 			</view>
 			
 			<view  v-if="currentClassIfy==1" class="post">
-				<view v-show="displayData.length && questionSession != 0" class="topic-list">
+				<view v-if="displayData.length && questionSession != 0" class="topic-list">
 					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
 					<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
@@ -121,7 +121,7 @@
 						</view>
 					</view>
 				</view>
-				<view v-show="displayData.length && questionSession == 0" class="topic-list">
+				<view v-if="displayData.length && questionSession == 0" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
 						<view @tap="navigator('./contentQaReply?id=' + topic.answerId)" class="topic">
@@ -253,9 +253,6 @@
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
 						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
-							<!-- <view class="topic-author-avatar"> -->
-								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-							<!-- </view> -->
 							<view class="topic-type">讨论</view>
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
@@ -1308,7 +1305,6 @@
 				if(this.questionSession == 0) {
 					var recommendedAnswers = await getRecommendedAnswers(params)
 					this.displayData = recommendedAnswers.data.answers
-					
 				}
 				else if(this.questionSession == 1) {
 					for(var ans in this.topicList) {
@@ -1338,8 +1334,6 @@
 						}
 					}
 				}
-				// console.log(this.topicList)
-				// console.log(this.displayData)
 				this.dataGen()
 			},
 			async getCurrentUser() {
