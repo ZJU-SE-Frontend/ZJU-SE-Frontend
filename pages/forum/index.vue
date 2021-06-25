@@ -405,7 +405,7 @@
 	import store from "@/common/store.js"
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getCurrentUserRole,getAnswerContent,getQuestion, getRecommendedAnswers,
+	getUserFavoriteAnswer,getQuestionList,getAnswerContent,getQuestion, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,deleteQaReply,
 	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
 	export default {
@@ -493,6 +493,7 @@
 		},
 		methods: {
 			onFloatButton() {
+				this.getUserState()
 				if (this.hasLogin) {
 					if (this.handleGetTab() == '讨论贴') {
 						uni.navigateTo({
@@ -588,7 +589,6 @@
 					this.postCnt = posts.data.total
 					this.questionCnt = questions.data.total
 					this.answerCnt = answers.data.total
-					this.$util.toast('请先登录！')
 				}
 				
 				await this.handleGetUserPost()
@@ -972,6 +972,7 @@
 				if (this.currentClassIfy === classIfyId) {
 					return
 				}else if( classIfyId == 2){
+					this.getUserState()
 					if(this.hasLogin) {
 						this.currentClassIfy = classIfyId
 						this.topicList=[]
@@ -1325,6 +1326,11 @@
 					}
 				}
 				this.dataGen()
+			},
+			getUserState() {
+				this.hasLogin = store.state.hasLogin
+				this.userPhone = store.state.uerInfo.userPhone
+				this.userRole = store.state.uerInfo.authType
 			}
 		},
 		// 下拉刷新
@@ -1333,7 +1339,6 @@
 		},
 		// 页面加载
 		onLoad() {
-			this.getCurrentUser()
 			this.load()
 		}
 	}
