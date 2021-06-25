@@ -493,16 +493,19 @@
 		},
 		methods: {
 			onFloatButton() {
-				if (this.handleGetTab() == '讨论贴') {
-					uni.navigateTo({
-						'url': './createPost'
-					})
-				}
-				else if (this.handleGetTab() == '问答') {
-					uni.navigateTo({
-						'url': './createQuestion'
-					})
-					console.log('新建问答')
+				if (this.hasLogin) {
+					if (this.handleGetTab() == '讨论贴') {
+						uni.navigateTo({
+							'url': './createPost'
+						})
+					}
+					else if (this.handleGetTab() == '问答') {
+						uni.navigateTo({
+							'url': './createQuestion'
+						})
+					}
+				} else {
+					this.$util.toast('请先登录！')
 				}
 			},
 			//排序
