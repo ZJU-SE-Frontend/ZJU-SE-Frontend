@@ -5,7 +5,7 @@
 			<view class="carIcon">
 				<view class="iconBox" :class="getAllCount ? 'active' : '' ">
 					<text class="allcount" v-if="getAllCount">{{getAllCount}}</text>
-					<image src="https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/cart.png" mode="" class="img" @click="orders()"></image>
+					<image src="https://se2021-pic-bed.oss-cn-shanghai.aliyuncs.com/phermacy/orders.png" mode="" class="img" @click="orders()"></image>
 				</view>
 			</view>
 			<view class="middle">
@@ -177,7 +177,7 @@
 		bottom: 22px;
 		left: 18px;
 		z-index: 101;
-		background-color: rgb(70, 73, 75);
+		background-color: #007aff;
 		border-radius: 50%;
 		height: 48px;
 		width: 48px;
@@ -204,7 +204,7 @@
 		line-height: 24px;
 		width: 30px;
 		height: 30px;
-		padding-left: 6px;
+		padding-left: 10px;
 		padding-top: 6px;
 		color: #cccccc;
 		border-radius: 50%;

@@ -220,7 +220,7 @@
 				orderList.data.forEach((order)=>{
 					getPharOrderDetail(order.orderId).then((orderDetail)=>{
 						let oneOrder = {
-							"orderId": order.orderId,
+							"orderId": order.orderId.substr(0,8),
 							"state": order.state,
 							"totalPrice": order.totalPrice,
 							"dateTime": order.dateTime
