@@ -3,21 +3,21 @@
 		<!-- 组合示例 -->
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title uni-common-mt">
-				野兽先辈
-				<text>\n下北泽肛肠科主任医生</text>
+				{{docData.doctorName}}
+				<text>\n {{docData.hospital}} {{docData.department}} </text>
 			</view>
 			<view class="uni-flex uni-row">
 				<view class="text uni-flex" style="width: 150rpx;height: 150rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
 					<image src="../../static/monster.jpg" style="width: 150rpx;height: 150rpx;"></image>
 				</view>
 				<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;">
-					<view class="text" style="height: 250rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;">
-						医生个人简介：1996年获得暨南大学临床医学六年制学士，2001年获得神经病学硕士学位
+					<view v-if="isExpert"  class="text" style="height: 250rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;">
+					<!-- <view class="text" style="height: 250rpx;text-align: left;padding-left: 20rpx;padding-top: 10rpx;"> -->
+						医生个人简介：{{docData.doctorInfo}}
 					</view>
 					<view class="uni-flex uni-row">
-						<view class="text" style="-webkit-flex: 1;flex: 1;">已预约时段：</view>
-						<view class="text" style="-webkit-flex: 1;flex: 1;">预约余量：</view>
-						<view class="text" style="-webkit-flex: 1;flex: 1;"></view>
+						<view class="text" style="-webkit-flex: 1;flex: 1;">时段：{{regsec}}</view>
+						<view class="text" style="-webkit-flex: 1;flex: 1;">预约余量：{{remainder}}</view>
 					</view>
 				</view>
 			</view>
@@ -47,6 +47,9 @@
 <script>
 	import { deleteAppointment } from "../../fetch/api.js"
 	import { getCurrentUserPhone } from "../../fetch/api.js"
+	import { getDoctorInfo } from "../../fetch/api.js"
+	import { getRemainder } from "../../fetch/api.js"
+	import store from "@/common/store.js"
 	
 	export default {
 		data() {
@@ -56,9 +59,12 @@
 				styles: {
 					color: 'blue',
 					borderColor: '#499721'
-				}
+				},
+				docData:{},
+				remainder: 0,
+				regsec: '',
+				isExpert :false
 			}
-		
 		},
 		methods : {
 			confirmDialog(){
@@ -73,16 +79,28 @@
 				// console.log("date = " + date)
 				// console.log("section = " + section)
 				// console.log("telephone = " + tel)
-				
 				deleteAppointment(tel, date, section).then((res)=>{
 					  this.remoteStatus=res.st
 					  console.log("status = " + this.remoteStatus)
 				})
+				uni.showModal({
+				   title: '退号成功',
+				   content: '恭喜您退号成功，返回主页重新预约',
+				   cancelText: "详情", // 取消按钮的文字  
+				   success: function (res) {
+					   if (res.confirm) {
+						   uni.switchTab({
+						   	   url: '/pages/registration/index'
+						   });
+					   } 
+					   else if (res.cancel) {
+						   uni.navigateTo({//跳转页面
+								url:"/pages/registration/show"
+						   });
+					   }
+				   }
+				});
 				
-				done()
-				uni.navigateTo({//jump back
-					url:"/pages/registration/show"
-				})
 			},
 			dialogClose(done) {
 				done()
@@ -94,8 +112,36 @@
 		onLoad(option){
 			this.appointDate = JSON.parse(decodeURIComponent(option.appointDate));
 			this.section = JSON.parse(decodeURIComponent(option.section));
-			this.telephone = getCurrentUserPhone().user_phone;
-	}
+			this.doctorPhone = JSON.parse(decodeURIComponent(option.DoctorPhone));
+			this.regsec=(this.section+8) + " - " + (this.section+9)
+			 console.log("appointDate = " + this.appointDate);
+			 console.log("section = " + this.section);
+			 console.log("doctorPhone = " + this.doctorPhone);
+			this.telephone = store.state.uerInfo.userPhone;
+			this.isExpert=(this.doctorPhone!="00000000000");
+			
+			// fetch doctor info 
+			getDoctorInfo(this.doctorPhone).then((res)=>{
+				  this.fetchDocStatus=res.st
+				  this.docData=res.data
+				  console.log("this.docData.doctorName" + this.docData.doctorName)
+				  console.log("getDoctorInfo status = " + this.fetchDocStatus)
+			})
+			
+			// fetch remainder
+			getRemainder(this.doctorPhone,this.appointDate,this.section).then((res)=>{
+				  this.fetchRemainderStatus=res.st
+				  this.remainder=30-res.data.appointNum
+				  console.log("this.remainder" + this.remainder)
+				  console.log("fetchRemainderStatus = " + this.fetchRemainderStatus)
+			})
+		},
+		unBackPress(option){
+			uni.navigateTo({//jump back
+				url:"/pages/registration/show"
+			})
+			return true;
+		}
 }
 	
 </script>

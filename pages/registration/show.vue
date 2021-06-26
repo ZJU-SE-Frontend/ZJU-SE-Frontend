@@ -25,7 +25,7 @@
 					<uni-td align="center">{{getLocalTime(it.appointDate, it.section)}}</uni-td>
 					<uni-td height="50">
 						<button class="btn1" type="default" size="mini" @click="popout(i, 1)" plain="true">详情</button>
-						<button class="btn1" type="default" size="mini" plain="true">退号</button>
+						<button class="btn1" type="default" size="mini" plain="true" @click="onClick(i, 0)">退号</button>
 					</uni-td>
 				</uni-tr>
 				
@@ -95,6 +95,7 @@
 
 <script>
 	import {getappoint} from "../../fetch/api.js"
+	import store from "@/common/store.js"
 	import { getCurrentUserPhone } from "../../fetch/api.js"
 	
 export default {
@@ -132,14 +133,17 @@ export default {
 			this.loading = false
 		}, 2000)
 	},
-	onLoad(option) {
-		console.log("onload");
-		this.searchValue = getCurrentUserPhone();
-		console.log("phone " + this.searchValue["user_phone"]);
-		if(this.searchValue["user_phone"] != ""){
-			getappoint(this.searchValue["user_phone"]).then((res)=>{
-			
+	onShow(option) {
+		this.searchValue = store.state.uerInfo.userPhone;
+		this.items = [];
+		this.past = [];
+		this.fur1 = [];
+		this.fur2 = [];
+		this.items = [];
+		if(this.searchValue != ""){
+			getappoint(this.searchValue).then((res)=>{
 				this.items = res.data.appointList;
+				console.log(this.items);
 				var date = (new Date()).getTime() / 1000;
 				console.log("now: " + date);
 				var s = 20;
@@ -147,16 +151,15 @@ export default {
 					s = this.items.length;
 				}
 				for(var i = 0; i < s; i++){
-					if(this.items[i].appointDate - date < 0){
+					if(this.items[i].appointDate + (this.items[i].section + 8) * 3600 - date < 0){
 						this.past.push(this.items[i]);
-						console.log("res: " + (this.items[i].appointDate - date))
-					}else if(date - this.items[i].appointDate < 86400){
+					}else if(this.items[i].appointDate - (this.items[i].section + 8) * 3600 - date < 86400){
 						this.fur1.push(this.items[i]);
-						console.log("res: " + (this.items[i].appointDate - date))
+						console.log("res: " + (date - this.items[i].appointDate - (this.items[i].section + 8) * 3600));
 					}
 					else{
 						this.fur2.push(this.items[i]);
-						console.log("res: " + (this.items[i].appointDate - date))
+						console.log("res: " + (date - this.items[i].appointDate - (this.items[i].section + 8) * 3600));
 					}
 				}
 				console.log("length: " + this.past.length + this.fur1.length + this.fur2.length);
@@ -167,29 +170,48 @@ export default {
 		beforeDestroy(){
 		    document.body.style.backgroundColor = '#fff'
 		},
+		onBackPress(){
+			uni.switchTab({
+				url: '/pages/registration/index'
+			});
+			return true;
+		},
 		onClick(i, j){
 			//console.log('执行click事件')
-			if(j == 1){
+			if(j==0){
+				uni.showToast({
+					icon:"none",
+					title:"超过退号期限"
+				})
+			}
+			else if(j == 1){
+				console.log(i);
+				console.log("fur1l " + this.fur1.length);
 				uni.navigateTo({//跳转页面
-					url:"/pages/registration/issue_withdraw?appointDate="+ encodeURIComponent(JSON.stringify(this.fur1[i].appointDate)) + "&section=" + encodeURIComponent(JSON.stringify(this.fur1[i].section))
+					url:"/pages/registration/issue_withdraw?appointDate="+ encodeURIComponent(JSON.stringify(this.fur1[i].appointDate)) + "&section=" + encodeURIComponent(JSON.stringify(this.fur1[i].section)) + "&DoctorPhone=" + encodeURIComponent(JSON.stringify(this.fur1[i].doctorPhone))
 				});
 			}else if(j == 2){
 				console.log(i);
 				console.log("fur2l " + this.fur2.length);
 				uni.navigateTo({//跳转页面
-					url:"/pages/registration/issue_withdraw?appointDate="+ encodeURIComponent(JSON.stringify(this.fur2[i].appointDate)) + "&section=" + encodeURIComponent(JSON.stringify(this.fur2[i].section))
+					url:"/pages/registration/issue_withdraw?appointDate="+ encodeURIComponent(JSON.stringify(this.fur2[i].appointDate)) + "&section=" + encodeURIComponent(JSON.stringify(this.fur2[i].section)) + "&DoctorPhone=" + encodeURIComponent(JSON.stringify(this.fur2[i].doctorPhone))
 				});
 			}
 		},
 		popout(a, e){
 			this.popno = a;
+			var date = (new Date()).getTime() / 1000;
 			if(e == 1){
 				this.detail = this.past[this.popno];
+				console.log("1: " + (this.past[this.popno].appointDate - date));
 			}else if(e == 2){
 				this.detail = this.fur1[this.popno];
+				console.log("2: " + (this.fur1[this.popno].appointDate - date));
 			}else if(e == 3){
 				this.detail = this.fur2[this.popno];
+				console.log("3: " + (this.fur2[this.popno].appointDate - date));
 			}
+			console.log()
 			this.$refs.popup.open();
 		},
 		pophide(){
@@ -337,7 +359,7 @@ export default {
 	
 	.Main{
 		height: 100%;
-		background: -webkit-linear-gradient(bottom, rgba(150, 255, 161, 1.0), rgba(255,255,255,0.6)) no-repeat;
+		background: -webkit-linear-gradient(bottom, rgba(00,122,255,0.6), rgba(255,255,255,0.6)) no-repeat;
 	}
 	
 	.showpage{

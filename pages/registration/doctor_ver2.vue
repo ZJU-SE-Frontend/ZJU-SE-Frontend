@@ -15,7 +15,7 @@
 				<view class="content-box">
 					<text class="content-box-position">
 						<text class="iconfont icon-wenzhen"></text>
-						普通门诊(正在开发)
+						普通门诊
 					</text>
 				</view>
 			<view class = "discription" @click="show">
@@ -26,7 +26,6 @@
 					<view class = "ids">
 						<text class = "id1">{{room_sub}}</text>
 					</view>
-					<text>￥15</text>
 				</view>
 			</view>
 
@@ -78,7 +77,6 @@
 							<view class = "ids-experts">
 								<text class = "id1">{{item.doctorName}}</text>
 								<text>{{item.doctorInfo}}</text>
-								<text>￥15</text>
 							</view>
 						</view>
 					</view>
@@ -95,6 +93,7 @@
 开放更多的时间段
 */
 <script>
+	import store from "@/common/store.js"
 	import {getStatic, getPharBoothList, getPharBoothDetail, postLoginIn, postJoinIn, getUserInfo} from "../../fetch/api.js"
 	import {getEncryptedPassword} from "../../common/encrypt.js"
 	import { getdoctor,insert_record,getRemainder,getCurrentUserPhone} from "../../fetch/api.js"
@@ -316,18 +315,18 @@
 					}
 				],
 				info: [{
-						colorClass: 'uni-bg-red',
-						url: '/static/doctor1.webp',
+						colorClass: 'uni-bg-blue',
+						url: '/static/book.webp',
 						content: '内容 A'
 					},
 					{
-						colorClass: 'uni-bg-green',
-						url: '/static/yue.jpg',
+						colorClass: 'uni-bg-blue',
+						url: '/static/hospital2.jpeg',
 						content: '内容 B'
 					},
 					{
 						colorClass: 'uni-bg-blue',
-						url: '/static/health.jpg',
+						url: '/static/prime1.jpeg',
 						content: '内容 C'
 					}
 				],
@@ -339,11 +338,11 @@
 						selectedBorder: '1px rgba(0, 0, 0, .9) solid'
 					},
 					{
-						backgroundColor: 'rgba(255, 90, 95,0.3)',
-						border: '1px rgba(255, 90, 95,0.3) solid',
+						backgroundColor: 'rgba(83, 200, 249,0.9)',
+						border: '1px rgba(83, 200, 249,0.9) solid',
 						color: '#fff',
-						selectedBackgroundColor: 'rgba(255, 90, 95,0.9)',
-						selectedBorder: '1px rgba(255, 90, 95,0.9) solid'
+						selectedBackgroundColor: 'rgba(83, 200, 249,0.9)',
+						selectedBorder: '1px rgba(83, 200, 249,0.9) solid'
 					},
 					{
 						backgroundColor: 'rgba(83, 200, 249,0.3)',
@@ -389,7 +388,7 @@
 			},
 			cha:function(e){
 				this.multiIndex = this.num;
-				this.date = this.datt[this.num];
+				this.date = this.datt[this.num-1];
 				
 				var p = this.innfo;
 				var q = this.choose_phone;
@@ -408,14 +407,14 @@
 				var sec = 0;
 				var d = this.date;
 				var flag = 0;
-				if(this.num!=0) flag = 1;
+				if(this.num!=1) flag = 1;
 				
 				function conp(item, index) {
 					getRemainder(phone,dd,index).then((res)=>{
 						item.num =30-res.data.appointNum;
 						item.show = item.times + "余量 "+("" + item.num) + "/30";
 						if (item.num <=0 || (item.ind<h&&flag == 0) ){
-							//item.t = 'true';
+							item.t = 'true';
 							item.state = "error";
 						}
 						else if(item.num<=2 && item.num>0){
@@ -433,12 +432,14 @@
 			},
 			bindMultiPickerColumnChange: function(e) {
 				this.num = e.detail.value;
+				console.log(this.num);
 				//this.multiIndex = e.detail.value;
 			},
 			show(e){
 				this.showModal = true;
 				this.iinfo = "普通号";
 				this.choose_phone = "00000000000";
+				var phone  = this.choose_phone;
 				//this.choose_phone = q;
 				const val = e.detail.value;
 				//console.log(val);
@@ -448,26 +449,42 @@
 				var arr = new_str.split("-");
 				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
 				this.dates = datum.getTime()/1000;
+				
 				var dd = this.dates;
 				var j = 0;
 				var h = this.now_hour;
+
+				var sec = 0;
+				var d = this.date;
+				var flag = 0;
+				if(this.num!=0) flag = 1;
 				new_str = new Date().toISOString().slice(0, 10);
 				new_str = new_str.replace(/ /g,'-');
 				var arr = new_str.split("-");
 				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
 				var ddd = datum.getTime()/1000;
-				var sec = 0;
-				for (var i = 0;i<=9;i++)
-				{
-					if(this.array_time[i].ind<h && ddd == dd){
-						this.array_time[i].t = 'true';
-						this.array_time[i].state = "error";
-					}
-					else{
-						this.array_time[i].state = "success";
-						this.array_time[i].t = 'false';
-					}
+				var room = this.room_sub;
+				var hp = this.hospital;
+				console.log(this.date);
+				function conp(item, index) {
+					getRemainder(phone,dd,index,room,hp).then((res)=>{
+						item.num =30-res.data.appointNum;
+						item.show = item.times + "余量 "+("" + item.num) + "/30";
+						if (item.num <=0 || (item.ind<h&&flag == 0) ){
+							item.t = 'true';
+							item.state = "error";
+						}
+						else if(item.num<=2 && item.num>0){
+							item.state = "warning";
+							item.t = 'false';
+						}
+						else{
+							item.state = "success";
+							item.t = 'false';
+						}
+					})
 				}
+				this.array_time.forEach(conp);
 			},
 			show2(p,q,e){
 				this.showModal = true;
@@ -494,9 +511,11 @@
 				var arr = new_str.split("-");
 				var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
 				var ddd = datum.getTime()/1000;
+				var room = this.room_sub;
+				var hp = this.hospital;
 				console.log(this.date);
 				function conp(item, index) {
-					getRemainder(phone,dd,index).then((res)=>{
+					getRemainder(phone,dd,index,room,hp).then((res)=>{
 						item.num =30-res.data.appointNum;
 						item.show = item.times + "余量 "+("" + item.num) + "/30";
 						if (item.num <=0 || (item.ind<h&&flag == 0) ){
@@ -566,11 +585,12 @@
 			   this.dates = datum.getTime()/1000;
 			   this.time_id = p;
 			   this.section = q;
-			   console.log(123);
-			   var ph = this.userphone.user_phone;
+			   var ph = store.state.uerInfo.userPhone;
 			   var ph2 = this.choose_phone;
 			   var se = this.section;
 			   var da = this.dates;
+			   var dep = this.room_sub;
+			   var ho = this.hospital;
 			   var st = 0;
 			   var doc = this.iinfo;
 			   var time = this.time_id;
@@ -580,10 +600,10 @@
 				   cancelText: "取消", // 取消按钮的文字  
 				   success: function (res) {
 					   if (res.confirm) {
-						   insert_record(ph,ph2,da,se).then((res)=>{
-						   	st=res.st
-						   })
-						   if(st == 0){
+						   insert_record(ph,ph2,da,se,dep,ho).then((res)=>{
+						   	st=res.st;
+							console.log("st:"+st);
+							if(st == 0){
 							   uni.showModal({
 								   title: '预约成功',
 								   content: '恭喜你成功预约'+doc+'医生的'+time+'时间段~',
@@ -610,9 +630,11 @@
 							}
 							else{
 								uni.showToast({
-									title: "预约失败",
+									title: "预约失败,请尝试别的医生或时间",
+									image:'/static/yysb.png',
 								});
 							}
+						   })
 					   } else if (res.cancel) {
 					   }
 				   }
@@ -624,22 +646,28 @@
 			}
 		},
 		onLoad(option){
-			this.hospital = JSON.parse(decodeURIComponent(option.hospital));
-			//console.log("完成1");
-			this.room_sub = JSON.parse(decodeURIComponent(option.room));
-			//console.log("完成2");
-			this.userphone = getCurrentUserPhone();
-			//console.log("完成3");
-			
-			getdoctor(this.hospital,this.room_sub).then((res)=>{
-				this.array=res.data.doctorList
-			})
-			//console.log("完成4");
-			
-			var myDate = new Date();
-			this.now_hour = myDate.getHours(); //获取当前小时数(0-23)
-			this.now_hour = this.now_hour - 8;
-			this.section = this.now_hour + 1;
+			if(store.state.hasLogin == false){
+				uni.showToast({
+					icon: 'none',
+					title: '请先登录'
+				})
+			}
+			else{
+				this.hospital = JSON.parse(decodeURIComponent(option.hospital));
+				//console.log("完成1");
+				this.room_sub = JSON.parse(decodeURIComponent(option.room));
+				//console.log("完成2");
+				this.userphone = store.state.uerInfo.userPhone;
+				getdoctor(this.hospital,this.room_sub).then((res)=>{
+					this.array=res.data.doctorList
+				})
+				//console.log("完成4");
+				
+				var myDate = new Date();
+				this.now_hour = myDate.getHours(); //获取当前小时数(0-23)
+				this.now_hour = this.now_hour - 8;
+				this.section = this.now_hour + 1;
+			}
 		},
 		created:function(){
 			var arr = [];
@@ -698,6 +726,7 @@
 			this.datt = dats;       
 			// index 为当前日期所对应的下标。
 			var zm = [];
+			zm.push('请选择日期');
 			for(var z = 0;z<dats.length;z++){
 				var strdz = "周" + "日一二三四五六".charAt(new Date(dats[z]).getDay());
 				zm.push(strdz+":"+dats[z])
@@ -709,7 +738,6 @@
 			for(var i=0;i<zm.length;i++){
 				if(str == zm[i] ){
 					index = i;
-					console.log("位置",i);
 					flag = 1;
 				}
 			}
@@ -819,7 +847,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		background-color: #999;
+		background-color: #007AFF;
 		color: #fff;
 		height:500rpx;
 		width:100%;
@@ -1082,9 +1110,9 @@
 		padding-top:20rpx;
 		padding-left:30rpx;
 		padding-bottom:20rpx;
-		background: -webkit-linear-gradient(bottom, rgba(255,255,255,0.6),rgba(212,252,121,0.2), rgba(150,230,161,0.6)) no-repeat;
+		background: -webkit-linear-gradient(bottom, rgba(255,255,255,0.6),rgba(00,122,255,0.1), rgba(00,122,255,0.6)) no-repeat;
 		border-bottom:15rpx rgba(246,246,246,0.3)  solid;
-		border-top:15rpx rgba(150,230,161,0.4) solid;
+		border-top:15rpx rgba(00,122,255,0.6) solid;
 	}
 	.experts{
 		font-size:14rpx;

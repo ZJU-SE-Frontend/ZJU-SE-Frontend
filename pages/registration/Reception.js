@@ -68,6 +68,10 @@ import {getPatientAppointList} from "../../fetch/api.js"
 					console.log(item.patientGender)
 					if(item.patientGender == "male") item.patientGender = "男";
 						else item.patientGender = "女";
+					if (item.patientAge == 0){
+						item.patientAge = "未填";
+					}
+					else item.patientAge =item.patientAge + "岁";
 					
 					var date = new Date(item.appointDate * 1000);
 					var Y = date.getFullYear() + '-';
@@ -110,6 +114,7 @@ import {getPatientAppointList} from "../../fetch/api.js"
 				console.log("jump success!")
 				uni.navigateTo({
 					url: '/pages/registration/patient'
+					
 				});
 			}
 			,

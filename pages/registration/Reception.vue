@@ -10,7 +10,7 @@
 								<text decode="true" class="Reception_13">{{patient.patientGender}}</text>
 								<view class="Reception_14">
 								</view>
-								<text decode="true" class="Reception_15">{{patient.patientAge}}岁</text>
+								<text decode="true" class="Reception_15">{{patient.patientAge}}</text>
 								<text decode="true" class="Reception_18">{{patient.department}}</text>
 							</view>
 							<view class="Reception_9">
