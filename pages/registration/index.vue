@@ -13,11 +13,11 @@
 			</uni-swiper-dot>
 			<view class="panel">
 				<view class="block" @click="jump_choose">
-					<image src="../../static/register.jpg" style="zoom:10%;"></image>
+					<image src="../../static/register.jpg" style="zoom:10%;" mode = "aspectFit"></image>
 					<view>预约挂号</view>
 				</view>
 				<view class="block" @click="jump_show">
-					<image src="../../static/control.jpg" style="zoom:10%;"></image>
+					<image src="../../static/control.jpg" style="zoom:10%;"mode = "aspectFit"></image>
 					<view>预约管理</view>
 				</view>
 			</view>
