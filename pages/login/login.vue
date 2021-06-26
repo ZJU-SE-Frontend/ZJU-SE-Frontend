@@ -11,7 +11,7 @@
 			<input class="uni-input" type="password" placeholder="请输入密码" v-model="password"></input>
 		</section>
 		<section>
-			<button type="button" @click="onLoginClicked">登陆</button>
+			<button type="button" @click="onLoginClicked">登录</button>
 		</section>
 		<section>
 			<button type="button" @click="onRegister">注册</button>
@@ -32,7 +32,7 @@
 				userInfo: '',
 				userPhone: '',
 				password: '',
-				loginStatus: '未登陆'
+				loginStatus: '未登录'
 			}
 		},
 		onLoad() {
@@ -42,10 +42,10 @@
 			onLoginClicked(){
 				let t_name = this.userPhone
 				let t_pwd = this.password
-				this.title="登陆中..."
+				this.title="登录中..."
 				postLoginIn(t_name, t_pwd).then((res)=>{
 					if(res.st==0){
-						this.title="登陆成功\n"
+						this.title="登录成功\n"
 						getUserInfo(t_name).then((res)=>{
 							this.userInfo=res.data.userName
 							console.log("res")
@@ -55,7 +55,7 @@
 						})
 					}
 					else if(res.st==1)
-						this.title="登陆失败"
+						this.title="登录失败"
 				});
 			},
 			onRegister(){
