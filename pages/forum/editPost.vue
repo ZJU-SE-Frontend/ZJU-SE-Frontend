@@ -30,7 +30,12 @@
 					await modifyPost(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
+					//#ifdef H5
 					beforePage.handleGetTopicDetail();
+					//#endif
+					//#ifdef MP-WEIXIN
+					beforePage.$vm.handleGetTopicDetail();
+					//#endif
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'

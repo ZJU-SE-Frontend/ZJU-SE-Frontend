@@ -12,12 +12,14 @@
 
 <script>
 	import {publicAnswer,getCurrentUserPhone} from '../../fetch/api.js'
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
 				content : '',
 				topicId : null,
-				userPhone : null
+				hasLogin : store.state.hasLogin,
+				userPhone: store.state.uerInfo.userPhone
 			}
 		},
 		methods: {
@@ -30,22 +32,21 @@
 					await publicAnswer(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					console.log(beforePage)
+					//#ifdef H5
 					beforePage.handleGetAnswer();
+					//#endif
+					//#ifdef MP-WEIXIN
+					beforePage.$vm.handleGetAnswer();
+					//#endif
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'
 					})
 				}
 			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				console.log(this.userPhone)
-			},
 			onLoad(id) {
 				if(id) {
 					this.topicId = id.id
-					this.getCurrentUser()
 				}
 			}
 		}

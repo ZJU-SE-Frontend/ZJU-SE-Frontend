@@ -29,8 +29,12 @@
 					await publicReply(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					console.log(beforePage)
+					//#ifdef H5
 					beforePage.getReplies();
+					//#endif
+					//#ifdef MP-WEIXIN
+					beforePage.$vm.getReplies();
+					//#endif
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'

@@ -33,7 +33,6 @@
 					await publicQaReply(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					console.log(beforePage)
 					//#ifdef H5
 					beforePage.getReplies();
 					//#endif

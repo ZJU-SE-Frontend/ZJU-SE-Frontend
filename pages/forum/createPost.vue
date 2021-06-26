@@ -33,7 +33,12 @@
 					await publicPost(params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
+					//#ifdef H5
 					beforePage.refresh();
+					//#endif
+					//#ifdef MP-WEIXIN
+					beforePage.$vm.refresh();
+					//#endif
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'
