@@ -1,22 +1,22 @@
 <template>
-	<view>
-		<table width="100%" style="text-align: center;">
-			<tr style="height: 5px;"></tr>
-			<tr class="table_header">
-				<th colspan="4">病人信息</th>
-			</tr>
-			<tr>
-				<td class="td_header">姓名:</td>
-				<td colspan="3">{{patient.patientName}}</td>
-			</tr>
-			<tr>
-				<td class="td_header">电话:</td>
-				<td colspan="3">{{patient.patientPhone}}</td>
-			</tr>
-			<tr class="table_header">
-				<th colspan="4">历史病历</th>
-			</tr>
-		</table>
+	<view >
+		<view>
+			<text class="word-v-middle">病人信息</text>
+		</view>
+		<view class="info_69">
+		</view>
+		<view>
+			<text class="key">姓名:</text>
+			<text class="value">{{patient.patientName}}</text>
+		</view>
+		<view>
+			<text class="key">电话:</text>
+			<text class="value">{{patient.patientPhone}}</text>
+		</view>
+		
+		<view>
+			<text class="word-v-middle">历史病例</text>
+		</view>
 		<view class="example">
 			<v-table :columns="columns" :list="patient.caseHistory"></v-table>
 		</view>
@@ -75,7 +75,6 @@
 		},
 		methods: {},
 		onLoad(option) {
-			
 			var patient_phone = option.patient_phone;
 			getPatientInfo(patient_phone).then((res) => {
 				this.patient = res.data
@@ -106,8 +105,61 @@
 		color: #8f8f94;
 	}
 
-	.content {
+	.info_69 {
+		white-space: normal;
+		width: 691upx;
+		height: 1upx;
+		padding: 0upx;
+		clear: both;
+		margin-top: 10upx;
+		margin-left: 29upx;
+		float: left;
+		background-color: #000000;
+		text-align: left;
+		border-radius: 0upx;
+		font-size: 2upx;
+		line-height: 4upx;
+	}
+
+	.word-v-middle {
+		margin-bottom: 0;
+		font-size: 20px;
+		min-height: 31px;
 		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 31px;
+		margin-top: 0px;
+		color: #000000;
+		white-space: normal;
+		font-weight: 600;
+	}
+
+	.key {
+		margin-left: 20px;
+		margin-bottom: 0;
+		font-size: 18px;
+		min-height: 31px;
+		flex-direction: row;
+		justify-content: left;
+		height: 31px;
+		margin-top: 0px;
+		color: #000000;
+		white-space: normal;
+		font-weight: 600;
+	}
+
+	.value {
+		position: relative;
+		font-size: 17px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		font-weight: 500;
+	}
+
+	.content {
+		display: table-row;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
