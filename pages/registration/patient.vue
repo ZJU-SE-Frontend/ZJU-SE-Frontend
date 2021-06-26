@@ -24,6 +24,7 @@
 
 </template>
 <script>
+	import store from "@/common/store.js"
 	import {
 		getPatientInfo
 	} from "../../fetch/api.js"
@@ -72,10 +73,10 @@
 				],
 			}
 		},
-		created: {},
 		methods: {},
 		onLoad(option) {
-			var patient_phone = 18888888888;
+			
+			var patient_phone = option.patient_phone;
 			getPatientInfo(patient_phone).then((res) => {
 				this.patient = res.data
 				this.patient = transTime(this.patient)

@@ -256,7 +256,7 @@
 		width:100%;
 		padding-top:50rpx;
 		padding-left:30rpx;
-		background: -webkit-linear-gradient(bottom, rgba(255,255,255,0.6),rgba(212,252,121,0.2), rgba(150,230,161,0.6)) no-repeat;
+		background: -webkit-linear-gradient(bottom, rgba(255,255,255,0.6),rgba(00,122,255,0.1), rgba(00,122,255,0.6)) no-repeat;
 	}
 	.content-box {
 		padding-top: 20rpx;

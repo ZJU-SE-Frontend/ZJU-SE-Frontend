@@ -640,12 +640,14 @@ export function getdoctor(hosp,dep){
 	return fetchGet("/api/appointment/patient/doctorList",params)
 }
   
-export function insert_record(phone1,phone2,date,sec){
+export function insert_record(phone1,phone2,date,sec,dept,hosp){
 	const params = {
 		  "patientPhone": phone1,
 		  "doctorPhone": phone2,
 		  "appointDate": date,
-		  "section": sec
+		  "section": sec,
+		  "department":dept,
+		  "hospital":hosp
 	}
 	return fetchPost("/api/appointment/patient/appoint",params)
 }
@@ -653,11 +655,13 @@ export function insert_record(phone1,phone2,date,sec){
 export function getPatientInfo(patientPhone){
 	return fetchGet(`/api/appointment/doctor/`+patientPhone)
 }
-export function getRemainder(docp,appo,sec){
+export function getRemainder(docp,appo,sec,dept,hosp){
 	const params = {
 		  "doctorPhone": docp,
 		  "appointDate": appo,
-		  "section": sec
+		  "section": sec,
+		  "department":dept,
+		  "hospital":hosp
 	}
 	return fetchGet("/api/appointment/patient/appoint/doctor",params);
 }
@@ -681,3 +685,10 @@ export function deleteAppointment(patientPhone, appointDate, section){
     "section": section
   })
 }
+export function getDoctorInfo(doctorPhone) {
+	return fetchGet('/api/appointment/doctor/doctorInfo/' + doctorPhone)
+}
+export function wildcardSearch(querys) {
+	return fetchGet('/api/appointment/patient/' + querys)
+}
+

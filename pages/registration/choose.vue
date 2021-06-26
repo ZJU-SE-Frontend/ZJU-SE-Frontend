@@ -3,7 +3,7 @@
 		<!-- 搜索栏-->
 		<view class = "search">
 			<view class="example">
-				<uni-easyinput prefixIcon="search" v-model="value" placeholder="请输入医院/科室(未开发)" @iconClick="iconClick"></uni-easyinput>
+				<uni-easyinput class = "inputs" prefixIcon="search" v-model="value" @input = "input" placeholder="请输入医院" @iconClick="iconClick"></uni-easyinput>
 			</view>
 		</view>
 		<!-- 医院列表-->
@@ -27,13 +27,18 @@
 						
 					</uni-card>
 				</view>
+				<view class="no-such-hospital" v-if = "showw">
+					检索不到相关医院
+				</view>
 			</scroll-view>
+			
 		</view>
 	</view>
 </template>
 
 <script>
-	import { gethospital } from "../../fetch/api.js"
+	import { gethospital,wildcardSearch } from "../../fetch/api.js"
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
@@ -41,6 +46,11 @@
 				old: {
 					scrollTop: 0
 				},
+				hosorigin:{
+					
+				},
+				showw:0,
+				que:'',
 				hosp:'',
 				pos:'',
 				room_array:[
@@ -67,12 +77,32 @@
 				console.log(e);
 				this.old.scrollTop = e.detail.scrollTop;
 			},
+			input(e) {
+				this.que = e;
+			},
 			jump_room(e,p){
 				this.hosp = e;
 				this.pos = p;
 				uni.navigateTo({//跳转页面
 					url:"/pages/registration/room?hospital="+ encodeURIComponent(JSON.stringify(this.hosp)) + "&pos=" + encodeURIComponent(JSON.stringify(this.pos))
 				});
+			},
+			iconClick() {
+				if (this.que == ""){
+					this.hospitals = this.hosorigin;
+					this.showw = 0;
+				}
+				else{
+					wildcardSearch(this.que).then((res)=>{
+						this.hospitals=res.data.hospitalList
+						if (res.data.hospitalList.length == 0){
+							this.showw = 1;
+						}
+						else{
+							this.showw = 0;
+						}
+					})
+				}
 			},
 			goTop: function(e) {
 				// 解决view层不同步的问题
@@ -87,10 +117,19 @@
 			}
 		},
 		onLoad(option){
-			gethospital().then((res)=>{
-				this.hospitals=res.data.hospitalList
-				console.log('123')
-			})
+			if(store.state.hasLogin){
+				gethospital().then((res)=>{
+					this.hospitals=res.data.hospitalList
+					this.hosorigin=res.data.hospitalList
+					console.log('123')
+				})
+			}
+			else{
+				uni.showToast({
+					icon:"none",
+					title:"您未登录"
+				})
+			}
 		}
 	}
 </script>
@@ -130,10 +169,11 @@
 		height:10%;
 		width:100%;
 	}
-
-	.example {
-		padding: 0 15px 15px;
+	uni-easyinput{
+		height:90%;
+		width:100%;
 	}
+
 
 	.example-info {
 		padding: 15px;
@@ -155,9 +195,6 @@
 	}
 
 	/* #endif */
-	.example {
-		padding: 0 15px;
-	}
 
 	.example-info {
 		/* #ifndef APP-NVUE */
@@ -183,8 +220,9 @@
 	}
 
 	.example {
-		padding: 10px;
+		height:100%;
 		background-color: #fff;
+		padding-bottom:10rpx;
 	}
 
 	.text {
@@ -193,7 +231,7 @@
 		margin-bottom: 10px;
 	}
 	.hoses{
-		height:95%;
+		height:90%;
 		width:100%;
 	}
 	.scroll-Y {
@@ -250,4 +288,15 @@
 		width:20%;
 		font-size:10rpx;
 	}
+	
+	.no-such-hospital {
+		padding-top:100rpx;
+		height: 10%;
+		width:100%;
+		position:absolute;
+		left:30%;
+		font-weight: 100;
+		justify-content: center;
+	}
+	
 </style>
