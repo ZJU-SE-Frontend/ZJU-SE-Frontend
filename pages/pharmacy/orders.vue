@@ -265,56 +265,39 @@
 			},
 			onItemClicked(index, index2) {
 				uni.navigateTo({
-					url: 'details?id='+(10+index*2+index2+1)
+					url: 'details?id='+this.data_list[index].goods[index2].medicineId
 				})
 			}
 		},
 		onLoad: function(option) {
-			getPharOrderList(store.state.uerInfo.userPhone).then((res)=>{
-					var found = false;
-					getPharOrderDetail(res.data[0].orderId).then((resp)=>{
-						for(var i = 0; i < resp.data.length; i++)
-						{
-							getPharBoothDetail(resp.data[i].medicineId).then((re)=>{
-							
-							if(!found)
-							{
-								this.data_list.push({
-									"orderId": res.data[0].orderId,
-									"state": res.data[0].state,
-									"totalPrice": res.data[0].totalPrice,
-									"dateTime": res.data[0].dateTime,
-									"goods": [{
-										"medicineId": resp.data[0].medicineId,
-										"amount": resp.data[0].amount,
-										"price": resp.data[0].price,
-										"name":re.data.name,
-										"type":re.data.type,
-										"pic":re.data.picPath
-									}]
-								})
-							}	
-							if(this.data_list[0].orderId == res.data[0].orderId && found)
-							{
-								for(var j = 1; j < resp.data.length; j++)
-								{
-									this.data_list[0].goods.push(
-										{
-											"medicineId": resp.data[j].medicineId,
-											"amount": resp.data[j].amount,
-											"price": resp.data[j].price,
-											"name":re.data.name,
-											"type":re.data.type,
-											"pic":re.data.picPath
-										}
-									)
-								}
-									
-							}
-							found = true;
-						})
+			getPharOrderList(store.state.uerInfo.userPhone).then((orderList)=>{
+				orderList.data.forEach((order)=>{
+					getPharOrderDetail(order.orderId).then((orderDetail)=>{
+						let oneOrder = {
+							"orderId": order.orderId,
+							"state": order.state,
+							"totalPrice": order.totalPrice,
+							"dateTime": order.dateTime
 						}
+						let goods = []
+						for(var i = 0; i < orderDetail.data.length; i++)
+						{
+							let tempGood = {
+								"medicineId": orderDetail.data[i].medicineId,
+								"amount": orderDetail.data[i].amount,
+								"price": orderDetail.data[i].price,
+							}
+							getPharBoothDetail(orderDetail.data[i].medicineId).then((good)=>{
+								tempGood["name"]=good.data.name
+								tempGood["type"]=good.data.type
+								tempGood["pic"]=good.data.picPath
+							})
+							goods.push(tempGood)
+						}
+						oneOrder["goods"]=goods
+						this.data_list.push(oneOrder)
 					})
+				})
 			})
 			this.showlist = this.data_list;
 		}

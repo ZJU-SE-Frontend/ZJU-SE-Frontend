@@ -259,6 +259,15 @@ export function getPharOrderList(userPhone){
 export function getPharOrderDetail(id){
 	return fetchGet(`/api/phar/order/detail/` + id)
  }
+ 
+export function postPharOrderAdd(userPhone, state, list){
+	let data = {
+		"userPhone": userPhone,
+		"state": state,
+		"list": list
+	}
+	return fetchPost(`/api/phar/order/add`, data)
+}
 
 /* 健康检测模块API */
 
