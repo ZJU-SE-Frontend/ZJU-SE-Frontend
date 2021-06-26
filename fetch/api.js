@@ -223,9 +223,9 @@ export function getPdetail(phone,id){
 
 
 
-// export function getUserInfo(userPhone){
-// 	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
-// }
+export function getUserInfo(userPhone){
+	return fetchGet("/api/healthrecord/personInfo/"+userPhone)
+}
 
 export function putchpwd(userPhone, password) {
 	var data = {
