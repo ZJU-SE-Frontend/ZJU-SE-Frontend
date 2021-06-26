@@ -27,6 +27,8 @@
 </template>
 
 <script>
+	import store from "@/common/store.js"
+	import {postPharOrderAdd} from "@/fetch/api.js"
 	export default {
 		data() {
 			return {
@@ -105,14 +107,41 @@
 			},
 			
 			submit(){
-				alert("订单已经提交！");
-	
+				if(store.state.hasLogin != false){
+					let list = []
+					this.mediList.forEach((item)=>{
+						list.push({
+							"medicineId": item.id,
+							"amount": item.count
+						})
+					})
+					postPharOrderAdd(store.state.uerInfo.userPhone, "待支付", list).then((res)=>{
+						if(res.st==0){
+							uni.showToast({
+								title:"订单创建成功",
+								icon:"none"
+							});
+						}
+						else{
+							uni.showToast({
+								title:"订单创建失败",
+								icon:"none"
+							});
+						}
+					})
+				}
+				else{
+					uni.showToast({
+						title:"请先登录",
+						icon:"none"
+					});
+				}
 			},
 			async initData(options)
 			{
 				console.log(options);
 				this.mediList = await JSON.parse(options.data);
-				console.log(this.mediList.length);
+				console.log(this.mediList);
 			}
 		}
 	}
