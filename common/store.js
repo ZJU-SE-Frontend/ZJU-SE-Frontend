@@ -11,6 +11,7 @@ const store = new Vuex.Store({
 	mutations: {
 		login(state, provider) {
 			state.hasLogin = true
+			state.uerInfo.authType = provider.authType
 			state.uerInfo.token = provider.token
 			state.uerInfo.userName = provider.userName
 			state.uerInfo.userEmail = provider.userEmail

@@ -28,8 +28,8 @@
 					<text class="info-cnt">{{ topic.viewCnt }}</text>
 					<image class="info-icon" src="../../static/forum/评论.svg"></image>
 					<text class="info-cnt">{{ topic.answerCnt }}</text>
-					<image v-if="favoriteState" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星 面性.svg"></image>
-					<image v-else class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星.svg"></image>
+					<image v-if="favoriteState && hasLogin" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星 面性.svg"></image>
+					<image v-if="!favoriteState && hasLogin" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星.svg"></image>
 				</view>
 				
 				<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="result"></sl-filter>
@@ -52,9 +52,9 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
-											<text class="recommend-text" v-if="role=='manager'" @tap="recommandReply(reply.answerId)">推荐</text>
-											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
-											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
+											<text class="recommend-text" v-if="authType==3" @tap="recommandReply(reply.answerId)">推荐</text>
+											<text class="delete-text" v-if="userPhone==reply.userPhone || authType==3" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone && authType!=3" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
 									<view @tap="navigator('./contentQaReply?id=' + reply.answerId + '&qid=' + topicId)" class="reply-content">
@@ -85,7 +85,7 @@
 						<!-- 回复列表 -->
 						<view class="reply-list">
 							<block v-for="(reply, replyIndex) of sortedAnswers">
-								<view @tap="navigator('./contentQaReply?id=' + reply.answerId)" class="reply">
+								<view class="reply">
 									<view class="reply-header">
 										<!-- <view class="reply-author-avatar">
 											<image :src="reply.author.avatar_url"></image>
@@ -95,12 +95,12 @@
 											<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 										</view>
 										<view class="reply-delete">
-											<text class="recommend-text" v-if="role=='manager'" @tap="recommandReply(reply.answerId)">推荐</text>
-											<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.answerId)">删除</text>
-											<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.answerId)">举报</text>
+											<text class="recommend-text" v-if="authType==3" @tap="recommandReply(reply.answerId)">推荐</text>
+											<text class="delete-text" v-if="userPhone==reply.userPhone || authType==3" @tap="removeReply(reply.answerId)">删除</text>
+											<text class="report-text" v-if="userPhone!=reply.userPhone && authType!=3" @tap="reportReply(reply.answerId)">举报</text>
 										</view>
 									</view>
-									<view class="reply-content">
+									<view @tap="navigator('./contentQaReply?id=' + reply.answerId + '&qid=' + topicId)" class="reply-content">
 										<u-parse :content="reply.content" @preview="preview" @navigate="navigate" />
 									</view>
 									<view class="reply-finfo">
@@ -138,6 +138,8 @@ import SsxFixButton from './ssx-fix-button'
 import slFilter from './sl-filter.vue'
 import {getQuestion, addQaViewCnt, getQaLikeInfo, postQaLike, deleteQaLike, getQaFavoriteInfo, addToQaFavorite, removeFromQaFavorite} from '../../fetch/api.js'
 import {getAnswer, getAnswerContent, deleteAnswer,getCurrentUserPhone,  reportQaAnswer, getAuthInfo, recommendAnswer} from '../../fetch/api.js'
+import store from "@/common/store.js"
+
 export default {
 	components: {
 		uParse,
@@ -166,7 +168,9 @@ export default {
 			favoriteState: null,
 			hasLiked: null,
 			hasDisLiked: null,
-			userPhone: null,
+			hasLogin : store.state.hasLogin,
+			userPhone: store.state.uerInfo.userPhone,
+			authType : store.state.uerInfo.authType,
 			// 回复
 			page: 1,
 			limit: 10,
@@ -192,15 +196,22 @@ export default {
 			],
 			currentListType: 'default',
 			sortedAnswers: [],
-			replyLikeInfo: null,
-			role : ""
+			replyLikeInfo: {
+				likes:[],
+				disLikes:[],
+			}
 		}
 	},
 	methods: {
 		onFloatButton() {
-			uni.navigateTo({
-				'url': './createAnswer?id=' + this.topicId
-			})
+			if(this.hasLogin) {
+				uni.navigateTo({
+					'url': './createAnswer?id=' + this.topicId
+				})
+			}
+			else {
+				this.$util.toast('请先登录！')
+			}
 		},
 		onNavigationBarButtonTap(e) {
 			uni.navigateTo({
@@ -302,20 +313,24 @@ export default {
 			await deleteQaLike(replyId, params)
 		},
 		async tapReplyLike(replyId) {
-			await this.signalClear(replyId)
-			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
-				await this.signalLike(replyId)
-			this.loadReplyLikeInfo()
-			this.handleGetQaDetail(this.topicId)
-			this.handleGetAnswer()
+			if(this.hasLogin) {
+				await this.signalClear(replyId)
+				if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+					await this.signalLike(replyId)
+				this.loadReplyLikeInfo()
+				this.handleGetQaDetail(this.topicId)
+				this.handleGetAnswer()
+			}
 		},
 		async tapReplyDislike(replyId) {
-			await this.signalClear(replyId)
-			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
-				await this.signalDislike(replyId)
-			this.loadReplyLikeInfo()
-			this.handleGetQaDetail(this.topicId)
-			this.handleGetAnswer()
+			if(this.hasLogin) {
+				await this.signalClear(replyId)
+				if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+					await this.signalDislike(replyId)
+				this.loadReplyLikeInfo()
+				this.handleGetQaDetail(this.topicId)
+				this.handleGetAnswer()
+			}
 		},
 		async changeFavoriteState() {
 			console.log('change favorite')
@@ -365,12 +380,12 @@ export default {
 		if (params.id) {
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
-			await this.getCurrentUser()
+			//await this.getCurrentUser()
 			await addQaViewCnt(this.topicId)
 			await this.handleGetQaDetail(this.topicId)
 			await this.handleGetAnswer()
 			this.loadReplyLikeInfo()
-			this.loadAuthInfo()
+			//this.loadAuthInfo()
 			await this.LoadFavoriteInfo()
 		}
 	}

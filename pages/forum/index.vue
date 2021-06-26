@@ -21,13 +21,13 @@
 			
 			<view  v-if="currentClassIfy==2" class="profile-tab">
 				<view @tap="handleGetUserPost()" class="block" :class="{'selected': profileTab === 0}">					
-						<text>发帖：{{this.postCnt}}</text>
+						<text>发帖：{{postCnt}}</text>
 				</view>
 				<view @tap="handleGetUserQuestion()" class="block" :class="{'selected': profileTab === 1}">
-					<text>提问：{{this.questionCnt}}</text>
+					<text>提问：{{questionCnt}}</text>
 				</view>
 				<view @tap="handleGetUserAnswer()" class="block" :class="{'selected': profileTab === 2}">
-					<text>回答：{{this.answerCnt}}</text>
+					<text>回答：{{answerCnt}}</text>
 				</view>			
 				<view @tap="handleGetUserFavorite()" class="block" :class="{'selected': profileTab === 3}">
 					<text>收藏</text>
@@ -39,23 +39,23 @@
 			
 			<view  v-if="currentClassIfy==2 && profileTab==3" class="profile-tab">
 				<view @tap="handleGetUserFavoritePost()" class="block" :class="{'selected': favoriteTab === 0}">					
-						<text>发帖：{{this.favoritePostCnt}}</text>
+						<text>发帖：{{favoritePostCnt}}</text>
 				</view>
 				<view @tap="handleGetUserFavoriteQuestion()" class="block" :class="{'selected': favoriteTab === 1}">
-						<text>提问：{{this.favoriteQuestionCnt}}</text>
+						<text>提问：{{favoriteQuestionCnt}}</text>
 				</view>
 				<view @tap="handleGetUserFavoriteAnswer()" class="block" :class="{'selected': favoriteTab === 2}">
-						<text>回答：{{this.favoriteAnswerCnt}}</text>
+						<text>回答：{{favoriteAnswerCnt}}</text>
 				</view>
 
 			</view>
 			
 			<view  v-if="currentClassIfy==2 && profileTab==4" class="profile-tab">
 				<view @tap="handleGetReportAnswer()" class="block" :class="{'selected': reportTab === 0}">					
-						<text>回答：{{this.reportAnswerCnt}}</text>
+						<text>回答：{{reportAnswerCnt}}</text>
 				</view>
 				<view @tap="handleGetReportReply()" class="block" :class="{'selected': reportTab === 1}">
-						<text>回复：{{this.reportReplyCnt}}</text>
+						<text>回复：{{reportReplyCnt}}</text>
 				</view>
 			
 			</view>
@@ -92,7 +92,7 @@
 			</view>
 			
 			<view  v-if="currentClassIfy==1" class="post">
-				<view v-show="displayData.length && questionSession != 0" class="topic-list">
+				<view v-if="displayData.length && questionSession != 0" class="topic-list">
 					<sl-filter :independence="true" :color="titleColor" :themeColor="themeColor" :menuList.sync="menuList" @result="sortResult"></sl-filter>
 					<!-- 话题项 -->
 					<block v-for="topic of sortedTopicList.slice((qaPage - 1)*limit, qaPage*limit)">
@@ -121,7 +121,7 @@
 						</view>
 					</view>
 				</view>
-				<view v-show="displayData.length && questionSession == 0" class="topic-list">
+				<view v-if="displayData.length && questionSession == 0" class="topic-list">
 					<!-- 话题项 -->
 					<block v-for="topic of displayData.slice((qaPage - 1)*limit, qaPage*limit)">
 						<view @tap="navigator('./contentQaReply?id=' + topic.answerId)" class="topic">
@@ -253,9 +253,6 @@
 					<!-- 话题项 -->
 					<block v-for="topic of topicList">
 						<view @tap="navigator('./contentPost?id=' + topic.topicId)" class="topic">
-							<!-- <view class="topic-author-avatar"> -->
-								<!-- <image class="author-avatar-url" :src="topic.author.avatar_url" lazy-load></image> -->
-							<!-- </view> -->
 							<view class="topic-type">讨论</view>
 							<view class="topic-info">
 								<view class="topic-title">{{ topic.title }}</view>
@@ -405,9 +402,10 @@
 
 <script>
 	const moment = require('moment')
+	import store from "@/common/store.js"
 	import slFilter from './sl-filter.vue'
 	import {getPostList,getUserPost,getUserAnswer,getUserQuestion,getUserFavoritePost,getUserFavoriteQuestion,
-	getUserFavoriteAnswer,getQuestionList,getCurrentUserPhone,getCurrentUserRole,getAnswerContent,getQuestion, getRecommendedAnswers,
+	getUserFavoriteAnswer,getQuestionList,getAnswerContent,getQuestion, getRecommendedAnswers,
 	getReportQaAnswer,getReportQaReply,deleteReportQaAnswer,deleteReportQaReply,deleteQaReply,
 	removeFromQaFavorite,addToQaFavorite} from '../../fetch/api.js'
 	export default {
@@ -448,8 +446,9 @@
 				reportReplyPage:1,
 				// 条数
 				limit: 10,
-				userPhone: null,
-				userRole: 'patient',
+				hasLogin : store.state.hasLogin,
+				userPhone: store.state.uerInfo.userPhone,
+				userRole: store.state.uerInfo.authType,
 				postCnt: 0,
 				questionCnt:0,
 				answerCnt:0,
@@ -494,16 +493,20 @@
 		},
 		methods: {
 			onFloatButton() {
-				if (this.handleGetTab() == '讨论贴') {
-					uni.navigateTo({
-						'url': './createPost'
-					})
-				}
-				else if (this.handleGetTab() == '问答') {
-					uni.navigateTo({
-						'url': './createQuestion'
-					})
-					console.log('新建问答')
+				this.getUserState()
+				if (this.hasLogin) {
+					if (this.handleGetTab() == '讨论贴') {
+						uni.navigateTo({
+							'url': './createPost'
+						})
+					}
+					else if (this.handleGetTab() == '问答') {
+						uni.navigateTo({
+							'url': './createQuestion'
+						})
+					}
+				} else {
+					this.$util.toast('请先登录！')
 				}
 			},
 			//排序
@@ -579,31 +582,16 @@
 					pageNo:1
 				}
 				
-				
 				if (params.tab == '个人中心'){
-					console.log('个人中心')
-										
 					var posts = await getUserPost(params.userPhone,params.pageSize,params.pageNo)
 					var questions = await getUserQuestion(params.userPhone,params.pageSize,params.pageNo);
 					var answers = await getUserAnswer(params.userPhone,params.pageSize,params.pageNo);
-					
-					
-					console.log("查询成功")
 					this.postCnt = posts.data.total
-					console.log(posts.data.total)
-				
 					this.questionCnt = questions.data.total
-					console.log(questions.data.total)
-				
 					this.answerCnt = answers.data.total
-					console.log(answers.data.total)
- 										
 				}
 				
-						
 				await this.handleGetUserPost()
-				
-				
 			},
 			
 			async handleGetUserPost(params){	
@@ -984,13 +972,14 @@
 				if (this.currentClassIfy === classIfyId) {
 					return
 				}else if( classIfyId == 2){
-					await this.getCurrentUser()
-					console.log(this.userPhone)
-					console.log("切换到个人中心")
-					this.currentClassIfy = classIfyId
-					
-					this.topicList=[]
-					this.handleGetProfile()
+					this.getUserState()
+					if(this.hasLogin) {
+						this.currentClassIfy = classIfyId
+						this.topicList=[]
+						this.handleGetProfile()
+					} else {
+						this.$util.toast('请先登录！')
+					}
 				} else {
 					// Reset topicList
 					this.topicList = []
@@ -1307,7 +1296,6 @@
 				if(this.questionSession == 0) {
 					var recommendedAnswers = await getRecommendedAnswers(params)
 					this.displayData = recommendedAnswers.data.answers
-					
 				}
 				else if(this.questionSession == 1) {
 					for(var ans in this.topicList) {
@@ -1337,15 +1325,12 @@
 						}
 					}
 				}
-				// console.log(this.topicList)
-				// console.log(this.displayData)
 				this.dataGen()
 			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				this.userRole = await getCurrentUserRole()
-				console.log(this.userPhone)
-				console.log(this.userRole)
+			getUserState() {
+				this.hasLogin = store.state.hasLogin
+				this.userPhone = store.state.uerInfo.userPhone
+				this.userRole = store.state.uerInfo.authType
 			}
 		},
 		// 下拉刷新
@@ -1354,7 +1339,6 @@
 		},
 		// 页面加载
 		onLoad() {
-			this.getCurrentUser()
 			this.load()
 		}
 	}
