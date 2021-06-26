@@ -9,7 +9,7 @@
 		</view>
 
 <!-- 		订单列表页面 -->
-		<view class="ddlistvbg">
+		<view class="ddlistvbg" :key="rerenderKey">
 			<view class="ddlistv" v-for="(item,lidx) in showlist" :key="lidx" @click="detaildid(lidx)">
 				<view class="titbgv">
 					<view class="titbgv_l">订单号：{{item.orderId}}</view>
@@ -50,6 +50,7 @@
 	export default {
 		data() {
 			return {
+				rerenderKey:0,
 				titsel: 0,
 				offsetnum:0,
 				List_Index: 0,
@@ -61,64 +62,8 @@
 					'已完成'
 				],
 				data_list:[],
-				goods:[],
-				dataList: [{
-						name: '红酒体验店',
-						addess: '郑州市黄河路弄月路',
-						state: 0,
-						img: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1740110050,3481308065&fm=26&gp=0.jpg',
-						tit: '【俺买酒】酒鬼酒 红坛十五年52度 500ml',
-						attribute: '不加冰',
-						num: '3',
-						sku: '500g',
-						date: '2019-12-01',
-						price: '56',
-						cprice: '168',
-						ordernum: '4545245824515545'
-					},
-					{
-						name: '红酒体验店',
-						addess: '郑州市黄河路弄月路',
-						state: 1,
-						img: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1740110050,3481308065&fm=26&gp=0.jpg',
-						tit: '【俺买酒】酒鬼酒 红坛十五年52度 500ml',
-						attribute: '加冰',
-						num: '3',
-						sku: '500g',
-						date: '2019-12-01',
-						price: '56',
-						cprice: '168',
-						ordernum: '4545245824515545'
-					},
-					{
-						name: '红酒体验店',
-						addess: '郑州市黄河路弄月路',
-						state: 2,
-						img: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1740110050,3481308065&fm=26&gp=0.jpg',
-						tit: '【俺买酒】酒鬼酒 红坛十五年52度 500ml',
-						attribute: '不加冰',
-						num: '3',
-						sku: '500g',
-						date: '2019-12-01',
-						price: '56',
-						cprice: '168',
-						ordernum: '4545245824515545'
-					},
-					{
-						name: '红酒体验店',
-						addess: '郑州市黄河路弄月路',
-						state: 3,
-						img: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1740110050,3481308065&fm=26&gp=0.jpg',
-						tit: '【俺买酒】酒鬼酒 红坛十五年52度 500ml',
-						attribute: '加冰',
-						num: '3',
-						sku: '500g',
-						date: '2019-12-01',
-						price: '56',
-						cprice: '168',
-						ordernum: '4545245824515545'
-					}
-				],
+				//goods:[],
+				dataList: [],
 				showlist : [],
 				btnlist: [
 					['联系商家', '取消订单', '去支付'],
@@ -271,6 +216,7 @@
 		},
 		onLoad: function(option) {
 			getPharOrderList(store.state.uerInfo.userPhone).then((orderList)=>{
+				let promiseList = []
 				orderList.data.forEach((order)=>{
 					getPharOrderDetail(order.orderId).then((orderDetail)=>{
 						let oneOrder = {
@@ -278,7 +224,7 @@
 							"state": order.state,
 							"totalPrice": order.totalPrice,
 							"dateTime": order.dateTime
-						}
+						} 
 						let goods = []
 						for(var i = 0; i < orderDetail.data.length; i++)
 						{
@@ -287,19 +233,26 @@
 								"amount": orderDetail.data[i].amount,
 								"price": orderDetail.data[i].price,
 							}
-							getPharBoothDetail(orderDetail.data[i].medicineId).then((good)=>{
+							let p = getPharBoothDetail(orderDetail.data[i].medicineId).then((good)=>{
 								tempGood["name"]=good.data.name
 								tempGood["type"]=good.data.type
 								tempGood["pic"]=good.data.picPath
+								goods.push(tempGood)
 							})
-							goods.push(tempGood)
+							promiseList.push(p)
 						}
 						oneOrder["goods"]=goods
 						this.data_list.push(oneOrder)
 					})
 				})
+				Promise.all(promiseList).then(res=>{
+					this.showlist = [];
+					this.showlist = this.data_list;
+					this.$forceUpdate()
+					
+					//this.List_Tap({currentTarget:{dataset:{index:0}}})
+				})
 			})
-			this.showlist = this.data_list;
 		}
 	}
 </script>
