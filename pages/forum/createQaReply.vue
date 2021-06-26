@@ -12,12 +12,15 @@
 
 <script>
 	import {publicQaReply, getCurrentUserPhone} from '../../fetch/api.js'
+	import store from "@/common/store.js"
 	export default {
 		data() {
 			return {
 				content : '',
 				topicId : null,
-				userPhone : '18888888888'
+				hasLogin : store.state.hasLogin,
+				userPhone: store.state.uerInfo.userPhone,
+				userRole: store.state.uerInfo.authType,
 			}
 		},
 		methods: {
@@ -30,22 +33,21 @@
 					await publicQaReply(this.topicId, params);
 					var pages = getCurrentPages();
 					var beforePage = pages[pages.length - 2];
-					console.log(beforePage)
+					//#ifdef H5
 					beforePage.getReplies();
+					//#endif
+					//#ifdef MP-WEIXIN
+					beforePage.$vm.getReplies();
+					//#endif
 					uni.navigateBack({
 						animationDuration: 500,
 						animationType: 'pop-out'
 					})
 				}
 			},
-			async getCurrentUser() {
-				this.userPhone = await getCurrentUserPhone()
-				console.log(this.userPhone)
-			},
 			onLoad(id) {
 				if(id) {
 					this.topicId = id.id
-					this.getCurrentUser()
 				}
 			}
 		}

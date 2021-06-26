@@ -46,8 +46,8 @@
 										<text class="reply-time">{{ replyIndex+1 }}楼•{{ reply.lastEditTime }}</text>
 									</view>
 									<view class="reply-delete">
-										<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.replyId)">删除</text>
-										<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.replyId)">举报</text>
+										<text class="delete-text" v-if="userPhone==reply.userPhone || userRole==3" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone && userRole!=3" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -78,11 +78,12 @@
 <script>
 const moment = require('moment')
 import uParse from '../../common/gaoyia-parse/parse'
+import store from "@/common/store.js"
 import SsxHeader from './ssx-header'
 import SsxNoData from './ssx-no-data'
 import SsxFixButton from './ssx-fix-button'
 import {getPost, addViewCnt, getQaLikeInfo, postQaLike, deleteLike, getQaAnswerFavoriteInfo, 
-			addToQaAnswerFavorite, removeFromQaAnswerFavorite, getTopicReplies, deleteReply, getCurrentUserPhone} from '../../fetch/api.js'
+			addToQaAnswerFavorite, removeFromQaAnswerFavorite, getTopicReplies, deleteReply, getUserStatePhone} from '../../fetch/api.js'
 import {addAnswerViewCnt, getQaTopicReplies, getAnswerContent, deleteQaReply, deleteQaLike, 
 			getQaReplyLikeInfo, postQaReplyLike, deleteQaReplyLike, getAuthInfo, reportQaReply} from '../../fetch/api.js'
 export default {
@@ -98,7 +99,16 @@ export default {
 			loading: false,
 			// 话题ID
 			topicId: null,
-			topic: null,
+			topic: {
+				"userName": " ",
+				"viewCnt": 0,
+				"updateTime": 0,
+				"content": " ",
+				"likeCnt": 0,
+				"dislikeCnt": 0,
+				"viewCnt": 0,
+				"replyCnt": 0,
+			},
 			likeState: null,
 			favoriteState: null,
 			hasLiked: null,
@@ -108,15 +118,27 @@ export default {
 			pageNo : 1,
 			replies : [],
 			qid : null,
-			replyLikeInfo: null,
-			role : ""
+			replyLikeInfo: {
+				likes: [],
+				disLikes: []
+			},
+			role : "",
+			hasLogin : store.state.hasLogin,
+			userPhone: store.state.uerInfo.userPhone,
+			userRole: store.state.uerInfo.authType,
+			
 		}
 	},
 	methods: {
 		onFloatButton() {
-			uni.navigateTo({
-				'url': './createQaReply?id=' + this.topicId
-			})
+			if(this.hasLogin) {
+				uni.navigateTo({
+					'url': './createQaReply?id=' + this.topicId
+				})
+			}
+			else {
+				this.$util.toast('请先登录！')
+			}
 		},
 		async loadAuthInfo() {
 			var authInfo = await getAuthInfo()
@@ -149,10 +171,6 @@ export default {
 			}
 			topic.create_at = moment(topic.create_at).format('YYYY-MM-DD HH:mm:ss')
 			return topic
-		},
-		async getCurrentUser() {
-			this.userPhone = await getCurrentUserPhone()
-			console.log(this.userPhone)
 		},
 		async loadLikeInfo() {
 			const params = {
@@ -197,32 +215,42 @@ export default {
 			await deleteQaLike(this.topicId, params)
 		},
 		async tapLike() {
-			await this.signalClear()
-			if (this.likeState != true)
-				await this.signalLike()
-			this.loadLikeInfo()
-			this.handleGetTopicDetail(this.topicId)
+			this.getUserState()
+			if(this.hasLogin){
+				await this.signalClear()
+				if (this.likeState != true)
+					await this.signalLike()
+				this.loadLikeInfo()
+				this.handleGetTopicDetail(this.topicId)	
+			}
 		},
 		async tapDislike() {
-			await this.signalClear()
-			if (this.likeState != false)
-				await this.signalDislike()
-			this.loadLikeInfo()
-			this.handleGetTopicDetail(this.topicId)
+			
+			this.getUserState()
+			if(this.hasLogin){
+				await this.signalClear()
+				if (this.likeState != false)
+					await this.signalDislike()
+				this.loadLikeInfo()
+				this.handleGetTopicDetail(this.topicId)
+			}
 		},
 		async changeFavoriteState() {
-			const params = {
-				"userPhone" : this.userPhone,
-			};
-			if (!this.favoriteState){
-				console.log('add favorite')
-				await addToQaAnswerFavorite(this.topicId, params)
+			this.getUserState()
+			if(this.hasLogin){
+				const params = {
+					"userPhone" : this.userPhone,
+				};
+				if (!this.favoriteState){
+					console.log('add favorite')
+					await addToQaAnswerFavorite(this.topicId, params)
+				}
+				else {
+					console.log('remove favorite')
+					await removeFromQaAnswerFavorite(this.topicId, params)
+				}
+				this.LoadFavoriteInfo()
 			}
-			else {
-				console.log('remove favorite')
-				await removeFromQaAnswerFavorite(this.topicId, params)
-			}
-			this.LoadFavoriteInfo()
 		},
 		async getReplies() {
 			const params = {
@@ -243,9 +271,12 @@ export default {
 			this.replies = replies
 		},
 		async removeReply(replyId) {
-			console.log("218 " + replyId)
-			await deleteQaReply(replyId)
-			this.getReplies()
+			this.getUserState()
+			if(this.hasLogin){
+				console.log("218 " + replyId)
+				await deleteQaReply(replyId)
+				this.getReplies()
+			}
 		},
 		editReply(replyId, content) {
 			uni.navigateTo({
@@ -253,12 +284,12 @@ export default {
 			})
 		},
 		async reportReply(replyId) {
-			console.log(replyId)
-			await reportQaReply(replyId)
-			this.$util.toast('举报成功')
-		},
-		async getCurrentUser() {
-			this.userPhone = await getCurrentUserPhone()
+			this.getUserState()
+			if(this.hasLogin){
+				console.log(replyId)
+				await reportQaReply(replyId)
+				this.$util.toast('举报成功')
+			}
 		},
 		async loadReplyLikeInfo() {
 			const params = {
@@ -292,22 +323,33 @@ export default {
 			await deleteQaReplyLike(replyId, params)
 		},
 		async tapReplyLike(replyId) {
-			await this.signalReplyClear(replyId)
-			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
-				await this.signalReplyLike(replyId)
-			await this.loadReplyLikeInfo()
-			await this.getReplies()
+			this.getUserState()
+			if(this.hasLogin){
+				await this.signalReplyClear(replyId)
+				if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+					await this.signalReplyLike(replyId)
+				await this.loadReplyLikeInfo()
+				await this.getReplies()
+			}
 		},
 		async tapReplyDislike(replyId) {
-			await this.signalReplyClear(replyId)
-			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
-				await this.signalReplyDislike(replyId)
-			await this.loadReplyLikeInfo()
-			await this.getReplies()
+			this.getUserState()
+			if(this.hasLogin){
+				await this.signalReplyClear(replyId)
+				if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+					await this.signalReplyDislike(replyId)
+				await this.loadReplyLikeInfo()
+				await this.getReplies()
+			}
 		},
 		async getQid() {
 			var qidData = await getAnswerContent(this.topicId)
 			this.qid = qidData.data.questionId
+		},
+		getUserState() {
+			this.hasLogin = store.state.hasLogin
+			this.userPhone = store.state.uerInfo.userPhone
+			this.userRole = store.state.uerInfo.authType
 		}
 	},
 	async onLoad(params) {
@@ -316,7 +358,7 @@ export default {
 			this.topicId = params.id
 			await this.getQid()
 			console.log('Loading ' + this.topicId)
-			await this.getCurrentUser()
+			this.getUserState()
 			console.log('11111111')
 			await addAnswerViewCnt(this.topicId)
 			console.log('22222222')
@@ -328,7 +370,8 @@ export default {
 			this.handleGetTopicDetail(this.topicId)
 			this.loadReplyLikeInfo()
 		}
-	}
+	},
+	
 }
 </script>
 

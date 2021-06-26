@@ -9,7 +9,7 @@
 					<view class="topic-title">{{ topic.title }}</view>
 					<view class="topic-header-info">
 						<text class='time-info'>•修改于{{ topic.updateTime }}•作者 {{ topic.authorName }}</text>
-						<text v-if="topic.authorPhone==userPhone || role=='manager'" class="delete-text" @tap="deleteTopic">删除</text>
+						<text v-if="topic.authorPhone==userPhone || authType==3" class="delete-text" @tap="deleteTopic">删除</text>
 						<text v-if="topic.authorPhone==userPhone" class="edit-text" @tap="editTopic">编辑</text>
 						<!-- <text v-if="topic.authorPhone!=userPhone" class="report-text" @tap="">举报</text> -->
 					</view>
@@ -30,8 +30,8 @@
 					<text class="info-cnt">{{ topic.viewCnt }}</text>
 					<image class="info-icon" src="../../static/forum/评论.svg"></image>
 					<text class="info-cnt">{{ topic.replyCnt }}</text>
-					<image v-if="favoriteState" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星 面性.svg"></image>
-					<image v-else class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星.svg"></image>
+					<image v-if="favoriteState && hasLogin" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星 面性.svg"></image>
+					<image v-if="!favoriteState && hasLogin" class="info-icon" @tap="changeFavoriteState" src="../../static/forum/星星.svg"></image>
 				</view>
 				<!-- 话题回复 -->
 				<view class="detail-reply">
@@ -44,9 +44,9 @@
 										<text class="reply-time">{{ reply.floor }}楼•{{ reply.lastEditTime }}</text>
 									</view>
 									<view class="reply-delete">
-										<text class="delete-text" v-if="userPhone==reply.userPhone || role=='manager'" @tap="removeReply(reply.replyId)">删除</text>
+										<text class="delete-text" v-if="userPhone==reply.userPhone || authType==3" @tap="removeReply(reply.replyId)">删除</text>
 										<text class="edit-text" v-if="userPhone==reply.userPhone" @tap="editReply(reply.replyId, reply.content)">编辑</text>
-										<text class="report-text" v-if="userPhone!=reply.userPhone && role!='manager'" @tap="reportReply(reply.replyId)">举报</text>
+										<text class="report-text" v-if="userPhone!=reply.userPhone && authType!=3" @tap="reportReply(reply.replyId)">举报</text>
 									</view>
 								</view>
 								<view class="reply-content">
@@ -76,8 +76,9 @@
 <script>
 const moment = require('moment')
 import {getPost, addViewCnt, getLikeInfo, postLike, deleteLike, getFavoriteInfo, reportPostReply, getReplyLikeInfo,
-			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, getCurrentUserPhone, deletePost,
+			addToFavorite, removeFromFavorite, getTopicReplies, deleteReply, deletePost,
 			postReplyLike, deleteReplyLike, getAuthInfo} from '../../fetch/api.js'
+import store from "@/common/store.js"
 export default {
 	data() {
 		return {
@@ -88,12 +89,13 @@ export default {
 			topic: null,
 			likeState: null,
 			favoriteState: null,
-			userPhone: null,
+			hasLogin : store.state.hasLogin,
+			userPhone: store.state.uerInfo.userPhone,
 			pageSize : 20,
 			pageNo : 1,
 			replies : [],
 			replyLikeInfo: null,
-			role : ""
+			authType : store.state.uerInfo.authType
 		}
 	},
 	methods: {
@@ -157,18 +159,22 @@ export default {
 			await deleteLike(this.topicId, params)
 		},
 		async tapLike() {
-			await this.signalClear()
-			if (this.likeState != true)
-				await this.signalLike()
-			this.loadLikeInfo()
-			this.handleGetTopicDetail()
+			if(this.hasLogin) {
+				await this.signalClear()
+				if (this.likeState != true)
+					await this.signalLike()
+				this.loadLikeInfo()
+				this.handleGetTopicDetail()
+			}
 		},
 		async tapDislike() {
-			await this.signalClear()
-			if (this.likeState != false)
-				await this.signalDislike()
-			this.loadLikeInfo()
-			this.handleGetTopicDetail()
+			if(this.hasLogin) {
+				await this.signalClear()
+				if (this.likeState != false)
+					await this.signalDislike()
+				this.loadLikeInfo()
+				this.handleGetTopicDetail()
+			}
 		},
 		async signalReplyLike(replyId) {
 			const params = {
@@ -191,18 +197,22 @@ export default {
 			await deleteReplyLike(replyId, params)
 		},
 		async tapReplyLike(replyId) {
-			await this.signalReplyClear(replyId)
-			if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
-				await this.signalReplyLike(replyId)
-			await this.loadReplyLikeInfo()
-			await this.getReplies()
+			if(this.hasLogin) {
+				await this.signalReplyClear(replyId)
+				if (this.replyLikeInfo.likes.indexOf(replyId) == -1)
+					await this.signalReplyLike(replyId)
+				await this.loadReplyLikeInfo()
+				await this.getReplies()
+			}
 		},
 		async tapReplyDislike(replyId) {
-			await this.signalReplyClear(replyId)
-			if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
-				await this.signalReplyDislike(replyId)
-			await this.loadReplyLikeInfo()
-			await this.getReplies()
+			if(this.hasLogin) {
+				await this.signalReplyClear(replyId)
+				if (this.replyLikeInfo.disLikes.indexOf(replyId) == -1)
+					await this.signalReplyDislike(replyId)
+				await this.loadReplyLikeInfo()
+				await this.getReplies()
+			}
 		},
 		async changeFavoriteState() {
 			const params = {
@@ -239,13 +249,6 @@ export default {
 				'url': './editReply?id=' + replyId + '&content=' + content
 			})
 		},
-		async getCurrentUser() {
-			this.userPhone = await getCurrentUserPhone()
-		},
-		async loadAuthInfo() {
-			var authInfo = await getAuthInfo()
-			this.role = authInfo
-		},
 		async reportReply(replyId) {
 			await reportPostReply(replyId)
 			this.$util.toast('举报成功')
@@ -270,14 +273,13 @@ export default {
 		if (params.id) {
 			this.topicId = params.id
 			console.log('Loading ' + this.topicId)
-			await this.getCurrentUser()
-			await addViewCnt(this.topicId)
 			await this.getReplies()
-			this.loadAuthInfo()
+			await addViewCnt(this.topicId)
 			this.LoadFavoriteInfo()
 			this.loadLikeInfo()
 			this.loadReplyLikeInfo()
 			this.handleGetTopicDetail()
+			console.log('Userinfo: ', store.state.uerInfo)
 		}
 	}
 }
