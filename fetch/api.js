@@ -258,7 +258,13 @@ export function getPharOrderList(userPhone){
  }
 export function getPharOrderDetail(id){
 	return fetchGet(`/api/phar/order/detail/` + id)
- }
+}
+ 
+export function putPharOrderChangeState(id, state){
+	let data = {"state": state}
+	return fetchPut(`/api/phar/order/changeState/`+id, data=data)
+}
+
  
 export function postPharOrderAdd(userPhone, state, list){
 	let data = {

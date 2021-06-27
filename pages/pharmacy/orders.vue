@@ -12,7 +12,7 @@
 		<view class="ddlistvbg" :key="rerenderKey">
 			<view class="ddlistv" v-for="(item,lidx) in showlist" :key="lidx" @click="detaildid(lidx)">
 				<view class="titbgv">
-					<view class="titbgv_l">订单号：{{item.orderId}}</view>
+					<view class="titbgv_l">订单号：{{item.orderId.substr(0,8)}}</view>
 					<view class="titbgv_r">{{item.state}}</view>
 				</view>
 				<view class="listv" v-for="(goods,gsidx) in item.goods" :key="gsidx">
@@ -44,8 +44,8 @@
 <script>
 	import store from "@/common/store.js"
 	import {
-		getStatic, getPharOrderList, getPharOrderDetail, getPharBoothDetail
-	} from "../../fetch/api.js"
+		getStatic, getPharOrderList, getPharOrderDetail, getPharBoothDetail, putPharOrderChangeState
+	} from "@/fetch/api.js"
 	import Vue from 'vue'
 	export default {
 		data() {
@@ -57,7 +57,7 @@
 				titlist: [
 					'全部',
 					'待支付',
-					'待发货',
+					'配送中',
 					'待收货',
 					'已完成'
 				],
@@ -156,6 +156,24 @@
 			},
 			btnclick(str, idx) {
 				console.log(str, idx);
+				if(str.indexOf('确认收货') != -1){
+					putPharOrderChangeState(this.showlist[idx].orderId, "已完成").then((res)=>{
+						console.log(res)
+						if(res.st==0){
+							uni.showToast({
+								title:"确认收获成功",
+								icon:"none"
+							});
+							this.reload()
+						}
+						else{
+							uni.showToast({
+								title:"确认收货失败",
+								icon:"none"
+							});
+						}
+					})
+				}
 				if(str.indexOf('查看骑手位置') != -1){
 					uni.navigateTo({ 
 						url:'../orderdetail/YSHLookLocation'
@@ -220,7 +238,7 @@
 				orderList.data.forEach((order)=>{
 					getPharOrderDetail(order.orderId).then((orderDetail)=>{
 						let oneOrder = {
-							"orderId": order.orderId.substr(0,8),
+							"orderId": order.orderId,
 							"state": order.state,
 							"totalPrice": order.totalPrice,
 							"dateTime": order.dateTime
