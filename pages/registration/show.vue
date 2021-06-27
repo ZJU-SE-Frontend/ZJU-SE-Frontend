@@ -53,7 +53,7 @@
 			</uni-table>
 			<view class="showpage">
 				<button class="mini-btn" type="default" size="mini" plain="true" @click="backward()">-</button>
-				<text>{{this.pageno}}</text>
+				<text>{{pageno}}</text>
 				<button class="mini-btn" type="default" size="mini" plain="true" @click="forward()">+</button>
 			</view>	
 		</scroll-view>
@@ -64,19 +64,19 @@
 					<uni-table border:=true class="popdialog">
 						<uni-tr>
 							<uni-td>医院</uni-td>
-							<uni-td>{{this.detail.hospital}}</uni-td>
+							<uni-td>{{detail.hospital}}</uni-td>
 						</uni-tr>
 						<uni-tr>
 							<uni-td>科室</uni-td>
-							<uni-td>{{this.detail.department}}</uni-td>
+							<uni-td>{{detail.department}}</uni-td>
 						</uni-tr>
 						<uni-tr>
 							<uni-td>医生名</uni-td>
-							<uni-td>{{this.detail.doctorName}}</uni-td>
+							<uni-td>{{detail.doctorName}}</uni-td>
 						</uni-tr>
 						<uni-tr>
 							<uni-td>医生电话</uni-td>
-							<uni-td>{{this.detail.doctorPhone}}</uni-td>
+							<uni-td>{{detail.doctorPhone}}</uni-td>
 						</uni-tr>
 						<uni-tr>
 							<uni-td>预约时间</uni-td>
@@ -84,7 +84,7 @@
 						</uni-tr>
 					</uni-table>
 				</view>
-				<view align="center">
+				<view class = "button-area">
 					<button class="mini-btn" @click="pophide()">close</button>
 				</view>
 			</scroll-view>
@@ -155,14 +155,17 @@ export default {
 						this.past.push(this.items[i]);
 					}else if(this.items[i].appointDate - (this.items[i].section + 8) * 3600 - date < 86400){
 						this.fur1.push(this.items[i]);
-						console.log("res: " + (date - this.items[i].appointDate - (this.items[i].section + 8) * 3600));
 					}
 					else{
 						this.fur2.push(this.items[i]);
-						console.log("res: " + (date - this.items[i].appointDate - (this.items[i].section + 8) * 3600));
 					}
 				}
-				console.log("length: " + this.past.length + this.fur1.length + this.fur2.length);
+				if(this.fur1.length > 0){
+					uni.showToast({
+						icon: "none",
+						title: "当前有" + this.fur1.length + "条预约不足一天，请尽快处理",
+					})
+				}
 			})
 		}
 	},
@@ -203,13 +206,13 @@ export default {
 			var date = (new Date()).getTime() / 1000;
 			if(e == 1){
 				this.detail = this.past[this.popno];
-				console.log("1: " + (this.past[this.popno].appointDate - date));
+				console.log("1: " + (this.detail.doctorName));
 			}else if(e == 2){
 				this.detail = this.fur1[this.popno];
-				console.log("2: " + (this.fur1[this.popno].appointDate - date));
+				console.log("2: " + (this.detail.doctorName));
 			}else if(e == 3){
 				this.detail = this.fur2[this.popno];
-				console.log("3: " + (this.fur2[this.popno].appointDate - date));
+				console.log("3: " + (this.detail.doctorName));
 			}
 			console.log()
 			this.$refs.popup.open();
@@ -368,6 +371,14 @@ export default {
   		align-items: center;
 		text-align: center;
   		justify-content: center;
+		color: #000000;
+	}
+	.button-area {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		text-align: center;
+		justify-content: center;
 		color: #000000;
 	}
 	
