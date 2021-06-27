@@ -115,7 +115,8 @@
 							"amount": item.count
 						})
 					})
-					postPharOrderAdd(store.state.uerInfo.userPhone, "待发货", list).then((res)=>{
+					postPharOrderAdd(store.state.uerInfo.userPhone, "配送中", list).then((res)=>{
+						console.log(res)
 						if(res.st==0){
 							uni.showToast({
 								title:"订单创建成功",
